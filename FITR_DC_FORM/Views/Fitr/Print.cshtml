@@ -693,57 +693,66 @@ h1, h2, h3, p {
     <table style="width:100%; border-collapse:collapse; ">
         <!-- ================= HEADER (REPEATS EVERY PAGE) ================= -->
         <thead>
-            <tr >
-                <td>
-                    <div class="header">
-                        <div class="nameofCompany">
-                            <h1 style="font-size:18px">@(printCompany?.CompanyName ?? "AIRA EURO AUTOMATION PVT. LTD.")</h1>
-                            <div style="font-size:12px; line-height: 1.4;">
-                                @if (printCompany != null)
+            <tr>
+                <td style="border: none !important; padding: 0;">
+                    <table class="no-border" style="width: 100%; border-bottom: 1.5px solid #000; margin-bottom: 15px;">
+                        <tr>
+                            <!-- COLUMN 1: COMPANY INFO & TITLE -->
+                            <td style="width: 45%; vertical-align: top; padding-bottom: 15px;">
+                                <h1 style="font-size: 20px; margin: 0 0 5px 0; color: #000; font-weight: bold; text-transform: uppercase;">
+                                    @(printCompany?.CompanyName ?? "AIRA EURO AUTOMATION PVT. LTD.")
+                                </h1>
+                                <div style="font-size: 11.5px; line-height: 1.4; color: #333;">
+                                    @if (printCompany != null)
+                                    {
+                                        @Html.Raw(printCompany.CompanyAddress?.Replace("\n", "<br/>"))
+                                    }
+                                    else
+                                    {
+                                        @:Shed No.2, Cair Estate Nr. Kashiram Textile Mill,<br />
+                                        @:Narol, Ahmedabad, Gujarat-382405
+                                    }
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <h2 style="font-size: 17px; font-weight: bold; text-decoration: underline; margin: 0; color: #000;">
+                                        GearBox Test Certificate
+                                    </h2>
+                                </div>
+                            </td>
+
+                            <!-- COLUMN 2: CENTER LOGO -->
+                            <td style="width: 25%; text-align: center; vertical-align: top; padding-top: 5px;">
+                                @if (printCompany != null && !string.IsNullOrEmpty(printCompany.CompanyLogo))
                                 {
-                                    @Html.Raw(printCompany.CompanyAddress?.Replace("\n", "<br/>"))
+                                    <img src="~/uploads/@printCompany.CompanyLogo" style="max-height: 85px; max-width: 100%;" />
                                 }
                                 else
                                 {
-                                    @:Shed No.2, Cair Estate Nr. Kashiram Textile Mill,<br />
-                                    @:Narol, Ahmedabad, Gujarat-382405
+                                    <img src="~/assets/images/logo/airaindia-logo.webp" style="max-height: 85px; max-width: 100%;" />
                                 }
-                                <h2 class="bold" id="certificate" style="font-size:16px; margin-top: 10px; text-decoration: underline;">GearBox Test Certificate</h2>
-                            </div>
-                        </div>
+                            </td>
 
-                        @if (printCompany != null && !string.IsNullOrEmpty(printCompany.CompanyLogo))
-                        {
-                            <img src="~/uploads/@printCompany.CompanyLogo" class="company-logo" />
-                        }
-                        else
-                        {
-                            <img src="~/assets/images/logo/airaindia-logo.webp" class="company-logo" />
-                        }
-
-                        <div class="header-info">
-                            <table>
-                               
-                                <tr><td class="bold">TC No</td><td>GB/@Model.Master.TCYear/@Model.Master.TCNo</td></tr>
-                                <tr><td class="bold">TC DATE</td><td>@Model.Master.TCDate?.ToString("dd-MM-yyyy")</td></tr>
-                            </table>
-                        </div>
-                            
-                      
-                                
-                    </div>
-
-                   
-                 </td>
-                
-
+                            <!-- COLUMN 3: TC DETAILS -->
+                            <td style="width: 30%; vertical-align: top; padding-top: 5px;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="padding: 4px 8px; font-weight: bold; background: #f9f9f9; border: 1px solid #000; width: 40%;">TC No.</td>
+                                        <td style="padding: 4px 8px; ">GB/@Model.Master.TCYear/@Model.Master.TCNo</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 8px; font-weight: bold; background: #f9f9f9; border: 1px solid #000;">Date</td>
+                                        <td style="padding: 4px 8px; border: 1px solid #000;">@Model.Master.TCDate?.ToString("dd-MM-yyyy")</td>
+                                    </tr>
+                                    @* <tr>
+                                        <td style="padding: 4px 8px; font-weight: bold; background: #f9f9f9; border: 1px solid #000;">Sheet</td>
+                                        <td style="padding: 4px 8px; border: 1px solid #000;">1 of 1</td>
+                                    </tr> *@
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
-                
-                
-            
-            @* <tr>
-                <td style=" text-align:center;line-height:6px;"> <h2 class="bold">GearBox Test Certificate</h2></td>
-            </tr> *@
         </thead>
 
         <!-- ================= CONTENT ================= -->
