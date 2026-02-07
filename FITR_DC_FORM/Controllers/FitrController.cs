@@ -297,12 +297,14 @@ namespace FITR_DC_FORM.Controllers
     public class FitrController : Controller
     {
         private readonly IFitrService _service;
+        private readonly IPrintCompanyService _companyService;
         private readonly IWebHostEnvironment _env;
         private const string FITR_SESSION_KEY = "FITR_WIZARD";
 
-        public FitrController(IFitrService service, IWebHostEnvironment env)
+        public FitrController(IFitrService service, IPrintCompanyService companyService, IWebHostEnvironment env)
         {
             _service = service;
+            _companyService = companyService;
             _env = env;
         }
 
@@ -675,19 +677,29 @@ namespace FITR_DC_FORM.Controllers
             return View();
         }
         // ================= PRINT =================
-        public IActionResult Print(int id)
+        public IActionResult Print(int id, int? printCompanyId)
         {
             _service.GenerateTCIfNotExists(id);
             var model = _service.GetFitr(id);
+
+            if (printCompanyId.HasValue)
+            {
+                ViewBag.PrintCompany = _companyService.GetById(printCompanyId.Value);
+            }
+
             return View("Print", model);
         }
 
-
         [HttpGet]
-        public IActionResult PrintMultiple(string ids)
+        public IActionResult PrintMultiple(string ids, int? printCompanyId)
         {
             if (string.IsNullOrEmpty(ids))
                 return BadRequest("No records selected");
+
+            if (printCompanyId.HasValue)
+            {
+                ViewBag.PrintCompany = _companyService.GetById(printCompanyId.Value);
+            }
 
             var idList = ids
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -706,6 +718,21 @@ namespace FITR_DC_FORM.Controllers
             }
 
             return View("BulkPrint", models);
+        }
+
+        [HttpGet]
+        public IActionResult GetPrintCompanies()
+        {
+            var companies = _companyService.GetAll()
+                .Where(c => c.IsActive)
+                .Select(c => new { 
+                    c.PrintCompanyId, 
+                    c.CompanyName, 
+                    c.CompanyAddress,
+                    c.CompanyLogo 
+                })
+                .ToList();
+            return Json(companies);
         }
 
 

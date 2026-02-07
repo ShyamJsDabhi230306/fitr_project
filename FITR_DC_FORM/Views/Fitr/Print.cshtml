@@ -380,9 +380,11 @@ hr {
 
 
 
+@using FITR_DC_FORM.Models
 @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
 @{
     Layout = null;
+    var printCompany = ViewBag.PrintCompany as PrintCompanyModel;
 }
 
 <!DOCTYPE html>
@@ -627,10 +629,52 @@ tr {
 }
 
 /* ================= SIGNATURE AREA ================= */
-img {
-    max-width: 100%;
-    position:relative;
-    right:40px;
+img.company-logo {
+    max-height: 80px;
+}
+
+/* ================= SIGNATURE AREA ================= */
+.signature-table {
+    margin-top: 50px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.signature-table td {
+    border: none !important;
+    text-align: center;
+    vertical-align: bottom;
+    padding: 10px;
+    width: 33.33%;
+}
+
+.signature-img {
+    height: 60px;
+    max-width: 150px;
+    display: block;
+    margin: 0 auto 5px auto;
+}
+
+.signature-name {
+    font-weight: bold;
+    font-size: 13px;
+    display: block;
+}
+
+.signature-date {
+    font-size: 10px;
+    color: #555;
+    display: block;
+}
+
+.signature-label {
+    font-size: 11px;
+    margin-top: 5px;
+    display: block;
+    border-top: 1px solid #000;
+    width: 80%;
+    margin-left: 10%;
+    padding-top: 3px;
 }
 
 /* ================= REMOVE EXTRA SPACE ================= */
@@ -653,19 +697,29 @@ h1, h2, h3, p {
                 <td>
                     <div class="header">
                         <div class="nameofCompany">
-                            <h1 style="font-size:16px" >AIRA EURO AUTOMATION PVT. LTD.</h1>
-                            <div style="font-size:13px">
-
-                                Shed No.2, Cair Estate Nr. Kashiram Textile Mill,<br />
-                                Narol, Ahmedabad, Gujarat-382405
-                                <h2 class="bold  " id="certificate" style="font-size:15px; font-style:italic">GearBox Test Certificate</h2>
+                            <h1 style="font-size:18px">@(printCompany?.CompanyName ?? "AIRA EURO AUTOMATION PVT. LTD.")</h1>
+                            <div style="font-size:12px; line-height: 1.4;">
+                                @if (printCompany != null)
+                                {
+                                    @Html.Raw(printCompany.CompanyAddress?.Replace("\n", "<br/>"))
+                                }
+                                else
+                                {
+                                    @:Shed No.2, Cair Estate Nr. Kashiram Textile Mill,<br />
+                                    @:Narol, Ahmedabad, Gujarat-382405
+                                }
+                                <h2 class="bold" id="certificate" style="font-size:16px; margin-top: 10px; text-decoration: underline;">GearBox Test Certificate</h2>
                             </div>
-
-                           
                         </div>
 
-                        <img src="~/assets/images/logo/airaindia-logo.webp" />
-                      
+                        @if (printCompany != null && !string.IsNullOrEmpty(printCompany.CompanyLogo))
+                        {
+                            <img src="~/uploads/@printCompany.CompanyLogo" class="company-logo" />
+                        }
+                        else
+                        {
+                            <img src="~/assets/images/logo/airaindia-logo.webp" class="company-logo" />
+                        }
 
                         <div class="header-info">
                             <table>
@@ -859,54 +913,40 @@ h1, h2, h3, p {
                     </table> *@
 
                     <!-- SIGNATURES -->
-                    <table class="no-break" style="margin-top:70px; width:100%; border:none;">
-                        <tr class="center">
-
+                    <table class="signature-table">
+                        <tr>
                             <!-- Prepared By -->
-                            <td style="border:none;">
+                            <td>
                                 @if (!string.IsNullOrEmpty(Model.Master.CreatedBySignature))
                                 {
-                                    <img src="@Url.Content(Model.Master.CreatedBySignature)"
-                                         style="height:50px;" />
+                                    <img src="@Url.Content(Model.Master.CreatedBySignature)" class="signature-img" />
                                 }
-                                <br />
-                                <b>@Model.Master.CreatedByName</b><br />
-                                <small>
-                                    @Model.Master.CreatedOn?.ToString("dd-MM-yyyy HH:mm")
-                                </small><br />
-                                <span>Prepared By</span>
+                                <span class="signature-name">@Model.Master.CreatedByName</span>
+                                <span class="signature-date">@Model.Master.CreatedOn?.ToString("dd-MM-yyyy HH:mm")</span>
+                                <span class="signature-label">Prepared By</span>
                             </td>
 
                             <!-- HOD Approval -->
-                            <td style="border:none;">
+                            <td>
                                 @if (!string.IsNullOrEmpty(Model.Master.HodSignature))
                                 {
-                                    <img src="@Url.Content(Model.Master.HodSignature)"
-                                         style="height:50px;" />
+                                    <img src="@Url.Content(Model.Master.HodSignature)" class="signature-img" />
                                 }
-                                <br />
-                                <b>@Model.Master.HodApprovedByName</b><br />
-                                <small>
-                                    @Model.Master.HodApprovedOn?.ToString("dd-MM-yyyy HH:mm")
-                                </small><br />
-                                <span>HOD Approved</span>
+                                <span class="signature-name">@Model.Master.HodApprovedByName</span>
+                                <span class="signature-date">@Model.Master.HodApprovedOn?.ToString("dd-MM-yyyy HH:mm")</span>
+                                <span class="signature-label">HOD Approved</span>
                             </td>
 
                             <!-- Admin Approval -->
-                            <td style="border:none;">
+                            <td>
                                 @if (!string.IsNullOrEmpty(Model.Master.AdminSignature))
                                 {
-                                    <img src="@Url.Content(Model.Master.AdminSignature)"
-                                         style="height:50px;" />
+                                    <img src="@Url.Content(Model.Master.AdminSignature)" class="signature-img" />
                                 }
-                                <br />
-                                <b>@Model.Master.AdminApprovedByName</b><br />
-                                <small>
-                                    @Model.Master.AdminApprovedOn?.ToString("dd-MM-yyyy HH:mm")
-                                </small><br />
-                                <span>Admin Approved</span>
+                                <span class="signature-name">@Model.Master.AdminApprovedByName</span>
+                                <span class="signature-date">@Model.Master.AdminApprovedOn?.ToString("dd-MM-yyyy HH:mm")</span>
+                                <span class="signature-label">Final Approved</span>
                             </td>
-
                         </tr>
                     </table>
 

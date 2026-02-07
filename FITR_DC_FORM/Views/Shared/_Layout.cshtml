@@ -1001,44 +1001,6 @@
 
     </script>
 
-    <script>
-        // Select / deselect all
-        $("#selectAll").on("change", function () {
-            $(".row-check").prop("checked", this.checked);
-        });
-
-        // SINGLE BUTTON HANDLES BOTH CASES
-        $("#btnPrint").on("click", function () {
-
-            let ids = $(".row-check:checked").map(function () {
-                return $(this).val();
-            }).get();
-
-            if (ids.length === 0) {
-                alert("Please select at least one record to print.");
-                return;
-            }
-
-            // ✅ ONE record → Single print
-            if (ids.length === 1) {
-                window.open('/Fitr/Print/' + ids[0], '_blank');
-                return;
-            }
-
-            // ✅ MORE than one → Bulk print
-            window.open('/Fitr/PrintMultiple?ids=' + ids.join(','), '_blank');
-
-
-        });
-
-
-
-    </script>
-
-
-
-
-   
 
 </body>
 </html>
