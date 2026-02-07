@@ -1,0 +1,66 @@
+﻿@model FITR_DC_FORM.Models.LocationMaster
+
+@{
+    ViewData["Title"] = "Edit Location";
+}
+
+<div class="row">
+    <div class="col-xl-6 col-lg-8 col-md-10 mx-auto">
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Edit Location</h5>
+            </div>
+
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Hidden Id -->
+                <input type="hidden" asp-for="LocationId" />
+
+                <div class="card-body">
+
+                    <!-- Company -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Company <span class="text-danger">*</span>
+                        </label>
+
+                        <select asp-for="CompanyId"
+                                class="form-select"
+                                asp-items="@(ViewBag.CompanyList != null
+                                                                    ? new SelectList(ViewBag.CompanyList, "CompanyId", "CompanyName", Model.CompanyId)
+                                                                    : Enumerable.Empty<SelectListItem>())">
+                            <option value="">-- Select Company --</option>
+                        </select>
+
+                        <span asp-validation-for="CompanyId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Location Name -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Location Name <span class="text-danger">*</span>
+                        </label>
+
+                        <input asp-for="LocationName"
+                               class="form-control" />
+
+                        <span asp-validation-for="LocationName" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-end">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

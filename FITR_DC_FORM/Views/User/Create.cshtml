@@ -1,0 +1,158 @@
+﻿@model FITR_DC_FORM.Models.UserMaster
+
+@{
+    ViewData["Title"] = "User Master";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5>@(Model.UserId == 0 ? "Create User" : "Edit User")</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="UserId" />
+
+            <div class="row">
+
+                <!-- Company -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Company</label>
+                    <select asp-for="CompanyId"
+                            class="form-select"
+                            id="CompanyId">
+                        <option value="">-- Select Company --</option>
+                        @foreach (var c in ViewBag.CompanyList)
+                        {
+                            <option value="@c.CompanyId">@c.CompanyName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                </div>
+
+                <!-- Location -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Location</label>
+                    <select asp-for="LocationId"
+                            class="form-select"
+                            id="LocationId"
+                            disabled>
+                        <option value="">-- Select Location --</option>
+                    </select>
+                    <span asp-validation-for="LocationId" class="text-danger"></span>
+                </div>
+
+                <!-- Role -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">User Role</label>
+                    <select asp-for="UserRole" class="form-select">
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="HOD">HOD</option>
+                        <option value="subadmin">SUPERADMIN</option>
+                    </select>
+                </div>
+
+                <!-- Full Name -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <!-- User Name -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">User Name</label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Password</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <!-- Signature Upload -->
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Signature</label>
+                    <input asp-for="SignatureFile"
+                           type="file"
+                           class="form-control"
+                           accept="image/*" />
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.SignaturePath))
+                {
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label d-block">Current Signature</label>
+                        <img src="@Model.SignaturePath"
+                             style="height:80px;border:1px solid #ccc;padding:5px" />
+                        <div class="text-muted small">
+                            Signed On:
+                            @Model.SignedOn?.ToString("dd-MMM-yyyy hh:mm tt")
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">
+                    @(Model.UserId == 0 ? "Save" : "Update")
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const companyDropdown = document.getElementById("CompanyId");
+        const locationDropdown = document.getElementById("LocationId");
+
+        function loadLocations(companyId, selectedLocationId = null) {
+            if (!companyId) {
+                locationDropdown.innerHTML = '<option value="">-- Select Location --</option>';
+                locationDropdown.disabled = true;
+                return;
+            }
+
+            fetch('/User/GetLocationsByCompany?companyId=' + companyId)
+                .then(res => res.json())
+                .then(data => {
+                    locationDropdown.innerHTML = '<option value="">-- Select Location --</option>';
+
+                    data.forEach(loc => {
+                        let opt = document.createElement("option");
+                        opt.value = loc.locationId;
+                        opt.text = loc.locationName;
+
+                        if (selectedLocationId && loc.locationId == selectedLocationId) {
+                            opt.selected = true;
+                        }
+
+                        locationDropdown.appendChild(opt);
+                    });
+
+                    locationDropdown.disabled = false;
+                });
+        }
+
+        companyDropdown.addEventListener("change", function () {
+            loadLocations(this.value);
+        });
+
+        // 🔥 EDIT MODE FIX (auto-load locations)
+        document.addEventListener("DOMContentLoaded", function () {
+            const companyId = "@Model.CompanyId";
+            const locationId = "@Model.LocationId";
+
+            if (companyId && companyId !== "0") {
+                loadLocations(companyId, locationId);
+            }
+        });
+    </script>
+}

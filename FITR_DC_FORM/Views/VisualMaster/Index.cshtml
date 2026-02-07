@@ -1,0 +1,64 @@
+﻿@model List<FitrVisualMaster>
+
+@{
+    ViewData["Title"] = "Visual Master";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Visual Master</h5>
+
+        <a asp-action="Create" class="btn btn-success btn-sm">
+            + Add Visual Item
+        </a>
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width:70px" class="text-center">#</th>
+                    <th>Visual Item Name</th>
+                    <th style="width:150px" class="text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int index = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@index</td>
+                            <td>@item.VisualItemName</td>
+                            <td class="text-center">
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.VisualMasterId"
+                                   class="btn btn-sm btn-outline-primary me-1">
+                                    Edit
+                                </a>
+
+                                @* <a asp-action="Delete"
+                                   asp-route-id="@item.VisualMasterId"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Are you sure you want to delete this item?')">
+                                    Delete
+                                </a> *@
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-3">
+                            No visual items found.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

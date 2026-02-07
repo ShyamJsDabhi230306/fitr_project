@@ -1,0 +1,51 @@
+﻿@model FITR_DC_FORM.Models.CompanyMaster
+
+@{
+    ViewData["Title"] = "Company Master";
+}
+
+<h4>@(Model.CompanyId == 0 ? "Create Company" : "Edit Company")</h4>
+<hr />
+
+<form asp-action="Create" method="post">
+    <input type="hidden" asp-for="CompanyId" />
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Company Name</label>
+            <input asp-for="CompanyName" class="form-control" />
+            <span asp-validation-for="CompanyName" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Contact No</label>
+            <input asp-for="ContactNo" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">PAN No</label>
+            <input asp-for="PanNo" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">GST No</label>
+            <input asp-for="GSTNo" class="form-control" />
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <label class="form-label">Address</label>
+            <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" ">
+        @(Model.CompanyId == 0 ? "Save" : "Update")
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

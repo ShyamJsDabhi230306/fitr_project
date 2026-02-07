@@ -1,0 +1,139 @@
+﻿@* @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+<form asp-action="SaveFinal" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+
+    <div class="mb-2">
+        <label>Final Remarks</label>
+        <textarea asp-for="Master.FinalRemarks"
+                  class="form-control"
+                  rows="4"></textarea>
+    </div>
+    
+ 
+    <div class="col-12 text-end mt-2">
+        <button type="submit" class="btn  btn-primary ">
+            save
+        </button>
+    </div>
+</form> *@
+
+@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+@if (string.IsNullOrWhiteSpace(Model.Master.DCNo))
+{
+    <div class="alert alert-warning">
+        Please save <b>Basic</b> details first.
+    </div>
+}
+<form asp-action="SaveFinal"
+      method="post"
+      enctype="multipart/form-data">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+
+    <!-- ================= FINAL REMARKS ================= -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Final Remarks</label>
+        <textarea asp-for="Master.FinalRemarks"
+                  class="form-control"
+                  rows="4"></textarea>
+    </div>
+
+    <!-- ================= ATTACHMENTS (END) ================= -->
+    <hr />
+    <h6 class="fw-bold mb-3">Attachments</h6>
+
+    <!-- DC Attachment -->
+    <div class="mb-2">
+        <label class="form-label">DC Attachment <span class="text-danger">*</span></label>
+
+        @if (!string.IsNullOrEmpty(Model.Master.DCAttachmentPath))
+        {
+            <div class="mb-1">
+                <a href="~/@Model.Master.DCAttachmentPath"
+                   target="_blank"
+                   class="text-success">
+                    View DC Attachment
+                </a>
+            </div>
+        }
+
+        <input type="file"
+               name="DCAttachment"
+               class="form-control"
+               accept=".pdf,.jpg,.png" />
+    </div>
+
+    <!-- PO Attachment -->
+    <div class="mb-2">
+        <label class="form-label">PO Attachment <span class="text-danger">*</span></label>
+
+        @if (!string.IsNullOrEmpty(Model.Master.POAttachmentPath))
+        {
+            <div class="mb-1">
+                <a href="~/@Model.Master.POAttachmentPath"
+                   target="_blank"
+                   class="text-success">
+                    View PO Attachment
+                </a>
+            </div>
+        }
+
+        <input type="file"
+               name="POAttachment"
+               class="form-control"
+               accept=".pdf,.jpg,.png" />
+    </div>
+
+    <!-- Drawing Attachment -->
+    <div class="mb-2">
+        <label class="form-label">Drawing Attachment</label>
+
+        @if (!string.IsNullOrEmpty(Model.Master.DrawingAttachmentPath))
+        {
+            <div class="mb-1">
+                <a href="~/@Model.Master.DrawingAttachmentPath"
+                   target="_blank"
+                   class="text-success">
+                    View Drawing
+                </a>
+            </div>
+        }
+
+        <input type="file"
+               name="DrawingAttachment"
+               class="form-control"
+               accept=".pdf,.jpg,.png" />
+    </div>
+
+    <!-- TC Attachment -->
+    <div class="mb-3">
+        <label class="form-label">TC Attachment</label>
+
+        @if (!string.IsNullOrEmpty(Model.Master.TCAttachmentPath))
+        {
+            <div class="mb-1">
+                <a href="~/@Model.Master.TCAttachmentPath"
+                   target="_blank"
+                   class="text-success">
+                    View TC
+                </a>
+            </div>
+        }
+
+        <input type="file"
+               name="TCAttachment"
+               class="form-control"
+               accept=".pdf,.jpg,.png" />
+    </div>
+
+    <!-- ================= SUBMIT ================= -->
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-primary">
+            Save Final
+        </button>
+    </div>
+</form>
+
+

@@ -1,0 +1,45 @@
+﻿@model FITR_DC_FORM.Models.LocationMaster
+
+@{
+    ViewData["Title"] = "Delete Location";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Delete Location</h5>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="LocationId" />
+
+                <div class="card-body">
+                    <p>
+                        Are you sure you want to delete this location?
+                    </p>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Company ID</th>
+                            <td>@Model.CompanyId</td>
+                        </tr>
+                        <tr>
+                            <th>Location Name</th>
+                            <td>@Model.LocationName</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card-footer text-end">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

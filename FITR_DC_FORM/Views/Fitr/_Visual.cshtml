@@ -1,0 +1,122 @@
+﻿@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+@using FITR_DC_FORM.Models
+
+@if (string.IsNullOrWhiteSpace(Model.Master.DCNo))
+{
+    <div class="alert alert-warning">
+        Please save <b>Basic</b> details first.
+    </div>
+}
+@{
+    var visualMaster = ViewBag.VisualMaster as List<FitrVisualMaster>;
+
+    if (Model.Visuals == null)
+    {
+        Model.Visuals = new List<FitrVisual>();
+    }
+}
+
+<form asp-action="SaveVisual" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+
+    <table class="table table-bordered" id="visualTable">
+        <thead class="table-light">
+            <tr>
+                <th style="40%">Visual Item</th>
+                <th>Product Value</th>
+                <th style="80px">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (int i = 0; i < Model.Visuals.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select name="Visuals[@i].VisualMasterId"
+                                class="form-control">
+                            <option value="">-- Select --</option>
+                            @foreach (var vm in visualMaster)
+                            {
+                                <option value="@vm.VisualMasterId"
+                                        selected="@(vm.VisualMasterId == Model.Visuals[i].VisualMasterId)">
+                                    @vm.VisualItemName
+                                </option>
+                            }
+                        </select>
+                    </td>
+
+                    <td>
+                        <input name="Visuals[@i].ProductValue"
+                               value="@Model.Visuals[i].ProductValue"
+                               class="form-control"
+                               placeholder="Enter product value" />
+                    </td>
+
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-danger btn-sm"
+                                onclick="removeRow(this)">
+                            X
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button"
+            class="btn btn-secondary mb-2 " style="margin:10px"
+            onclick="addRow()">
+        + Add Row
+    </button>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Next</button>
+    </div>
+</form>
+
+<script>
+    function addRow() {
+        const tbody = document.querySelector("#visualTable tbody");
+        const index = tbody.rows.length;
+
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>
+                <select name="Visuals[${index}].VisualMasterId"
+                        class="form-control">
+                    <option value="">-- Select --</option>
+                    @foreach (var vm in visualMaster)
+                    {
+                            <option value="@vm.VisualMasterId">@vm.VisualItemName</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <input name="Visuals[${index}].ProductValue"
+                       class="form-control" />
+            </td>
+            <td class="text-center">
+                <button type="button"
+                        class="btn btn-danger btn-sm"
+                        onclick="removeRow(this)">X</button>
+            </td>`;
+    }
+
+    function removeRow(btn) {
+        btn.closest("tr").remove();
+        reindex();
+    }
+
+    function reindex() {
+        document.querySelectorAll("#visualTable tbody tr")
+            .forEach((row, i) => {
+                row.querySelectorAll("select,input").forEach(el => {
+                    const prop = el.name.split('.').pop();
+                    el.name = `Visuals[${i}].${prop}`;
+                });
+            });
+    }
+</script>

@@ -1,0 +1,81 @@
+﻿@model FITR_DC_FORM.Models.LocationMaster
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = Model.LocationId == 0 ? "Add Location" : "Edit Location";
+}
+
+<div class="row">
+    <div class="col-xl-6 col-lg-8 col-md-10 mx-auto">
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    @(Model.LocationId == 0 ? "Add Location" : "Edit Location")
+                </h5>
+            </div>
+
+            <form asp-action="Create" asp-controller="Location" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- IMPORTANT: Hidden key -->
+                <input type="hidden" asp-for="LocationId" />
+
+                <div class="card-body">
+
+                    <!-- Company -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Company <span class="text-danger">*</span>
+                        </label>
+
+                        @Html.DropDownListFor(
+                        m => m.CompanyId,
+                         new SelectList(
+                         (IEnumerable<FITR_DC_FORM.Models.CompanyMaster>)ViewBag.CompanyList,
+                         "CompanyId",
+                         "CompanyName",
+                         Model.CompanyId
+                         ),
+                         "-- Select Company --",
+                         new { @class = "form-select" }
+                         )
+
+                        <span asp-validation-for="CompanyId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Location Name -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Location Name <span class="text-danger">*</span>
+                        </label>
+
+                        <input asp-for="LocationName"
+                               class="form-control"
+                               placeholder="Enter location name" />
+
+                        <span asp-validation-for="LocationName" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-end">
+                    <button type="submit" class="btn btn-primary">
+                        @(Model.LocationId == 0 ? "Save" : "Update")
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary ms-2">
+                        Back
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

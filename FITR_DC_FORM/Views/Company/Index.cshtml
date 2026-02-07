@@ -1,0 +1,56 @@
+﻿@model List<FITR_DC_FORM.Models.CompanyMaster>
+
+@{
+    ViewData["Title"] = "Company List";
+}
+
+<div class="d-flex justify-content-between mb-3">
+    <h4>Company List</h4>
+    <a asp-action="Create" class="btn btn-success" style="margin:20px;">+ Add Company</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Contact No</th>
+            <th>Email</th>
+            <th>PAN</th>
+            <th>GST</th>
+            <th style="width:150px">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.CompanyName</td>
+                    <td>@item.ContactNo</td>
+                    <td>@item.Email</td>
+                    <td>@item.PanNo</td>
+                    <td>@item.GSTNo</td>
+                    <td>
+                        <a asp-action="Create" asp-route-id="@item.CompanyId"
+                           class="btn btn-sm btn-primary">Edit</a>
+
+                        @* <form asp-action="Delete" asp-route-id="@item.CompanyId"
+                              method="post" style="display:inline"
+                              onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </form> *@
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">No records found</td>
+            </tr>
+        }
+    </tbody>
+</table>

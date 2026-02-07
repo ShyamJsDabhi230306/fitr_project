@@ -1,0 +1,304 @@
+﻿
+ 
+@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+@{
+    ViewData["Title"] = "FITR Form";
+    string activeTab = ViewBag.ActiveTab ?? "basic";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row">
+
+        <!-- FULL WIDTH PANEL -->
+        <div class="col-12">
+            <div class="card">
+
+                <!-- HEADER -->
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>FITR DETAILS</span>
+
+                    <div>
+                        <!-- LIST BUTTON -->
+                        <a asp-controller="Fitr"
+                           asp-action="List"
+                           class="btn btn-outline-primary btn-sm me-2">
+                            📋 DC List
+                        </a>
+
+                        <!-- SAVE -->
+                        @* <button type="button"
+                                class="btn btn-primary btn-sm"
+                                onclick="submitActiveForm()">
+                            💾 Save
+                        </button> *@
+
+                        @if (Model?.Master?.FitrId > 0)
+                        {
+                            <a asp-action="Print"
+                               asp-route-id="@Model.Master.FitrId"
+                               target="_blank"
+                               class="btn btn-secondary btn-sm ms-2">
+                                🖨 Print
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body">
+
+                    <!-- TABS -->
+                    <ul class="nav nav-tabs mb-3">
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "basic" ? "active" : "")"
+                               data-bs-toggle="tab" href="#basic">
+                                Basic
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "product" ? "active" : "")"
+                               data-bs-toggle="tab" href="#product">
+                                Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "material" ? "active" : "")"
+                               data-bs-toggle="tab" href="#material">
+                                Material
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "sr" ? "active" : "")"
+                               data-bs-toggle="tab" href="#sr">
+                                Sr Data
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "visual" ? "active" : "")"
+                               data-bs-toggle="tab" href="#visual">
+                                Visual
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "final" ? "active" : "")"
+                               data-bs-toggle="tab" href="#final">
+                                Final
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- TAB CONTENT -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade @(activeTab == "basic" ? "show active" : "")" id="basic">
+                            @await Html.PartialAsync("_Basic", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "product" ? "show active" : "")" id="product">
+                            @await Html.PartialAsync("_Product", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "material" ? "show active" : "")" id="material">
+                            @await Html.PartialAsync("_Material", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "sr" ? "show active" : "")" id="sr">
+                            @await Html.PartialAsync("_SrData", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "visual" ? "show active" : "")" id="visual">
+                            @await Html.PartialAsync("_Visual", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "final" ? "show active" : "")" id="final">
+                            @await Html.PartialAsync("_Final", Model)
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BODY -->
+                @* <div class="card-body">
+
+                    <!-- BASIC -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Basic Details</h5>
+                        @await Html.PartialAsync("_Basic", Model)
+                    </div>
+
+                    <!-- PRODUCT -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Product Details</h5>
+                        @await Html.PartialAsync("_Product", Model)
+                    </div>
+
+                    <!-- MATERIAL -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Material Details</h5>
+                        @await Html.PartialAsync("_Material", Model)
+                    </div>
+
+                    <!-- SR DATA -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Sr Data</h5>
+                        @await Html.PartialAsync("_SrData", Model)
+                    </div>
+
+                    <!-- VISUAL -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Visual</h5>
+                        @await Html.PartialAsync("_Visual", Model)
+                    </div>
+
+                    <!-- FINAL -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Final</h5>
+                        @await Html.PartialAsync("_Final", Model)
+                    </div>
+
+                </div> *@
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function submitActiveForm() {
+        const pane = document.querySelector(".tab-pane.show.active");
+        const form = pane?.querySelector("form");
+        if (form) form.submit();
+        else alert("No form found in this tab.");
+    }
+</script>
+
+@* @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+@{
+    ViewData["Title"] = "FITR Form";
+    string activeTab = ViewBag.ActiveTab ?? "basic";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row">
+
+        <div class="col-12">
+            <div class="card">
+
+                <!-- HEADER -->
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>FITR DETAILS</span>
+
+                    <div>
+                        <a asp-controller="Fitr"
+                           asp-action="List"
+                           class="btn btn-outline-secondary btn-sm me-2">
+                            📋 DC List
+                        </a>
+
+                        <button type="button"
+                                class="btn btn-primary btn-sm"
+                                onclick="submitActiveForm()">
+                            💾 Save
+                        </button>
+
+                        @if (Model?.Master?.FitrId > 0)
+                        {
+                            <a asp-action="Print"
+                               asp-route-id="@Model.Master.FitrId"
+                               target="_blank"
+                               class="btn btn-secondary btn-sm ms-2">
+                                🖨 Print
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body">
+
+                    <!-- TABS -->
+                    <ul class="nav nav-tabs mb-3">
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "basic" ? "active" : "")"
+                               data-bs-toggle="tab" href="#basic">
+                                Basic
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "product" ? "active" : "")"
+                               data-bs-toggle="tab" href="#product">
+                                Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "material" ? "active" : "")"
+                               data-bs-toggle="tab" href="#material">
+                                Material
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "sr" ? "active" : "")"
+                               data-bs-toggle="tab" href="#sr">
+                                Sr Data
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "visual" ? "active" : "")"
+                               data-bs-toggle="tab" href="#visual">
+                                Visual
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(activeTab == "final" ? "active" : "")"
+                               data-bs-toggle="tab" href="#final">
+                                Final
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- TAB CONTENT -->
+                    <div class="tab-content">
+
+                        <div class="tab-pane fade @(activeTab == "basic" ? "show active" : "")" id="basic">
+                            @await Html.PartialAsync("_Basic", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "product" ? "show active" : "")" id="product">
+                            @await Html.PartialAsync("_Product", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "material" ? "show active" : "")" id="material">
+                            @await Html.PartialAsync("_Material", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "sr" ? "show active" : "")" id="sr">
+                            @await Html.PartialAsync("_SrData", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "visual" ? "show active" : "")" id="visual">
+                            @await Html.PartialAsync("_Visual", Model)
+                        </div>
+
+                        <div class="tab-pane fade @(activeTab == "final" ? "show active" : "")" id="final">
+                            @await Html.PartialAsync("_Final", Model)
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function submitActiveForm() {
+        const pane = document.querySelector(".tab-pane.show.active");
+        const form = pane?.querySelector("form");
+        if (form) form.submit();
+        else alert("No form found in this tab.");
+    }
+</script> *@

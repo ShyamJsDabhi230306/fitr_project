@@ -1,0 +1,123 @@
+﻿@* @model List<FITR_DC_FORM.Models.ViewModels.FitrViewModel>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bulk Print</title>
+
+    <style>
+        @@page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: Arial;
+            font-size: 11px;
+        }
+
+        .page {
+            page-break-after: always;
+            border: 1px solid #000;
+            padding: 8mm;
+        }
+
+        @@media print {
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    @foreach (var model in Model)
+    {
+        <div class="page">
+            @await Html.PartialAsync("Print", model)
+        </div>
+    }
+
+    <script>
+        window.print();
+    </script>
+
+</body>
+</html> *@
+
+
+@model List<FITR_DC_FORM.Models.ViewModels.FitrViewModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Bulk Print – GearBox Test Certificate</title>
+
+    <style>
+        /* ================= A4 PAGE ================= */
+        @@page {
+            size: A4;
+            margin: 12mm;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            background: #fff;
+        }
+
+        /* ================= MULTI PAGE ================= */
+        .print-page {
+            page-break-after: always;
+        }
+
+        .print-page:last-child {
+            page-break-after: auto;
+        }
+
+        /* ================= HIDE UI ELEMENTS ================= */
+        @@media print {
+            button {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var model in Model)
+        {
+            <div class="print-page">
+                @await Html.PartialAsync("Print", model)
+            </div>
+        }
+    }
+    else
+    {
+        <div style="text-align:center; padding:40px;">
+            <h3>No records selected for printing</h3>
+        </div>
+    }
+
+    <script>
+        window.onload = function () {
+            setTimeout(function () {
+                window.print();
+            }, 500);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+﻿@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+@if (string.IsNullOrWhiteSpace(Model.Master.DCNo))
+{
+    <div class="alert alert-warning">
+        Please save <b>Basic</b> details first.
+    </div>
+}
+
+<form asp-action="SaveMaterial" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+
+    <table class="table table-bordered" id="materialTable">
+        <thead class="table-light">
+            <tr>
+                <th>Component</th>
+                <th>Material</th>
+                <th style="width:80px" class="text-center">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (int i = 0; i < Model.Materials.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="Materials[@i].Component"
+                               class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Materials[@i].Material"
+                               class="form-control" />
+                    </td>
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-danger btn-sm"
+                                onclick="removeMaterialRow(this)">
+                            X
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button"
+            class="btn btn-secondary mt-3"
+            onclick="addMaterialRow()">
+        + Add Row
+    </button>
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-primary">
+            Next
+        </button>
+    </div>
+</form>
+
+<!-- ✅ SCRIPT MUST BE INLINE IN PARTIAL VIEW -->
+<script>
+    function addMaterialRow() {
+
+        const tbody = document.querySelector("#materialTable tbody");
+        const index = tbody.rows.length;
+
+        const row = tbody.insertRow();
+
+        row.innerHTML = `
+            <td>
+                <input name="Materials[${index}].Component"
+                       class="form-control" />
+            </td>
+            <td>
+                <input name="Materials[${index}].Material"
+                       class="form-control" />
+            </td>
+            <td class="text-center">
+                <button type="button"
+                        class="btn btn-danger btn-sm"
+                        onclick="removeMaterialRow(this)">
+                    X
+                </button>
+            </td>
+        `;
+    }
+
+    function removeMaterialRow(btn) {
+        btn.closest("tr").remove();
+        reindexMaterialRows();
+    }
+
+    function reindexMaterialRows() {
+        document
+            .querySelectorAll("#materialTable tbody tr")
+            .forEach((row, i) => {
+                row.querySelectorAll("input").forEach(input => {
+                    const prop = input.name.split('.').pop();
+                    input.name = `Materials[${i}].${prop}`;
+                });
+            });
+    }
+</script>

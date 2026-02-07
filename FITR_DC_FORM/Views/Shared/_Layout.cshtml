@@ -1,0 +1,1044 @@
+﻿@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - FITR_DC_FORM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/icofont.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/themify.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/flag-icon.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/feather-icon.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/slick.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/slick-theme.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/scrollbar.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/animate.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/photoswipe.css" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/assets/css/vendors/bootstrap.css" />
+
+    <!-- App CSS -->
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <link id="color" rel="stylesheet" href="~/assets/css/color-1.css" />
+    <link rel="stylesheet" href="~/assets/css/responsive.css" />
+    <style>
+        .page-wrapper.horizontal-wrapper .page-body-wrapper .page-body-wrapper{
+            margin-top:88px;
+        }
+
+
+
+        /* ===== FIX FORM FOOTER LAYOUT ===== */
+
+        html, body {
+            height: 100%;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+        }
+
+        .page-body-wrapper {
+            min-height: calc(100vh - 60px); /* header height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .page-body > .container-fluid {
+                flex: 1;
+            }
+
+        /* Footer stays at bottom */
+        .footer {
+            margin-top: auto;
+        }
+
+       
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Loader -->
+    <div class="loader-wrapper">
+        <div class="loader-index"><span></span></div>
+        <svg>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur"></feGaussianBlur>
+                <feColorMatrix in="blur"
+                               values="1 0 0 0 0
+                                       0 1 0 0 0
+                                       0 0 1 0 0
+                                       0 0 0 19 -9"
+                               result="goo">
+                </feColorMatrix>
+            </filter>
+        </svg>
+    </div>
+
+    <!-- Tap Top -->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+
+    <!-- Page Wrapper -->
+    <div class="page-wrapper horizontal-wrapper enterprice-type" id="pageWrapper">
+
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-wrapper row m-0">
+
+                <div class="header-logo-wrapper col-auto p-0">
+                    <div class="logo-wrapper">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img style="width:80px" class="img-fluid for-light" src="~/assets/images/logo//airaindia-logo.webp" />
+                            <img class="img-fluid for-dark" src="~/assets/images/logo/logo_dark.png" />
+                        </a>
+                    </div>
+                    <div class="toggle-sidebar">
+                        <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
+                    </div>
+                </div>
+
+  
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="page-body-wrapper">
+
+            <!-- Sidebar (add later as partial if needed) -->
+            
+            <div class="sidebar-wrapper" data-sidebar-layout="stroke-svg">
+                <li class="sidebar-main-title">
+                <li class="sidebar-list">
+                    <a class="sidebar-link sidebar-title" href="#">
+                        <svg class="stroke-icon">
+                            <use href="../assets/svg/icon-sprite.svg#stroke-settings"></use>
+                        </svg>
+                        <svg class="fill-icon">
+                            <use href="../assets/svg/icon-sprite.svg#fill-settings"></use>
+                        </svg>
+                        <span>Master Setup</span>
+                    </a>
+
+                    <ul class="sidebar-submenu">
+                        <li>
+                            <a href="/Company/Index">Company Master</a>
+                        </li>
+                        <li>
+                            <a href="/Location/Index">Location Master</a>
+                        </li>
+                        <li>
+                            <a href="/User/Index">User Master</a>
+                        </li>
+                        <li>
+                            <a href="/fitr/Index">fitr Master</a>
+                        </li>
+                    </ul>
+                </li>
+
+                </li>
+            </div>
+            <div class="page-body "  >
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12 footer-copyright text-center">
+                                <p class="mb-0">
+                                    © <span class="year-update"></span> FITR_DC_FORM
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <script src="~/assets/js/icons/feather-icon/feather.min.js"></script>
+    <script src="~/assets/js/icons/feather-icon/feather-icon.js"></script>
+
+    <script src="~/assets/js/scrollbar/simplebar.min.js"></script>
+    <script src="~/assets/js/scrollbar/custom.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+    <script src="~/assets/js/sidebar-menu.js"></script>
+    <script src="~/assets/js/sidebar-pin.js"></script>
+
+    <script src="~/assets/js/slick/slick.min.js"></script>
+    <script src="~/assets/js/header-slick.js"></script>
+
+    <script src="~/assets/js/photoswipe/photoswipe.min.js"></script>
+    <script src="~/assets/js/photoswipe/photoswipe-ui-default.min.js"></script>
+
+    <script src="~/assets/js/animation/wow/wow.min.js"></script>
+    <script src="~/assets/js/animation/wow/wow-init.js"></script>
+
+    <script src="~/assets/js/script.js"></script>
+    <script src="~/assets/js/script1.js"></script>
+    <script src="~/assets/js/theme-customizer/customizer.js"></script>
+    <!-- Plugins JS start-->
+    <script src="~/assets/js/sidebar-menu.js"></script>
+    <script src="~/assets/js/sidebar-pin.js"></script>
+    <script src="~/assets/js/slick/slick.min.js"></script>
+    <script src="~/assets/js/slick/slick.js"></script>
+    <script src="~/assets/js/header-slick.js"></script>
+    <script src="~/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/js/datatable/datatables/dataTables.js"></script>
+    <script src="~/assets/js/datatable/datatables/dataTables.select.js"></script>
+    <script src="~/assets/js/datatable/datatables/select.bootstrap5.js"></script>
+    <script src="~/assets/js/datatable/datatables/datatable.custom.js"></script>
+    <script src="~/assets/js/sweet-alert/sweetalert.min.js"></script>
+    <script src="~/assets/js/trash_popup.js"></script>
+    <script src="~/assets/js/common-check.js"></script>
+
+    
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+                $(document).ready(function () {
+
+            // 1️⃣ DESTROY if already initialized
+            if ($.fn.DataTable.isDataTable("#roles-permission")) {
+                $("#roles-permission").DataTable().destroy();
+            }
+
+            // 2️⃣ INITIALIZE WITHOUT SELECT EXTENSION
+            const table = $("#roles-permission").DataTable({
+
+                // ❌ DO NOT USE render.select
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        defaultContent: ""   // keep column but no checkbox
+                    }
+                ],
+
+                // ❌ DO NOT ENABLE select
+                select: false,
+
+                order: [[1, "asc"]],
+                pageLength: 20,
+                responsive: true,
+                autoWidth: false,
+                lengthMenu: [20, 50, 100,1000],
+
+                layout: {
+                    topEnd: {
+                        search: {
+                            placeholder: "Search here..."
+                        }
+                    }
+                }
+            });
+
+            // 3️⃣ HARD REMOVE ANY CHECKBOX IF PLUGIN INJECTS AGAIN
+            table.on('draw', function () {
+                $('dt-select-checkbox').remove();
+                $('dt-select-checkbox').removeClass('dt-select-checkbox');
+            });
+
+        });
+
+    </script>
+
+    <script>
+        // Select / deselect all
+        $("#selectAll").on("change", function () {
+            $(".row-check").prop("checked", this.checked);
+        });
+
+        // SINGLE BUTTON HANDLES BOTH CASES
+        $("#btnPrint").on("click", function () {
+
+            let ids = $(".row-check:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (ids.length === 0) {
+                alert("Please select at least one record to print.");
+                return;
+            }
+
+            // ✅ ONE record → Single print
+            if (ids.length === 1) {
+                window.open('/Fitr/Print/' + ids[0], '_blank');
+                return;
+            }
+
+            // ✅ MORE than one → Bulk print
+            window.open('/Fitr/PrintMultiple?ids=' + ids.join(','), '_blank');
+
+   
+        });
+
+         
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+                $(document).ready(function () {
+
+            // 1️⃣ DESTROY if already initialized
+            if ($.fn.DataTable.isDataTable("#roles-permission")) {
+                $("#roles-permission").DataTable().destroy();
+            }
+
+            // 2️⃣ INITIALIZE WITHOUT SELECT EXTENSION
+            const table = $("#roles-permission").DataTable({
+
+                // ❌ DO NOT USE render.select
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        defaultContent: ""   // keep column but no checkbox
+                    }
+                ],
+
+                // ❌ DO NOT ENABLE select
+                select: false,
+
+                order: [[1, "asc"]],
+                pageLength: 20,
+                responsive: true,
+                autoWidth: false,
+                lengthMenu: [20, 50, 100,1000],
+
+                layout: {
+                    topEnd: {
+                        search: {
+                            placeholder: "Search here..."
+                        }
+                    }
+                }
+            });
+
+            // 3️⃣ HARD REMOVE ANY CHECKBOX IF PLUGIN INJECTS AGAIN
+            table.on('draw', function () {
+                $('dt-select-checkbox').remove();
+                $('dt-select-checkbox').removeClass('dt-select-checkbox');
+            });
+
+        });
+
+    </script>
+
+    <script>
+        // Select / deselect all
+        $("#selectAll").on("change", function () {
+            $(".row-check").prop("checked", this.checked);
+        });
+
+        // SINGLE BUTTON HANDLES BOTH CASES
+        $("#btnPrint").on("click", function () {
+
+            let ids = $(".row-check:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (ids.length === 0) {
+                alert("Please select at least one record to print.");
+                return;
+            }
+
+            // ✅ ONE record → Single print
+            if (ids.length === 1) {
+                window.open('/Fitr/Print/' + ids[0], '_blank');
+                return;
+            }
+
+            // ✅ MORE than one → Bulk print
+            window.open('/Fitr/PrintMultiple?ids=' + ids.join(','), '_blank');
+
+   
+        });
+
+
+
+    </script>
+
+
+    </script>
+
+
+</body>
+</html> *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - FITR_DC_FORM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/icofont.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/themify.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/flag-icon.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/feather-icon.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/slick.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/slick-theme.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/scrollbar.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/animate.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/photoswipe.css" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/assets/css/vendors/bootstrap.css" />
+
+    <!-- App CSS -->
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <link id="color" rel="stylesheet" href="~/assets/css/color-1.css" />
+    <link rel="stylesheet" href="~/assets/css/responsive.css" />
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+        }
+
+        .page-body-wrapper {
+            min-height: calc(100vh - 60px); /* header height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .page-body > .container-fluid {
+                flex: 1;
+            }
+
+        /* Footer stays at bottom */
+        .footer {
+            margin-top: auto;
+        }
+
+    
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrapper horizontal-wrapper enterprice-type" id="pageWrapper">
+
+        <!-- HEADER (UNCHANGED) -->
+        <div class="page-header">
+            <div class="header-wrapper row m-0">
+                <div class="header-logo-wrapper col-auto p-0">
+                    <div class="logo-wrapper">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img style="width:80px" class="img-fluid for-light" src="~/assets/images/logo//airaindia-logo.webp" />
+                        </a>
+                    </div>
+                    <div class="toggle-sidebar">
+                        <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body-wrapper">
+
+            <!-- ================= SIDEBAR START (ONLY FIX HERE) ================= -->
+            <div class="sidebar-wrapper" data-sidebar-layout="stroke-svg">
+                <nav class="sidebar-main">
+                    <div id="sidebar-menu">
+                        <ul class="sidebar-links" id="simple-bar">
+
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6>Master Setup</h6>
+                                </div>
+                            </li>
+
+                            <li class="sidebar-list">
+                                <a class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="../assets/svg/icon-sprite.svg#stroke-settings"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="../assets/svg/icon-sprite.svg#fill-settings"></use>
+                                    </svg>
+                                    <span>Masters</span>
+                                </a>
+
+                                <ul class="sidebar-submenu">
+                                    <li>
+                                        <a href="/Company/Index">Company Master</a>
+                                    </li>
+                                    <li>
+                                        <a href="/Location/Index">Location Master</a>
+                                    </li>
+                                    <li>
+                                        <a href="/User/Index">User Master</a>
+                                    </li>
+                                    <li>
+                                        <a href="/fitr/Index">FITR Master</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <!-- ================= SIDEBAR END ================= -->
+            <!-- PAGE BODY (UNCHANGED) -->
+            <div class="page-body">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+
+                <footer class="footer">
+                    <div class="container-fluid text-center">
+                        <p class="mb-0">© FITR_DC_FORM</p>
+                    </div>
+                </footer>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPTS (UNCHANGED) -->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/icons/feather-icon/feather.min.js"></script>
+    <script src="~/assets/js/icons/feather-icon/feather-icon.js"></script>
+    <script src="~/assets/js/scrollbar/simplebar.min.js"></script>
+    <script src="~/assets/js/scrollbar/custom.js"></script>
+    <script src="~/assets/js/config.js"></script>
+    <script src="~/assets/js/sidebar-menu.js"></script>
+    <script src="~/assets/js/sidebar-pin.js"></script>
+    <script src="~/assets/js/script.js"></script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+                $(document).ready(function () {
+
+            // 1️⃣ DESTROY if already initialized
+            if ($.fn.DataTable.isDataTable("#roles-permission")) {
+                $("#roles-permission").DataTable().destroy();
+            }
+
+            // 2️⃣ INITIALIZE WITHOUT SELECT EXTENSION
+            const table = $("#roles-permission").DataTable({
+
+                // ❌ DO NOT USE render.select
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        defaultContent: ""   // keep column but no checkbox
+                    }
+                ],
+
+                // ❌ DO NOT ENABLE select
+                select: false,
+
+                order: [[1, "asc"]],
+                pageLength: 20,
+                responsive: true,
+                autoWidth: false,
+                lengthMenu: [20, 50, 100,1000],
+
+                layout: {
+                    topEnd: {
+                        search: {
+                            placeholder: "Search here..."
+                        }
+                    }
+                }
+            });
+
+            // 3️⃣ HARD REMOVE ANY CHECKBOX IF PLUGIN INJECTS AGAIN
+            table.on('draw', function () {
+                $('dt-select-checkbox').remove();
+                $('dt-select-checkbox').removeClass('dt-select-checkbox');
+            });
+
+        });
+
+    </script>
+
+    <script>
+        // Select / deselect all
+        $("#selectAll").on("change", function () {
+            $(".row-check").prop("checked", this.checked);
+        });
+
+        // SINGLE BUTTON HANDLES BOTH CASES
+        $("#btnPrint").on("click", function () {
+
+            let ids = $(".row-check:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (ids.length === 0) {
+                alert("Please select at least one record to print.");
+                return;
+            }
+
+            // ✅ ONE record → Single print
+            if (ids.length === 1) {
+                window.open('/Fitr/Print/' + ids[0], '_blank');
+                return;
+            }
+
+            // ✅ MORE than one → Bulk print
+            window.open('/Fitr/PrintMultiple?ids=' + ids.join(','), '_blank');
+
+
+        });
+
+
+
+    </script>
+
+
+
+
+    </script>
+
+
+</body>
+</html> *@
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - FITR_DC_FORM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/assets/css/fontawesome.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/icofont.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/themify.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/flag-icon.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/feather-icon.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/slick.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/slick-theme.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/scrollbar.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/animate.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/photoswipe.css" />
+    <link rel="stylesheet" href="~/assets/css/vendors/datatables.css" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/assets/css/vendors/bootstrap.css" />
+
+    <!-- App CSS -->
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <link id="color" rel="stylesheet" href="~/assets/css/color-1.css" />
+    <link rel="stylesheet" href="~/assets/css/responsive.css" />
+    <style>
+        .page-wrapper.horizontal-wrapper .page-body-wrapper .page-body-wrapper {
+            margin-top: 88px;
+        }
+
+
+
+        /* ===== FIX FORM FOOTER LAYOUT ===== */
+
+        html, body {
+            height: 100%;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+        }
+
+        .page-body-wrapper {
+            min-height: calc(100vh - 60px); /* header height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .page-body > .container-fluid {
+                flex: 1;
+            }
+
+        /* Footer stays at bottom */
+        .footer {
+            margin-top: auto;
+        }
+
+        /* ================= DATATABLE UI FIX ================= */
+
+        /* Align search box to right like Cuba demo */
+        .dataTables_filter {
+            float: right;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        /* Align length dropdown to left */
+        .dataTables_length {
+            float: left;
+            margin-bottom: 10px;
+        }
+
+        /* Clear floats */
+        .dataTables_wrapper::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        /* Style pagination like Bootstrap buttons */
+        .dataTables_paginate .pagination {
+            justify-content: flex-end;
+        }
+
+        .dataTables_paginate .page-item .page-link {
+            border-radius: 6px;
+            margin: 0 2px;
+        }
+
+        #roles-permission_paginate{
+            padding:10px;
+            display:flex;
+            justify-content:end;
+        }
+
+        #permission_previous{
+            padding:7px;
+            gap:10px;
+        }
+
+        #usericon{
+            background-color:springgreen;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="page-wrapper horizontal-wrapper enterprice-type" id="pageWrapper">
+
+        <!-- HEADER -->
+        @* <div class="page-header">
+            <div class="header-wrapper row m-0">
+                <div class="header-logo-wrapper col-auto p-0">
+                    <div class="logo-wrapper">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img style="width:80px" src="~/assets/images/logo/airaindia-logo.webp" />
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav ms-auto">
+
+                            @if (Context.Session.GetInt32("UserId") != null)
+                            {
+                                <li class="nav-item">
+                                    <span class="nav-link text-white">
+                                        👤 @Context.Session.GetString("UserName")
+                                    </span>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger"
+                                       asp-controller="Account"
+                                       asp-action="Logout"
+                                       onclick="return confirm('Are you sure you want to logout?');">
+                                        Logout
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="toggle-sidebar">
+                        <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+
+        <!-- HEADER -->
+        <div class="page-header">
+            <div class="header-wrapper row m-0 align-items-center">
+
+                <!-- LOGO -->
+                <div class="header-logo-wrapper col-auto p-0">
+                    <div class="logo-wrapper">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img style="width:80px"
+                                 src="~/assets/images/logo/airaindia-logo.webp" />
+                        </a>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE (USER + LOGOUT) -->
+                <div class="col d-flex justify-content-end align-items-center">
+
+                    @if (Context.Session.GetInt32("UserId") != null)
+                    {
+                        <span class="me-3 fw-semibold text-dark">
+                            <span style="width:20px;border-radius:50%;background-color:mediumspringgreen;color:white;">👤</span> @Context.Session.GetString("UserName")
+                        </span>
+
+                        <a asp-controller="Account"
+                           asp-action="Logout"
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to logout?');">
+                            Logout
+                        </a>
+                    }
+
+                    <!-- SIDEBAR TOGGLE -->
+                    @* <div class="toggle-sidebar ms-3">
+                        <i class="status_toggle middle sidebar-toggle"
+                           data-feather="align-center"></i>
+                    </div> *@
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="page-body-wrapper">
+            
+
+            <!-- SIDEBAR -->
+            <div class="sidebar-wrapper" data-sidebar-layout="stroke-svg">
+                <nav class="sidebar-main">
+                    <div id="sidebar-menu">
+                        <ul class="sidebar-links" id="simple-bar">
+                            <li class="sidebar-main-title">
+                                <div><h6>Master Setup</h6></div>
+                            </li>
+                            <li class="sidebar-list">
+                                <a class="sidebar-link sidebar-title" href="#">
+                                    <span>Masters</span>
+                                </a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="/Company/Index">Company Master</a></li>
+                                    <li><a href="/Location/Index">Location Master</a></li>
+                                    <li><a href="/User/Index">User Master</a></li>
+                                    <li><a href="/Fitr/list">FITR Master</a></li>
+                                    <li><a href="/VisualMaster/Index">Visual Master</a></li>
+                                    <li><a href="/PrintCompany/Index">PrintCompanyName Master</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- BODY -->
+            <div class="page-body">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+
+                <footer class="footer">
+                    <div class="container-fluid text-center">
+                        <p class="mb-0">© FITR_DC_FORM</p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS (ORDER IS CRITICAL) ================= -->
+
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <script src="~/assets/js/icons/feather-icon/feather.min.js"></script>
+    <script src="~/assets/js/icons/feather-icon/feather-icon.js"></script>
+
+    <script src="~/assets/js/scrollbar/simplebar.min.js"></script>
+    <script src="~/assets/js/scrollbar/custom.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+    <script src="~/assets/js/sidebar-menu.js"></script>
+    <script src="~/assets/js/sidebar-pin.js"></script>
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- DataTable JS -->
+    <script src="~/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/js/datatable/datatables/dataTables.bootstrap5.js"></script>
+
+    <!-- 🔥 IMPORTANT: ONLY ONE SCRIPT SECTION -->
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+                $(document).ready(function () {
+
+            // 1️⃣ DESTROY if already initialized
+            if ($.fn.DataTable.isDataTable("#roles-permission")) {
+                $("#roles-permission").DataTable().destroy();
+            }
+
+            // 2️⃣ INITIALIZE WITHOUT SELECT EXTENSION
+            const table = $("#roles-permission").DataTable({
+
+                // ❌ DO NOT USE render.select
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        defaultContent: ""   // keep column but no checkbox
+                    }
+                ],
+
+                // ❌ DO NOT ENABLE select
+                select: false,
+
+                order: [[1, "asc"]],
+                pageLength: 20,
+                responsive: true,
+                autoWidth: false,
+                lengthMenu: [20, 50, 100,1000],
+
+                layout: {
+                    topEnd: {
+                        search: {
+                            placeholder: "Search here..."
+                        }
+                    }
+                }
+            });
+
+            // 3️⃣ HARD REMOVE ANY CHECKBOX IF PLUGIN INJECTS AGAIN
+            table.on('draw', function () {
+                $('dt-select-checkbox').remove();
+                $('dt-select-checkbox').removeClass('dt-select-checkbox');
+            });
+
+        });
+
+    </script>
+
+    <script>
+        // Select / deselect all
+        $("#selectAll").on("change", function () {
+            $(".row-check").prop("checked", this.checked);
+        });
+
+        // SINGLE BUTTON HANDLES BOTH CASES
+        $("#btnPrint").on("click", function () {
+
+            let ids = $(".row-check:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (ids.length === 0) {
+                alert("Please select at least one record to print.");
+                return;
+            }
+
+            // ✅ ONE record → Single print
+            if (ids.length === 1) {
+                window.open('/Fitr/Print/' + ids[0], '_blank');
+                return;
+            }
+
+            // ✅ MORE than one → Bulk print
+            window.open('/Fitr/PrintMultiple?ids=' + ids.join(','), '_blank');
+
+
+        });
+
+
+
+    </script>
+
+
+
+
+   
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+﻿@* @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+<form asp-action="SaveBasic" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <label>Company / Party Name</label>
+            <input asp-for="Master.CompanyName" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>DC No</label>
+            <input asp-for="Master.DCNo" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <label>DC Date</label>
+            <input asp-for="Master.DCDate" type="date" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <label>Party PO No</label>
+            <input asp-for="Master.PONo" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Party PO Date</label>
+            <input asp-for="Master.PODate" type="date" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label>Quantity</label>
+            <input asp-for="Master.Quantity" type="number" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label>Status</label>
+            <select asp-for="Master.Status" class="form-select">
+                <option value="Draft">Draft</option>
+                <option value="Approved">Approved</option>
+                <option value="Hold">Hold</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">
+        Save Basic
+    </button>
+</form> *@
+
+
+@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<form asp-action="SaveBasic" method="post" class="needs-validation" novalidate>
+
+    <input type="hidden" asp-for="Master.FitrId" />
+    <input type="hidden" asp-for="Master.PreviewTCNo" />
+    <input type="hidden" asp-for="Master.PreviewTCYear" />
+
+
+    <div class="row g-3">
+        <!-- TC Number (Read Only) -->
+        @{
+            var tcYear = Model?.Master?.TCYear ?? Model?.Master?.PreviewTCYear;
+            var tcNo = Model?.Master?.TCNo ?? Model?.Master?.PreviewTCNo;
+        }
+
+        <input class="form-control " 
+               value="GB/@tcYear/@tcNo"
+               readonly />
+
+
+        <!-- Company Name -->
+        <div class="col-md-4">
+            <label class="form-label">Company / Party Name</label>
+            <input asp-for="Master.CompanyName"
+                   class="form-control"
+                   placeholder="Enter Company Name"
+                   required />
+            <div class="invalid-feedback">Please enter company name</div>
+        </div>
+
+        <!-- DC No -->
+        <div class="col-md-4">
+            <label class="form-label">DC No</label>
+            <input asp-for="Master.DCNo"
+                   class="form-control"
+                   placeholder="DC Number"
+                   required />
+            <div class="invalid-feedback">Please enter DC number</div>
+        </div>
+
+        <!-- DC Date -->
+        <div class="col-md-4">
+            <label class="form-label">DC Date</label>
+            <input asp-for="Master.DCDate"
+                   type="date"
+                   class="form-control"
+                   required />
+            <div class="invalid-feedback">Please select DC date</div>
+        </div>
+
+        <!-- PO No -->
+        <div class="col-md-4">
+            <label class="form-label">Party PO No</label>
+            <input asp-for="Master.PONo"
+                   class="form-control"
+                   placeholder="PO Number" />
+        </div>
+
+        <!-- PO Date -->
+        <div class="col-md-4">
+            <label class="form-label">Party PO Date</label>
+            <input asp-for="Master.PODate"
+                   type="date"
+                   class="form-control" />
+        </div>
+
+        <!-- Quantity -->
+        <div class="col-md-4">
+            <label class="form-label">Quantity</label>
+            <input asp-for="Master.Quantity"
+                   type="number"
+                   class="form-control"
+                   min="1" />
+        </div>
+
+        @* <!-- Status -->
+        <div class="col-md-2">
+            <label class="form-label">Status</label>
+            <select asp-for="Master.Status"
+                    class="form-select">
+                <option value="Draft">Draft</option>
+                <option value="Approved">Approved</option>
+                <option value="Hold">Hold</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div> *@
+
+        <!-- Submit -->
+        <div class="col-12 text-end mt-4">
+            <button type="submit" class="btn btn-primary">
+                Next
+            </button>
+        </div>
+
+    </div>
+</form>

@@ -1,0 +1,565 @@
+﻿@using FITR_DC_FORM.Models
+
+@{
+    ViewData["Title"] = "FITR - DC List";
+    var role = Context.Session.GetString("UserRole");
+    var dcList = ViewBag.DcList as List<FitrMaster>;
+}
+
+
+<style>
+    /* ONE deleted row */
+    tr.row-deleted {
+        background-color: #fff1f1 !important;
+        opacity: 0.6;
+    }
+
+        tr.row-deleted a,
+        tr.row-deleted button,
+        tr.row-deleted input {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+    .deleted-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #fff;
+        background-color: #dc3545;
+        border-radius: 4px;
+        margin-left: 8px;
+    }
+
+    /*   .dataTables_filter {
+            float: right !important;
+        } */
+
+    #makeinline {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: nowrap;
+    }
+    /* 🔒 LOCK DATATABLE SEARCH WIDTH – PREVENT OVERLAP */
+    .dt-search {
+        display: flex;
+        align-items: center;
+    }
+
+        .dt-search input {
+            width: 220px !important;
+            min-width: 220px;
+            max-width: 220px;
+        }
+    /* Stop Search and Add from overlapping */
+    .dt-search {
+        margin-right: 120px; /* reserve space for + Add button */
+    }
+
+        /* Optional but recommended: lock search width */
+        .dt-search input {
+            width: 220px;
+        }
+
+        .dt-search > label {
+            margin-top: 5px;
+        }
+    /* Decrease row height */
+    .product-removes.inbox-data td {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        line-height: 0.5;
+    }
+
+    #grip-click {
+        display: none;
+    }
+
+    #cog-click {
+        display: none;
+    }
+
+    tr.row-deleted a:not(.dt-control),
+    tr.row-deleted button,
+    tr.row-deleted input {
+        pointer-events: none;
+    }
+
+    /* 🔥 PLUS ICON ALWAYS CLICKABLE */
+    td.dt-control,
+    td.dt-control i {
+        pointer-events: auto !important;
+        cursor: pointer;
+    }
+
+
+
+    /* TABLE BASE */
+
+    #roles-permission {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+        #roles-permission th,
+        #roles-permission td {
+            font-size: 13px;
+            vertical-align: middle;
+            padding: 10px 8px;
+        }
+
+    /* Column widths */
+    .col-plus {
+        width: 40px;
+    }
+
+    .col-check {
+        width: 40px;
+    }
+
+    .col-tc {
+        width: 70px;
+    }
+
+    .col-dc {
+        width: 90px;
+    }
+
+    .col-product {
+        width: 150px;
+    }
+
+    .col-po {
+        width: 120px;
+    }
+
+    .col-model {
+        width: 100px;
+    }
+
+    .col-status {
+        width: 120px;
+    }
+
+    .col-attach {
+        width: 70px;
+    }
+
+    .col-action {
+        width: 150px;
+    }
+
+    /* Flexible column */
+    .col-customer {
+        min-width: 280px;
+        white-space: nowrap;
+    }
+
+    /* No wrap */
+    .col-product,
+    .col-model,
+    .col-po,
+    .col-action {
+        white-space: nowrap;
+    }
+
+    /* Icons */
+    .col-attach i {
+        color: #0d6efd;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    .dt-control i {
+        cursor: pointer;
+    }
+
+    #roles-permission_paginate{
+        display:flex;
+    }
+
+    tr.row-deleted {
+        background-color: #fff1f1 !important;
+        opacity: 0.6;
+    }
+
+        /* Disable everything EXCEPT plus icon */
+        tr.row-deleted a:not(.dt-control),
+        tr.row-deleted button:not(.soft-delete-btn),
+        tr.row-deleted input {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* Delete button disabled look */
+        tr.row-deleted .soft-delete-btn {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+</style>
+
+
+
+<div class="container-fluid mt-4">
+    <div class="card-body">
+        <div class="container-fluid user-list-wrapper">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header card-no-border text-end">
+                            <div id="makeinline">
+
+                                <div class="card-header-right-icon"><a asp-controller="Fitr" asp-action="New" class="btn btn-primary f-w-500 text-end"><i class="fa-solid fa-plus pe-2"></i>Add</a></div>
+                                <span>
+                                    <button type="button" class="btn btn-secondary" id="btnPrint">
+                                        🖨 Print
+                                    </button>
+                                </span>
+
+                            </div>
+
+
+                        </div>
+                        <div class="card-body pt-0 px-0">
+                            <div class="list-product user-list-table">
+                                <div class="table-responsive custom-scrollbar">
+                                    <table class="table table-hover align-middle" id="roles-permission">
+                                        <thead>
+                                            <tr>
+                                                <!-- PLUS -->
+                                                <th class="col-plus"></th>
+
+                                                <!-- CHECKBOX -->
+                                                <th class="col-check text-center">
+                                                    <input type="checkbox" id="selectAll" />
+                                                </th>
+
+                                                <th class="col-tc">TC No</th>
+                                                <th class="col-customer">Customer Name</th>
+                                                <th class="col-dc">DC No</th>
+                                                <th class="col-product">Product Type</th>
+                                                <th class="col-po">Party PO No</th>
+                                                <th class="col-model">Model</th>
+                                                <th class="col-status text-center">Status</th>
+                                                <th class="col-attach text-center">PO</th>
+                                                <th class="col-attach text-center">DC</th>
+                                                <th class="col-attach text-center">Drawing</th>
+                                                <th class="col-attach text-center">TC</th>
+                                                <th class="col-action text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @if (dcList != null && dcList.Any())
+                                            {
+                                                foreach (var dc in dcList)
+                                                {
+                                                    <tr class="product-removes inbox-data"
+                                                        data-id="@dc.FitrId"
+                                                        data-sr='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(dc.SrData))'>
+
+                                                        <!-- PLUS -->
+                                                        <td class="col-plus text-center dt-control">
+                                                            <i class="fa fa-plus-circle text-primary"></i>
+                                                        </td>
+
+                                                        <!-- CHECKBOX -->
+                                                        <td class="col-check text-center">
+                                                            <input type="checkbox" class="row-check" value="@dc.FitrId" />
+                                                        </td>
+
+                                                        <td class="col-tc text-center">@dc.TCNo</td>
+
+                                                        <td class="col-customer">@dc.CompanyName</td>
+
+                                                        <td class="col-dc">
+                                                            <a asp-controller="Fitr"
+                                                               asp-action="Index"
+                                                               asp-route-id="@dc.FitrId">
+                                                                @dc.DCNo
+                                                            </a>
+                                                        </td>
+
+                                                        <td class="col-product">@dc.ProductType</td>
+
+                                                        <td class="col-po">@dc.PONo</td>
+
+                                                        <td class="col-model">@dc.Model</td>
+
+                                                        <td class="col-status text-center">
+                                                            @if (dc.Status == "DRAFT")
+                                                            {
+                                                                <span class="badge bg-secondary">Draft</span>
+                                                            }
+                                                            else if (dc.Status == "SUBMITTED")
+                                                            {
+                                                                <span class="badge bg-warning">Submitted</span>
+                                                            }
+                                                            else if (dc.Status == "HOD_APPROVED")
+                                                            {
+                                                                <span class="badge bg-info">HOD Approved</span>
+                                                            }
+                                                            else if (dc.Status == "FINAL_APPROVED")
+                                                            {
+                                                                <span class="badge bg-success">Final Approved</span>
+                                                            }
+                                                        </td>
+                                                       
+
+
+                                                        <!-- PO -->
+                                                        <td class="col-attach text-center">
+                                                            @if (!string.IsNullOrEmpty(dc.POAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.POAttachmentPath" target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <span>-</span>
+                                                            }
+                                                        </td>
+
+                                                        <!-- DC -->
+                                                        <td class="col-attach text-center">
+                                                            @if (!string.IsNullOrEmpty(dc.DCAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.DCAttachmentPath" target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <span>-</span>
+                                                            }
+                                                        </td>
+
+                                                        <!-- DRAWING -->
+                                                        <td class="col-attach text-center">
+                                                            @if (!string.IsNullOrEmpty(dc.DrawingAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.DrawingAttachmentPath" target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <span>-</span>
+                                                            }
+                                                        </td>
+
+                                                        <!-- TC -->
+                                                        <td class="col-attach text-center">
+                                                            @if (!string.IsNullOrEmpty(dc.TCAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.TCAttachmentPath" target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <span>-</span>
+                                                            }
+                                                        </td>
+
+                                                        <!-- ACTIONS -->
+                                                        <td class="col-action text-center">
+                                                            <div class="d-inline-flex gap-1">
+
+                                                                @if (role == "USER" && dc.Status == "DRAFT")
+                                                                {
+                                                                    <form asp-action="Submit" method="post" class="m-0">
+                                                                        <input type="hidden" name="id" value="@dc.FitrId" />
+                                                                        <button class="btn btn-sm btn-primary">Submit</button>
+                                                                    </form>
+                                                                }
+
+                                                                @if (role == "HOD" && dc.Status?.Trim().ToUpper() == "SUBMITTED")
+                                                                {
+                                                                    <form asp-action="ApproveByHod" method="post" class="m-0">
+                                                                        <input type="hidden" name="id" value="@dc.FitrId" />
+                                                                        <button class="btn btn-sm btn-warning">Approve</button>
+                                                                    </form>
+                                                                }
+
+                                                                @if (role == "ADMIN" && dc.Status?.Trim().ToUpper() == "HOD_APPROVED")
+                                                                {
+                                                                    <form asp-action="ApproveByAdmin" method="post" class="m-0">
+                                                                        <input type="hidden" name="id" value="@dc.FitrId" />
+                                                                        <button class="btn btn-sm btn-success">Final</button>
+                                                                    </form>
+                                                                }
+                                                            </div>
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-danger soft-delete-btn"
+                                                                    title="Delete">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="14" class="text-center text-muted">
+                                                        No DC records found
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+
+
+
+    <script>
+        (function () {
+
+            const STORAGE_KEY = "FITR_DELETED_IDS";
+            let table;
+
+            function getDeletedIds() {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            }
+
+            function saveDeletedIds(ids) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+            }
+
+            function applyDeletedRows() {
+                const deletedIds = getDeletedIds();
+
+                $("#roles-permission tbody tr").each(function () {
+                    const $row = $(this);
+                    const id = String($row.data("id"));
+
+                    $row.removeClass("row-deleted");
+                    $row.find(".deleted-badge").remove();
+
+                    if (deletedIds.includes(id)) {
+                        $row.addClass("row-deleted");
+                        $row.find(".customer-name")
+                            .after('<span class="deleted-badge ms-2">DELETED</span>');
+                    }
+                });
+            }
+
+            function formatSrTable(srData) {
+                if (!srData || srData.length === 0) {
+                    return `<div class="p-2 text-muted">No SR Data</div>`;
+                }
+
+                let rows = srData.map(s => `
+                    <tr>
+                        <td>${s.SrNo ?? '-'}</td>
+                        <td>${s.ShaftDia ?? '-'}</td>
+                        <td>${s.OutputDrive ?? '-'}</td>
+                        <td>${s.ActuatorPCD ?? '-'}</td>
+                        <td>${s.ValvePCD ?? '-'}</td>
+                        <td>${s.SquareDia ?? '-'}</td>
+                        <td>${s.SquarePosition ?? '-'}</td>
+                    </tr>
+                `).join('');
+
+                return `
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>SrNo</th>
+                                <th>Shaft</th>
+                                <th>Output</th>
+                                <th>Actuator</th>
+                                <th>Valve</th>
+                                <th>Square</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                `;
+            }
+
+            $(document).ready(function () {
+
+                // ✅ INIT DATATABLE (ONLY ONCE)
+                table = $("#roles-permission").DataTable({
+                    columnDefs: [
+                        { targets: [0, 1], orderable: false } // + icon & checkbox
+                    ],
+                    order: [[2, "desc"]], // TC NO
+                    pageLength: 20,
+                    autoWidth: false
+                });
+
+                // ✅ APPLY DELETED STATE AFTER DRAW
+                table.on("draw", function () {
+                    applyDeletedRows();
+                });
+
+                // ✅ SOFT DELETE
+                $('#roles-permission tbody').on("click", ".soft-delete-btn", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!confirm("Mark this record as deleted?")) return;
+
+                    const id = String($(this).closest("tr").data("id"));
+                    const ids = getDeletedIds();
+
+                    if (!ids.includes(id)) {
+                        ids.push(id);
+                        saveDeletedIds(ids);
+                    }
+
+                    applyDeletedRows();
+                });
+
+                // ✅ SR (+) TOGGLE
+                $('#roles-permission tbody').on('click', 'td.dt-control', function () {
+
+                    const tr = $(this).closest('tr');
+                    const row = table.row(tr);
+                    const icon = $(this).find('i');
+
+                    const raw = tr.attr('data-sr');
+                    const srData = raw && raw !== "null" ? JSON.parse(raw) : [];
+
+                    if (row.child.isShown()) {
+                        row.child.hide();
+                        icon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                    } else {
+                        row.child(formatSrTable(srData)).show();
+                        icon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                    }
+                });
+
+            });
+
+        })();
+    </script>
+}

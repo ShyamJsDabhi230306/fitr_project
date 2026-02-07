@@ -1,0 +1,372 @@
+﻿@* @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+@if (string.IsNullOrWhiteSpace(Model.Master.DCNo))
+{
+    <div class="alert alert-warning">
+        Please save <b>Basic</b> details first.
+    </div>
+} 
+
+<form asp-action="SaveSrData" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+    <input type="hidden" id="baseQty" value="@Model.Master.Quantity" />
+
+    <table class="table table-bordered" id="srTable">
+        <thead>
+            <tr>
+                <th>Sr NO</th>
+                <th>Shaft Dia</th>
+                <th>Output Drive</th>
+                <th>Actuator PCD</th>
+                <th>Valve PCD</th>
+                <th>Square Dia</th>
+                <th>Square Position</th>
+                <th style="width:80px">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.SrData.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="SrData[@i].SrNo"
+                               class="form-control mirrorAll" />
+                    </td>
+                    <td><input asp-for="SrData[@i].SrNo" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].ShaftDia" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].OutputDrive" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].ActuatorPCD" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].ValvePCD" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].SquareDia" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].SquarePosition" class="form-control firstMirror" /></td>
+
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm"
+                                onclick="removeRow(this)">
+                            X
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary mb-2"
+            onclick="addSrRow()">
+        + Add Row
+    </button>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">
+        Save Sr Data
+    </button>
+</form>
+
+<script>
+    // 1️⃣ AUTO CREATE ROWS BASED ON QTY (FIRST LOAD ONLY)
+    document.addEventListener("DOMContentLoaded", function () {
+        var qty = parseInt(document.getElementById("baseQty").value || 0);
+        var tbody = document.querySelector("#srTable tbody");
+
+        if (tbody.rows.length === 0 && qty > 0) {
+            for (let i = 0; i < qty; i++) {
+                addSrRow();
+            }
+        }
+    });
+
+    // 2️⃣ ADD ROW
+    function addSrRow() {
+        var tbody = document.querySelector("#srTable tbody");
+        var index = tbody.rows.length;
+        var srNo = index + 1;
+
+        var row = tbody.insertRow(index);
+        row.innerHTML = `
+            <td>${srNo}</td>
+
+            <td><input name="SrData[${index}].SrNo" class="form-control firstMirror" /></td>
+
+            <td><input name="SrData[${index}].ShaftDia" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].OutputDrive" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].ActuatorPCD" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].ValvePCD" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].SquareDia" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].SquarePosition" class="form-control firstMirror" /></td>
+
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm"
+                        onclick="removeRow(this)">X</button>
+            </td>
+        `;
+    }
+
+    // 3️⃣ MIRROR FIRST ROW DATA TO ALL OTHER ROWS
+    document.addEventListener("input", function (e) {
+        if (!e.target.classList.contains("firstMirror")) return;
+
+        var firstRow = document.querySelector("#srTable tbody tr");
+        if (!firstRow) return;
+
+        var colIndex = e.target.closest("td").cellIndex;
+        var value = e.target.value;
+
+        document.querySelectorAll("#srTable tbody tr").forEach((row, i) => {
+            if (i === 0) return;
+            row.cells[colIndex].querySelector("input").value = value;
+        });
+    });
+
+    // 4️⃣ REMOVE ROW + REINDEX
+    function removeRow(btn) {
+        btn.closest("tr").remove();
+        reindexSr();
+    }
+
+    function reindexSr() {
+        var rows = document.querySelectorAll("#srTable tbody tr");
+        rows.forEach((row, i) => {
+            row.cells[0].innerText = i + 1;
+
+            row.querySelectorAll("input").forEach(input => {
+                var field = input.name.split('.').pop();
+                input.name = `SrData[${i}].${field}`;
+            });
+        });
+    }
+</script>
+
+
+ *@
+
+
+
+
+@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+@if (string.IsNullOrWhiteSpace(Model.Master.DCNo))
+{
+    <div class="alert alert-warning">
+        Please save <b>Basic</b> details first.
+    </div>
+}
+
+<form asp-action="SaveSrData" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+    <input type="hidden" id="baseQty" value="@Model.Master.Quantity" />
+
+    <table class="table table-bordered" id="srTable">
+        <thead>
+            <tr>
+                <th style="width:60px">#</th>
+                <th>Serial No</th>
+                <th>Shaft Dia</th>
+                <th>Output Drive</th>
+                <th>Actuator PCD</th>
+                <th>Valve PCD</th>
+                <th>Square Dia</th>
+                <th>Square Position</th>
+                <th style="width:80px">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.SrData.Count; i++)
+            {
+                <tr>
+                    <td class="text-center">@(i + 1)</td>
+
+                    <td>
+                        <input asp-for="SrData[@i].SrNo"
+                               class="form-control firstMirror"
+                               placeholder="e.g. 250930149" />
+                    </td>
+
+                    <td><input asp-for="SrData[@i].ShaftDia" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].OutputDrive" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].ActuatorPCD" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].ValvePCD" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].SquareDia" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].SquarePosition" class="form-control firstMirror" /></td>
+
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm"
+                                onclick="removeRow(this)">
+                            X
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary mt-3"
+                onclick="addSrRow()">
+            + Add Row
+        </button>
+
+        <button type="submit" class="btn btn-primary text-right mt-3">
+           Next
+        </button>
+    </div>
+
+</form>
+@* 
+<script>
+    // 1️⃣ AUTO CREATE ROWS BASED ON QTY (FIRST LOAD)
+    document.addEventListener("DOMContentLoaded", function () {
+        var qty = parseInt(document.getElementById("baseQty").value || 0);
+        var tbody = document.querySelector("#srTable tbody");
+
+        if (tbody.rows.length === 0 && qty > 0) {
+            for (let i = 0; i < qty; i++) {
+                addSrRow();
+            }
+        }
+    });
+
+    // 2️⃣ ADD ROW
+    function addSrRow() {
+        var tbody = document.querySelector("#srTable tbody");
+        var index = tbody.rows.length;
+
+        var row = tbody.insertRow(index);
+        row.innerHTML = `
+            <td class="text-center">${index + 1}</td>
+
+            <td>
+                <input name="SrData[${index}].SrNo"
+                       class="form-control firstMirror"
+                       placeholder="e.g. 250930149" />
+            </td>
+
+            <td><input name="SrData[${index}].ShaftDia" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].OutputDrive" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].ActuatorPCD" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].ValvePCD" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].SquareDia" class="form-control firstMirror" /></td>
+            <td><input name="SrData[${index}].SquarePosition" class="form-control firstMirror" /></td>
+
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm"
+                        onclick="removeRow(this)">X</button>
+            </td>
+        `;
+    }
+
+    // 3️⃣ MIRROR FIRST ROW VALUES (INCLUDING SrNo)
+    document.addEventListener("input", function (e) {
+        if (!e.target.classList.contains("firstMirror")) return;
+
+        var firstRow = document.querySelector("#srTable tbody tr");
+        if (!firstRow) return;
+
+        var colIndex = e.target.closest("td").cellIndex;
+        var value = e.target.value;
+
+        document.querySelectorAll("#srTable tbody tr").forEach((row, i) => {
+            if (i === 0) return;
+            var input = row.cells[colIndex].querySelector("input");
+            if (input) input.value = value;
+        });
+    });
+
+    // 4️⃣ REMOVE ROW + REINDEX
+    function removeRow(btn) {
+        btn.closest("tr").remove();
+        reindexSr();
+    }
+
+    function reindexSr() {
+        var rows = document.querySelectorAll("#srTable tbody tr");
+        rows.forEach((row, i) => {
+            row.cells[0].innerText = i + 1;
+
+            row.querySelectorAll("input").forEach(input => {
+                var field = input.name.split('.').pop();
+                input.name = `SrData[${i}].${field}`;
+            });
+        });
+    }
+</script> *@
+<script>
+    let mirrorEnabled = true; // 🔥 KEY FLAG
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var qty = parseInt(document.getElementById("baseQty").value || 0);
+        var tbody = document.querySelector("#srTable tbody");
+
+        if (tbody.rows.length === 0 && qty > 0) {
+            for (let i = 0; i < qty; i++) addSrRow();
+        }
+    });
+
+    function addSrRow() {
+        var tbody = document.querySelector("#srTable tbody");
+        var index = tbody.rows.length;
+
+        var row = tbody.insertRow(index);
+        row.innerHTML = `
+            <td class="text-center">${index + 1}</td>
+            <td><input name="SrData[${index}].SrNo" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].ShaftDia" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].OutputDrive" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].ActuatorPCD" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].ValvePCD" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].SquareDia" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].SquarePosition" class="form-control mirror" /></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm"
+                        onclick="removeRow(this)">X</button>
+            </td>`;
+    }
+
+    // ✅ MIRROR ONLY FIRST TIME
+    document.addEventListener("input", function (e) {
+        if (!e.target.classList.contains("mirror")) return;
+        if (!mirrorEnabled) return;
+
+        var row = e.target.closest("tr");
+        var tbody = document.querySelector("#srTable tbody");
+
+        // ❌ Mirror sirf first row se
+        if (row !== tbody.rows[0]) return;
+
+        var colIndex = e.target.closest("td").cellIndex;
+        var value = e.target.value;
+
+        [...tbody.rows].forEach((r, i) => {
+            if (i === 0) return;
+            var input = r.cells[colIndex].querySelector("input");
+            if (input) input.value = value;
+        });
+    });
+
+    // 🔥 TURN OFF MIRROR WHEN USER EDITS ANY OTHER ROW
+    document.addEventListener("focusin", function (e) {
+        var tbody = document.querySelector("#srTable tbody");
+        var row = e.target.closest("tr");
+
+        if (row && row !== tbody.rows[0]) {
+            mirrorEnabled = false;
+        }
+    });
+
+    function removeRow(btn) {
+        btn.closest("tr").remove();
+        reindexSr();
+    }
+
+    function reindexSr() {
+        document.querySelectorAll("#srTable tbody tr").forEach((row, i) => {
+            row.cells[0].innerText = i + 1;
+            row.querySelectorAll("input").forEach(input => {
+                var field = input.name.split('.').pop();
+                input.name = `SrData[${i}].${field}`;
+            });
+        });
+    }
+</script>

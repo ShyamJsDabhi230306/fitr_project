@@ -1,0 +1,47 @@
+﻿@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+
+@if (string.IsNullOrWhiteSpace(Model.Master.DCNo))
+{
+    <div class="alert alert-warning">
+        Please save <b>Basic</b> details first.
+    </div>
+}
+
+
+<form asp-action="SaveProduct" method="post">
+
+    <input type="hidden" asp-for="Master.FitrId" />
+
+    <div class="row">
+        <div class="col-md-4">
+            <label>Type</label>
+            <input asp-for="Master.ProductType" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Torque</label>
+            <input asp-for="Master.Torque" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+            <label>Ratio</label>
+            <input asp-for="Master.Ratio" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label>Model</label>
+            <input asp-for="Master.Model" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label>Handwheel Dia</label>
+            <input asp-for="Master.HandwheelDia" class="form-control" />
+        </div>
+    </div>
+
+    <div class="col-12 text-end mt-2">
+        <button type="submit" class="btn  btn-primary ">
+            Next
+        </button>
+    </div>
+</form>
