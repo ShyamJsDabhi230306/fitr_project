@@ -45,6 +45,7 @@ namespace FITR_DC_FORM.Controllers
 
             HttpContext.Session.SetString("SignaturePath", user.SignaturePath ?? "");
 
+            TempData["SuccessMessage"] = "Login Successful! Welcome back, " + user.FullName;
             return RedirectToAction("List", "Fitr");
         }
 
