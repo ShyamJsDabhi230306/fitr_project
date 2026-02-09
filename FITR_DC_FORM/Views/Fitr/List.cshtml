@@ -99,67 +99,62 @@
 
     /* TABLE BASE */
 
+    /* TABLE BASE - NATIVE SCROLLING (FINAL FIX) */
     #roles-permission {
-        table-layout: fixed;
-        width: 100%;
+        width: auto !important;         /* Let content dictate width */
+        min-width: 100% !important;     /* Fill at least the container */
+        margin-bottom: 0px !important;
+        border-collapse: collapse !important;
+        table-layout: auto !important;  /* CRITICAL: Allow columns to expand */
     }
 
-        #roles-permission th,
-        #roles-permission td {
-            font-size: 13px;
-            vertical-align: middle;
-            padding: 10px 8px;
-        }
-
-    /* Column widths */
-    .col-plus {
-        width: 40px;
+    /* Cell Content */
+    #roles-permission th,
+    #roles-permission td {
+        white-space: nowrap !important; /* Forces expansion */
+        padding: 12px 15px !important;
+        vertical-align: middle;
+        font-size: 13px;
+        border-bottom: 1px solid #eee;
+        
+        /* PREVENT OVERLAP */
+        width: auto !important;
+        max-width: none !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
     }
 
-    .col-check {
-        width: 40px;
+    /* Header Centering */
+    #roles-permission th {
+        text-align: center !important;
+        background-color: #fafafa; /* Keep header distinct */
+        font-weight: 600;
+    }
+    
+    /* Ensure Container Handles Scroll */
+    .table-responsive {
+        overflow-x: auto !important;
+        width: 100% !important;
+        border: 1px solid #f0f0f0;
     }
 
-    .col-tc {
-        width: 70px;
+    /* REMOVED FIXED WIDTH CLASSES to allow natural expansion */
+    .col-plus, .col-check {
+        width: 40px !important;
+        text-align: center;
     }
 
-    .col-dc {
-        width: 90px;
-    }
-
-    .col-product {
-        width: 150px;
-    }
-
-    .col-po {
-        width: 120px;
-    }
-
-    .col-model {
-        width: 100px;
-    }
-
-    .col-status {
-        width: 120px;
-    }
-
-    .col-attach {
-        width: 70px;
-    }
-
+    /* Action column should have a minimum width to keep buttons together */
     .col-action {
-        width: 180px !important;
-        min-width: 180px !important;
+        min-width: 140px !important;
     }
-
-    /* No wrap */
-    .col-product,
-    .col-model,
-    .col-po,
-    .col-status,
-    .col-action {
-        white-space: nowrap !important;
+    
+    /* Container for horizontal scroll */
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        width: 100% !important;
+        display: block !important;
     }
 
     /* Professional Button Grouping */
@@ -629,15 +624,56 @@
 
             $(document).ready(function () {
 
-                // ✅ INIT DATATABLE (ONLY ONCE)
-                table = $("#roles-permission").DataTable({
-                    columnDefs: [
-                        { targets: [0, 1], orderable: false } // + icon & checkbox
-                    ],
-                    order: [[2, "desc"]], // TC NO
-                    pageLength: 20,
-                    autoWidth: false
-                });
+                // ✅ SUPPRESS DATATABLE ERRORS GLOBALLY
+                $.fn.dataTable.ext.errMode = 'none'; // Disable error alerts
+
+                // ✅ INIT DATATABLE (ONLY ONCE) - Handle empty tables
+                const $table = $("#roles-permission");
+                const $tbody = $table.find("tbody");
+                const $rows = $tbody.find("tr");
+                
+                // Check if table has actual data rows (not just empty message)
+                const hasData = $rows.length > 0 && !$rows.find("td[colspan]").length;
+
+                try {
+                    if (hasData) {
+                        table = $table.DataTable({
+                            columnDefs: [
+                                { targets: [0, 1], orderable: false } // + icon & checkbox
+                            ],
+                            order: [[2, "desc"]], // TC NO
+                            pageLength: 25,
+                            lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                            autoWidth: false,
+                            // scrollX removed to use native container scrolling
+                            language: {
+                                emptyTable: "No DC records found",
+                                zeroRecords: "No matching records found"
+                            }
+                        });
+                    } else {
+                        // For empty tables, initialize with minimal config
+                        table = $table.DataTable({
+                            columnDefs: [
+                                { targets: '_all', orderable: false }
+                            ],
+                            pageLength: 25,
+                            lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                            autoWidth: false,
+                            // scrollX removed
+                            searching: false,
+                            paging: false,
+                            info: false,
+                            ordering: false,
+                            language: {
+                                emptyTable: "No DC records found"
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.warn('DataTable initialization warning:', e);
+                    // Silently fail - table will still be usable without DataTables features
+                }
 
                 // ✅ PRINT LOGIC
                 let selectedIds = [];
@@ -651,7 +687,12 @@
                     });
 
                     if (selectedIds.length === 0) {
-                        alert("Please select at least one record to print.");
+                        Swal.fire({
+                            title: 'Selection Required',
+                            text: 'Please select at least one record to print.',
+                            icon: 'warning',
+                            confirmButtonColor: '#7366ff'
+                        });
                         return;
                     }
 
@@ -699,43 +740,43 @@
                     var companyName = $('#selectPrintCompany option:selected').text();
                     
                     if (!companyId || companyId === "") {
-                        alert("Please select a company.");
+                        Swal.fire({
+                            title: 'Required',
+                            text: 'Please select a company for printing.',
+                            icon: 'warning',
+                            confirmButtonColor: '#7366ff'
+                        });
                         return;
                     }
 
                     // Professional Confirmation using SweetAlert2
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            title: 'Confirm Printing',
-                            text: 'Proceed with generating Test Certificate(s) for ' + companyName + '?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, Print it!',
-                            cancelButtonText: 'No, Wait'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                $('#companyModal').modal('hide');
-                                
-                                if (selectedIds.length === 1) {
-                                    window.open('/Fitr/Print/' + selectedIds[0] + '?printCompanyId=' + companyId, '_blank');
-                                } else {
-                                    window.open('/Fitr/PrintMultiple?ids=' + selectedIds.join(',') + '&printCompanyId=' + companyId, '_blank');
-                                }
-                            }
-                        });
-                    } else {
-                        // Fallback if Swal is not loaded
-                        if (confirm('Proceed with generating Test Certificate(s) for ' + companyName + '?')) {
+                    Swal.fire({
+                        title: 'Confirm Printing',
+                        text: 'Proceed with generating Test Certificate(s) for ' + companyName + '?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#7366ff',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Print it!',
+                        cancelButtonText: 'No, Wait',
+                        focusCancel: true,
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-lg btn-primary me-2',
+                            cancelButton: 'btn btn-lg btn-danger',
+                            popup: 'animated fadeInDown faster'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
                             $('#companyModal').modal('hide');
+                            
                             if (selectedIds.length === 1) {
                                 window.open('/Fitr/Print/' + selectedIds[0] + '?printCompanyId=' + companyId, '_blank');
                             } else {
                                 window.open('/Fitr/PrintMultiple?ids=' + selectedIds.join(',') + '&printCompanyId=' + companyId, '_blank');
                             }
                         }
-                    }
+                    });
                 });
 
                 // ✅ SELECT ALL
