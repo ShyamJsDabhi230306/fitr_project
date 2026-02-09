@@ -111,5 +111,15 @@ namespace FITR_DC_FORM.Services.Repo_Services
             return _repo.IsDcNoExists(dcNo, fitrId);
         }
 
+
+        public List<FitrMaster> GetListByRoleFilteredV2(
+        string userRole,
+        int companyId,
+        int locationId,
+        string filter)
+        {
+            return _repo.GetListByRoleFilteredV2(
+                userRole, companyId, locationId, filter);
+        }
     }
 }

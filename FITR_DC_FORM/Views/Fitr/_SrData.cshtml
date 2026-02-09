@@ -161,15 +161,15 @@
     <table class="table table-bordered" id="srTable">
         <thead>
             <tr>
-                <th style="width:60px">#</th>
-                <th>Serial No</th>
+                <th class="text-center" style="width:50px">#</th>
+                <th style="min-width:150px">Serial No</th>
                 <th>Shaft Dia</th>
                 <th>Output Drive</th>
                 <th>Actuator PCD</th>
                 <th>Valve PCD</th>
                 <th>Square Dia</th>
                 <th>Square Position</th>
-                <th style="width:80px">Action</th>
+                <th class="text-center" style="width:70px">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -202,14 +202,14 @@
         </tbody>
     </table>
 
-    <div class="d-flex justify-content-between">
-        <button type="button" class="btn btn-secondary mt-3"
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <button type="button" class="btn btn-outline-secondary btn-sm"
                 onclick="addSrRow()">
-            + Add Row
+            <i class="fa fa-plus me-1"></i> Add Row
         </button>
 
-        <button type="submit" class="btn btn-primary text-right mt-3">
-           Next
+        <button type="submit" class="btn btn-primary px-4">
+           Next <i class="fa fa-arrow-right ms-1"></i>
         </button>
     </div>
 

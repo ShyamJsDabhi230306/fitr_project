@@ -129,12 +129,30 @@
         </div>
 
         <!-- Quantity -->
-        <div class="col-md-4">
+        <div class="col-md-2">
             <label class="form-label">Quantity</label>
             <input asp-for="Master.Quantity"
                    type="number"
                    class="form-control"
-                   min="1" />
+                   min="1" 
+                   required />
+            <div class="invalid-feedback">Please enter quantity</div>
+        </div>
+
+        <!-- Prepared By (User Selection) -->
+        <div class="col-md-2">
+            <label class="form-label">Prepared By</label>
+            <select asp-for="Master.CreatedByUserId" class="form-select" required>
+                <option value="">-- Select User --</option>
+                @if (ViewBag.UserList != null)
+                {
+                    foreach (var user in (List<FITR_DC_FORM.Models.UserMaster>)ViewBag.UserList)
+                    {
+                        <option value="@user.UserId">@user.FullName</option>
+                    }
+                }
+            </select>
+            <div class="invalid-feedback">Please select "Prepared By"</div>
         </div>
 
         @* <!-- Status -->

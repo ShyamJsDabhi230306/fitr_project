@@ -204,7 +204,9 @@ namespace FITR_DC_FORM.Repositories.Repository
                     PONo = rdr["PONo"]?.ToString(),
                     DCNo = rdr["DCNo"]?.ToString(),
                     DCDate = rdr["DCDate"] as DateTime?,
-                    Status = rdr["Status"]?.ToString(),
+                    Status = rdr.GetSchemaTable().Select("ColumnName = 'DisplayStatus'").Length > 0 
+                             ? rdr["DisplayStatus"]?.ToString() 
+                             : rdr["Status"]?.ToString(),
                     ProductType = rdr["ProductType"]?.ToString(),
                     Model = rdr["Model"]?.ToString(),
                     CreatedAt = rdr["CreatedAt"] as DateTime?,
@@ -639,7 +641,111 @@ namespace FITR_DC_FORM.Repositories.Repository
             return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         }
 
+        public List<FitrMaster> GetListByRoleFilteredV2(
+            string userRole,
+            int companyId,
+            int locationId,
+            string filter)
+        {
+            var list = new List<FitrMaster>();
 
+            using var con = GetConnection();
+            using var cmd = new SqlCommand("dbo.sp_FITR_List_ByRole_Filter_V2", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@UserRole", userRole);
+            cmd.Parameters.AddWithValue("@CompanyId", companyId);
+            cmd.Parameters.AddWithValue("@LocationId", locationId);
+            cmd.Parameters.AddWithValue("@Filter", filter);
+
+            con.Open();
+            using var rdr = cmd.ExecuteReader();
+
+            // 1️⃣ MASTER
+            while (rdr.Read())
+            {
+                list.Add(new FitrMaster
+                {
+                    FitrId = (int)rdr["FitrId"],
+                    TCNo = rdr["TCNo"] as int?,
+                    TCYear = rdr["TCYear"]?.ToString(),
+                    TCDate = rdr["TCDate"] as DateTime?,
+                    CompanyName = rdr["CompanyName"]?.ToString(),
+                    PONo = rdr["PONo"]?.ToString(),
+                    DCNo = rdr["DCNo"]?.ToString(),
+                    DCDate = rdr["DCDate"] as DateTime?,
+                    Status = rdr["DisplayStatus"]?.ToString(),
+                    ProductType = rdr["ProductType"]?.ToString(),
+                    Model = rdr["Model"]?.ToString(),
+                    CreatedAt = rdr["CreatedAt"] as DateTime?,
+                    
+                    // Restore Missing Attachments 👇
+                    POAttachmentPath = rdr["POAttachmentPath"]?.ToString(),
+                    DCAttachmentPath = rdr["DCAttachmentPath"]?.ToString(),
+                    DrawingAttachmentPath = rdr["DrawingAttachmentPath"]?.ToString(),
+                    TCAttachmentPath = rdr["TCAttachmentPath"]?.ToString(),
+
+                    SrData = new List<FitrSrData>(),
+                    Materials = new List<FitrMaterial>()
+                });
+            }
+
+            // 2️⃣ MATERIAL
+            if (rdr.NextResult())
+            {
+                var materialMap = new Dictionary<int, List<FitrMaterial>>();
+                while (rdr.Read())
+                {
+                    int id = (int)rdr["FitrId"];
+                    if (!materialMap.ContainsKey(id))
+                        materialMap[id] = new List<FitrMaterial>();
+
+                    materialMap[id].Add(new FitrMaterial
+                    {
+                        MaterialId = (int)rdr["MaterialId"],
+                        FitrId = id,
+                        Component = rdr["Component"]?.ToString(),
+                        Material = rdr["Material"]?.ToString()
+                    });
+                }
+                foreach (var dc in list)
+                {
+                    if (materialMap.ContainsKey(dc.FitrId))
+                        dc.Materials = materialMap[dc.FitrId];
+                }
+            }
+
+            // 3️⃣ SR DATA
+            if (rdr.NextResult())
+            {
+                var srMap = new Dictionary<int, List<FitrSrData>>();
+                while (rdr.Read())
+                {
+                    int id = (int)rdr["FitrId"];
+                    if (!srMap.ContainsKey(id))
+                        srMap[id] = new List<FitrSrData>();
+
+                    srMap[id].Add(new FitrSrData
+                    {
+                        SrId = (int)rdr["SrId"],
+                        FitrId = id,
+                        SrNo = (int)rdr["SrNo"],
+                        ShaftDia = rdr["ShaftDia"]?.ToString(),
+                        OutputDrive = rdr["OutputDrive"]?.ToString(),
+                        ActuatorPCD = rdr["ActuatorPCD"]?.ToString(),
+                        ValvePCD = rdr["ValvePCD"]?.ToString(),
+                        SquareDia = rdr["SquareDia"]?.ToString(),
+                        SquarePosition = rdr["SquarePosition"]?.ToString()
+                    });
+                }
+                foreach (var dc in list)
+                {
+                    if (srMap.ContainsKey(dc.FitrId))
+                        dc.SrData = srMap[dc.FitrId];
+                }
+            }
+
+            return list.OrderByDescending(x => x.CreatedAt).ToList();
+        }
     }
 
 }

@@ -41,5 +41,14 @@ namespace FITR_DC_FORM.Services.Interfaces
         void ApproveByAdmin(int fitrId, int adminUserId);
 
         bool IsDcNoExists(string dcNo, int? fitrId);
+
+
+      
+       List<FitrMaster> GetListByRoleFilteredV2(
+                string userRole,
+                int companyId,
+                int locationId,
+                string filter);
+        
     }
 }

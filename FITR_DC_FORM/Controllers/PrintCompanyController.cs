@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FITR_DC_FORM.Controllers
 {
+    [FITR_DC_FORM.Filters.RoleAuthorize("SUPERADMIN")]
     public class PrintCompanyController : Controller
     {
         private readonly IPrintCompanyService _service;

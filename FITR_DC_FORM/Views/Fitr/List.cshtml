@@ -149,21 +149,32 @@
     }
 
     .col-action {
-        width: 150px;
-    }
-
-    /* Flexible column */
-    .col-customer {
-        min-width: 280px;
-        white-space: nowrap;
+        width: 180px !important;
+        min-width: 180px !important;
     }
 
     /* No wrap */
     .col-product,
     .col-model,
     .col-po,
+    .col-status,
     .col-action {
-        white-space: nowrap;
+        white-space: nowrap !important;
+    }
+
+    /* Professional Button Grouping */
+    .action-btn-group {
+        display: flex !important;
+        gap: 4px !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .btn-xs {
+        padding: 4px 8px !important;
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        border-radius: 4px !important;
     }
 
     /* Icons */
@@ -210,19 +221,33 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header card-no-border text-end">
-                            <div id="makeinline">
+                        <div class="card-header card-no-border">
+                            <div id="makeinline" class="d-flex justify-content-between align-items-center w-100">
+                                <!-- Left side: Filters -->
+                                <div class="d-flex gap-2">
+                                    <a asp-action="List"
+                                       asp-route-filter="pending"
+                                       class="btn btn-sm @(ViewBag.Filter == "pending" ? "btn-primary" : "btn-outline-primary")">
+                                        Approval Pending
+                                    </a>
 
-                                <div class="card-header-right-icon"><a asp-controller="Fitr" asp-action="New" class="btn btn-primary f-w-500 text-end"><i class="fa-solid fa-plus pe-2"></i>Add</a></div>
-                                <span>
+                                    <a asp-action="List"
+                                       asp-route-filter="all"
+                                       class="btn btn-sm @(ViewBag.Filter == "all" ? "btn-primary" : "btn-outline-primary")">
+                                        All Data
+                                    </a>
+                                </div>
+
+                                <!-- Right side: Actions -->
+                                <div class="d-flex gap-2 align-items-center">
+                                    <a asp-controller="Fitr" asp-action="New" class="btn btn-primary f-w-500">
+                                        <i class="fa-solid fa-plus pe-2"></i>Add
+                                    </a>
                                     <button type="button" class="btn btn-secondary" id="btnPrint">
-                                        🖨 Print
+                                        <i class="fa fa-print me-1"></i> Print
                                     </button>
-                                </span>
-
+                                </div>
                             </div>
-
-
                         </div>
                         <div class="card-body pt-0 px-0">
                             <div class="list-product user-list-table">
@@ -230,14 +255,10 @@
                                     <table class="table table-hover align-middle" id="roles-permission">
                                         <thead>
                                             <tr>
-                                                <!-- PLUS -->
-                                                <th class="col-plus"></th>
-
-                                                <!-- CHECKBOX -->
+                                                <th class="col-plus">#</th>
                                                 <th class="col-check text-center">
                                                     <input type="checkbox" id="selectAll" />
                                                 </th>
-
                                                 <th class="col-tc">TC No</th>
                                                 <th class="col-customer">Customer Name</th>
                                                 <th class="col-dc">DC No</th>
@@ -260,11 +281,11 @@
                                                 {
                                                     <tr class="product-removes inbox-data"
                                                         data-id="@dc.FitrId"
-                                                        data-sr='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(dc.SrData))'>
+                                                        data-srdata='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(dc.SrData))'>
 
-                                                        <!-- PLUS -->
-                                                        <td class="col-plus text-center dt-control">
-                                                            <i class="fa fa-plus-circle text-primary"></i>
+                                                        <!-- EXPANDER -->
+                                                        <td class="dt-control text-center">
+                                                            <i class="fa-solid fa-plus-square text-primary" style="font-size:16px;"></i>
                                                         </td>
 
                                                         <!-- CHECKBOX -->
@@ -290,7 +311,7 @@
 
                                                         <td class="col-model">@dc.Model</td>
 
-                                                        <td class="col-status text-center">
+                                                      @*   <td class="col-status text-center">
                                                             @if (dc.Status == "DRAFT")
                                                             {
                                                                 <span class="badge bg-secondary">Draft</span>
@@ -307,8 +328,34 @@
                                                             {
                                                                 <span class="badge bg-success">Final Approved</span>
                                                             }
+                                                        </td> *@
+                                                        <td class="col-status text-center">
+                                                            @if (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED")
+                                                            {
+                                                                <span class="badge bg-warning">HOD Approval Pending</span>
+                                                            }
+                                                            else if (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED")
+                                                            {
+                                                                <span class="badge bg-info">Admin Approval Pending</span>
+                                                            }
+                                                            else if (dc.Status == "Approval Pending")
+                                                            {
+                                                                <span class="badge bg-primary">Approval Pending</span>
+                                                            }
+                                                            else if (dc.Status == "Approved" || dc.Status == "FINAL_APPROVED")
+                                                            {
+                                                                <span class="badge bg-success">Approved</span>
+                                                            }
+                                                            else if (dc.Status == "Draft" || dc.Status == "PREPARED" || dc.Status == "DRAFT")
+                                                            {
+                                                                <span class="badge bg-secondary">Draft</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge bg-light text-dark">@dc.Status</span>
+                                                            }
                                                         </td>
-                                                       
+
 
 
                                                         <!-- PO -->
@@ -373,37 +420,77 @@
 
                                                         <!-- ACTIONS -->
                                                         <td class="col-action text-center">
-                                                            <div class="d-inline-flex gap-1">
+                                                            <div class="action-btn-group">
+                                                                <!-- ✏️ EDIT (Only for Drafts - USER or SUPERADMIN) -->
+                                                                @if ((role == "USER" || role == "SUPERADMIN") && (dc.Status == "Draft" || dc.Status == "DRAFT" || dc.Status == "PREPARED"))
+                                                                {
+                                                                    <a asp-action="Index" asp-route-id="@dc.FitrId" class="btn btn-xs btn-info" title="Edit">
+                                                                        <i class="fa fa-pencil"></i>
+                                                                    </a>
+                                                                }
 
-                                                                @if (role == "USER" && dc.Status == "DRAFT")
+                                                                <!-- 📤 SUBMIT (USER) -->
+                                                                @if (role == "USER" && (dc.Status == "Draft" || dc.Status == "DRAFT" || dc.Status == "PREPARED"))
                                                                 {
                                                                     <form asp-action="Submit" method="post" class="m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-sm btn-primary">Submit</button>
+                                                                        <button class="btn btn-xs btn-primary" title="Submit">Submit</button>
                                                                     </form>
                                                                 }
 
-                                                                @if (role == "HOD" && dc.Status?.Trim().ToUpper() == "SUBMITTED")
+                                                                <!-- ✅ APPROVE (HOD) -->
+                                                                @if (role == "HOD" && (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED"))
                                                                 {
                                                                     <form asp-action="ApproveByHod" method="post" class="m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-sm btn-warning">Approve</button>
+                                                                        <button class="btn btn-xs btn-warning" title="Approve">Approve</button>
                                                                     </form>
                                                                 }
 
-                                                                @if (role == "ADMIN" && dc.Status?.Trim().ToUpper() == "HOD_APPROVED")
+                                                                <!-- 🏆 FINAL APPROVE (ADMIN) -->
+                                                                @if (role == "ADMIN" && (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED"))
                                                                 {
                                                                     <form asp-action="ApproveByAdmin" method="post" class="m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-sm btn-success">Final</button>
+                                                                        <button class="btn btn-xs btn-success" title="Final Approve">Final Approve</button>
                                                                     </form>
                                                                 }
+
+                                                                <!-- 👑 SUPERADMIN (All actions) -->
+                                                                @if (role == "SUPERADMIN")
+                                                                {
+                                                                    @if (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED")
+                                                                    {
+                                                                        <form asp-action="ApproveByHod" method="post" class="m-0">
+                                                                            <input type="hidden" name="id" value="@dc.FitrId" />
+                                                                            <button class="btn btn-xs btn-warning" title="Approve">Approve</button>
+                                                                        </form>
+                                                                    }
+                                                                    @if (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED")
+                                                                    {
+                                                                        <form asp-action="ApproveByAdmin" method="post" class="m-0">
+                                                                            <input type="hidden" name="id" value="@dc.FitrId" />
+                                                                            <button class="btn btn-xs btn-success" title="Final Approve">Final Approve</button>
+                                                                        </form>
+                                                                    }
+                                                                }
+
+                                                                <!-- 🖨️ PRINT (For Approved only) -->
+                                                                @if (dc.Status == "Approved" || dc.Status == "FINAL_APPROVED")
+                                                                {
+                                                                    <button type="button" class="btn btn-xs btn-secondary individual-print-btn" data-id="@dc.FitrId" title="Print">
+                                                                        <i class="fa fa-print"></i>
+                                                                    </button>
+                                                                }
+
+                                                                <!-- 🗑️ DELETE (SUPERADMIN or USER/Draft) -->
+                                                                @if (role == "SUPERADMIN" || (role == "USER" && (dc.Status == "Draft" || dc.Status == "DRAFT")))
+                                                                {
+                                                                    <button type="button" class="btn btn-xs btn-danger soft-delete-btn" title="Delete">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                }
                                                             </div>
-                                                            <button type="button"
-                                                                    class="btn btn-sm btn-danger soft-delete-btn"
-                                                                    title="Delete">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
                                                         </td>
                                                     </tr>
                                                 }
@@ -661,12 +748,32 @@
                     applyDeletedRows();
                 });
 
+                // ✅ INDIVIDUAL PRINT
+                $('#roles-permission tbody').on('click', '.individual-print-btn', function (e) {
+                    e.preventDefault();
+                    const id = $(this).data('id');
+                    selectedIds = [id]; // Set global selectedIds
+                    
+                    // Trigger same logic as btnPrint
+                    $.get('/Fitr/GetPrintCompanies', function (data) {
+                        const $select = $('#selectPrintCompany');
+                        $select.html('<option value="">-- Select Company --</option>');
+                        data.forEach(c => {
+                            $select.append(`<option value="${c.printCompanyId}" 
+                                            data-addr="${c.companyAddress}" 
+                                            data-logo="${c.companyLogo}"
+                                            data-name="${c.companyName}">${c.companyName}</option>`);
+                        });
+                        $('#companyModal').modal('show');
+                    });
+                });
+
                 // ✅ SOFT DELETE
                 $('#roles-permission tbody').on("click", ".soft-delete-btn", function (e) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    if (!confirm("Mark this record as deleted?")) return;
+                    if (!confirm("Are you sure you want to mark this record as deleted?")) return;
 
                     const id = String($(this).closest("tr").data("id"));
                     const ids = getDeletedIds();
@@ -679,22 +786,21 @@
                     applyDeletedRows();
                 });
 
-                // ✅ SR (+) TOGGLE
-                $('#roles-permission tbody').on('click', 'td.dt-control', function () {
-
-                    const tr = $(this).closest('tr');
-                    const row = table.row(tr);
-                    const icon = $(this).find('i');
-
-                    const raw = tr.attr('data-sr');
-                    const srData = raw && raw !== "null" ? JSON.parse(raw) : [];
+                // ✅ SR (+) TOGGLE RESTORED
+                $('#roles-permission tbody').on('click', 'td.dt-control', function (e) {
+                    e.stopPropagation();
+                    let tr = $(this).closest('tr');
+                    let row = table.row(tr);
 
                     if (row.child.isShown()) {
                         row.child.hide();
-                        icon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+                        tr.removeClass('shown');
+                        $(this).find('i').removeClass('fa-minus-square').addClass('fa-plus-square');
                     } else {
+                        let srData = tr.data('srdata');
                         row.child(formatSrTable(srData)).show();
-                        icon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+                        tr.addClass('shown');
+                        $(this).find('i').removeClass('fa-plus-square').addClass('fa-minus-square');
                     }
                 });
 

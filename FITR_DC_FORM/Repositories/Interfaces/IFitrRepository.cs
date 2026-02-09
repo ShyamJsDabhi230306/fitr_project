@@ -86,5 +86,12 @@ namespace FITR_DC_FORM.Repositories.Interfaces
 
         // 🔥 ADD THIS LINE EXACTLY
         bool IsDcNoExists(string dcNo, int? fitrId);
+
+
+        List<FitrMaster> GetListByRoleFilteredV2(
+        string userRole,
+        int companyId,
+        int locationId,
+        string filter);
     }
 }

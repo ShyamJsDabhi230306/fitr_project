@@ -282,6 +282,7 @@ using FITR_DC_FORM.Helpers;
 using FITR_DC_FORM.Models;
 using FITR_DC_FORM.Models.ViewModels;
 using FITR_DC_FORM.Services.Interfaces;
+using FITR_DC_FORM.Services.Repo_Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -298,13 +299,15 @@ namespace FITR_DC_FORM.Controllers
     {
         private readonly IFitrService _service;
         private readonly IPrintCompanyService _companyService;
+        private readonly IUserService _userService;
         private readonly IWebHostEnvironment _env;
         private const string FITR_SESSION_KEY = "FITR_WIZARD";
 
-        public FitrController(IFitrService service, IPrintCompanyService companyService, IWebHostEnvironment env)
+        public FitrController(IFitrService service, IPrintCompanyService companyService, IUserService userService, IWebHostEnvironment env)
         {
             _service = service;
             _companyService = companyService;
+            _userService = userService;
             _env = env;
         }
 
@@ -393,14 +396,22 @@ namespace FITR_DC_FORM.Controllers
             // 🔥 THIS WAS MISSING (ROOT CAUSE)
             ViewBag.VisualMaster = _service.GetAllVisualMaster();
 
+            // 🔹 Fetch users for selection dropdown
+            int companyId = HttpContext.Session.GetInt32("CompanyId") ?? 0;
+            int locationId = HttpContext.Session.GetInt32("LocationId") ?? 0;
+            ViewBag.UserList = _userService.GetAll(companyId, locationId);
+
             FitrViewModel model;
 
             if (mode == "create")
             {
                 model = new FitrViewModel
                 {
-                    Master = new FitrMaster(),
-                    Visuals = new List<FitrVisual>() // good practice
+                    Master = new FitrMaster
+                    {
+                        CreatedByUserId = HttpContext.Session.GetInt32("UserId") // 🔹 Pre-select current user
+                    },
+                    Visuals = new List<FitrVisual>()
                 };
             }
             else
@@ -443,6 +454,7 @@ namespace FITR_DC_FORM.Controllers
             sessionModel.Master.PONo = model.Master.PONo;
             sessionModel.Master.PODate = model.Master.PODate;
             sessionModel.Master.Quantity = model.Master.Quantity;
+            sessionModel.Master.CreatedByUserId = model.Master.CreatedByUserId;
 
             // 🔴 DC (MANDATORY)
             var dcPath = SaveFile(DCAttachment, "dc");
@@ -569,7 +581,12 @@ namespace FITR_DC_FORM.Controllers
             /* ================= AUTO APPROVAL STATUS (✔ HERE) ================= */
             
             // 🔥 THIS WAS THE CORE ISSUE
-            sessionModel.Master.CreatedByUserId = userId.Value;
+            // 🔥 Only override if NOT explicitly set in the wizard
+            if (sessionModel.Master.CreatedByUserId == null || sessionModel.Master.CreatedByUserId == 0)
+            {
+                sessionModel.Master.CreatedByUserId = userId.Value;
+            }
+
             sessionModel.Master.CompanyId = companyId.Value;
             sessionModel.Master.LocationId = locationId.Value;
             sessionModel.Master.Status = "PREPARED";
@@ -660,20 +677,81 @@ namespace FITR_DC_FORM.Controllers
 
         // ================= LIST =================
         [RoleAuthorize("SUPERADMIN", "ADMIN", "HOD", "USER")]
-        public IActionResult List()
+        public IActionResult List(string filter = "pending")
         {
-            string role = HttpContext.Session.GetString("UserRole");
-            int companyId = HttpContext.Session.GetInt32("CompanyId") ?? 0;
-            int locationId = HttpContext.Session.GetInt32("LocationId") ?? 0;
-            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+            string role = (HttpContext.Session.GetString("UserRole") ?? "").ToUpper();
+            int sessionCompanyId = HttpContext.Session.GetInt32("CompanyId") ?? 0;
+            int sessionLocationId = HttpContext.Session.GetInt32("LocationId") ?? 0;
+            int sessionUserId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
-            ViewBag.DcList = _service.GetListByRole(
+            int effectiveCompanyId = sessionCompanyId;
+            int effectiveLocationId = sessionLocationId;
+            int effectiveUserId = sessionUserId;
+
+            if (role == "SUPERADMIN")
+            {
+                // 🔥 Super Admin sees all data from all companies
+                effectiveCompanyId = 0;
+                effectiveLocationId = 0;
+                effectiveUserId = 0;
+            }
+            else if (role == "ADMIN")
+            {
+                // Admin sees all data for their company
+                effectiveUserId = 0;
+            }
+
+            // Using stable method
+            var list = _service.GetListByRole(
                 role,
-                companyId,
-                locationId,
-                userId
+                effectiveCompanyId,
+                effectiveLocationId,
+                effectiveUserId
             );
 
+            // 🔥 PERFECT FILTER: Role-aware pending logic
+            if (filter == "pending")
+            {
+                if (role == "USER")
+                {
+                    list = list.Where(x => string.Equals(x.Status, "Draft", StringComparison.OrdinalIgnoreCase) || 
+                                          string.Equals(x.Status, "DRAFT", StringComparison.OrdinalIgnoreCase) ||
+                                          string.Equals(x.Status, "PREPARED", StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+                else if (role == "HOD")
+                {
+                    list = list.Where(x => string.Equals(x.Status, "SUBMITTED", StringComparison.OrdinalIgnoreCase) || 
+                                          string.Equals(x.Status, "HOD Approval Pending", StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+                else if (role == "ADMIN")
+                {
+                    list = list.Where(x => string.Equals(x.Status, "HOD_APPROVED", StringComparison.OrdinalIgnoreCase) || 
+                                          string.Equals(x.Status, "Admin Approval Pending", StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+                else if (role == "SUPERADMIN")
+                {
+                    // SuperAdmin sees everything pending
+                    list = list.Where(x => x.Status != null && (
+                        x.Status.Contains("Pending", StringComparison.OrdinalIgnoreCase) || 
+                        x.Status.Equals("SUBMITTED", StringComparison.OrdinalIgnoreCase) ||
+                        x.Status.Equals("PREPARED", StringComparison.OrdinalIgnoreCase) ||
+                        x.Status.Equals("DRAFT", StringComparison.OrdinalIgnoreCase)
+                    )).ToList();
+                }
+            }
+
+            // 🔥 FALLBACK: If SP missed SrData, fetch it now (only for visible records)
+            foreach (var dc in list.Where(x => x.SrData == null || !x.SrData.Any()))
+            {
+                var full = _service.GetFitr(dc.FitrId);
+                if (full != null && full.Master.SrData != null)
+                {
+                    dc.SrData = full.Master.SrData;
+                }
+            }
+
+            ViewBag.DcList = list;
+            ViewBag.Filter = filter;
             return View();
         }
         // ================= PRINT =================

@@ -45,7 +45,7 @@ namespace FITR_DC_FORM.Controllers
 
             HttpContext.Session.SetString("SignaturePath", user.SignaturePath ?? "");
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("List", "Fitr");
         }
 
 
