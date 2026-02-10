@@ -688,56 +688,65 @@ namespace FITR_DC_FORM.Controllers
             int effectiveLocationId = sessionLocationId;
             int effectiveUserId = sessionUserId;
 
+            // 🛡️ SUPER ADMIN MASQUERADE (Fix for SQL Restrictions)
+            // The SP has strict filtering for USER/HOD/ADMIN that hides data we want to show.
+            // SOLUTION: Fetch as SUPERADMIN (all data), then filter in-memory.
+
+            var allData = _service.GetListByRole(
+                "SUPERADMIN", // Force fetch all
+                0, 0, 0       // Ignore IDs at DB level
+            );
+
+            // 🎯 IN-MEMORY SCOPING
+            var list = new List<FitrMaster>();
+
             if (role == "SUPERADMIN")
             {
-                // 🔥 Super Admin sees all data from all companies
-                effectiveCompanyId = 0;
-                effectiveLocationId = 0;
-                effectiveUserId = 0;
+                list = allData;
             }
             else if (role == "ADMIN")
             {
-                // Admin sees all data for their company
-                effectiveUserId = 0;
+                // Admin sees everything in their Company
+                list = allData.Where(x => x.CompanyId == sessionCompanyId).ToList();
+            }
+            else if (role == "HOD" || role == "USER")
+            {
+                // HOD & User see everything in their Location
+                list = allData.Where(x => x.LocationId == sessionLocationId).ToList();
+            }
+            else
+            {
+                // Fallback (should not happen)
+                list = new List<FitrMaster>();
             }
 
-            // Using stable method
-            var list = _service.GetListByRole(
-                role,
-                effectiveCompanyId,
-                effectiveLocationId,
-                effectiveUserId
-            );
+            // ❌ REMOVED: User-specific filtering. 
+            // Users now see all records, just like HOD/Admin/SuperAdmin.
 
-            // 🔥 PERFECT FILTER: Role-aware pending logic
+            // ❌ REMOVED: User-specific filtering. 
+            // Users now see all records, just like HOD/Admin/SuperAdmin.
+
+            // 🔥 UNIFIED WORKFLOW LOGIC (Consistent Across All Roles)
+            // Rule 1: "Pending Approval" Tab = ANY record that is NOT fully approved.
+            // Rule 2: "All Data" Tab = ONLY records that are fully approved.
+
             if (filter == "pending")
             {
-                if (role == "USER")
-                {
-                    list = list.Where(x => string.Equals(x.Status, "Draft", StringComparison.OrdinalIgnoreCase) || 
-                                          string.Equals(x.Status, "DRAFT", StringComparison.OrdinalIgnoreCase) ||
-                                          string.Equals(x.Status, "PREPARED", StringComparison.OrdinalIgnoreCase)).ToList();
-                }
-                else if (role == "HOD")
-                {
-                    list = list.Where(x => string.Equals(x.Status, "SUBMITTED", StringComparison.OrdinalIgnoreCase) || 
-                                          string.Equals(x.Status, "HOD Approval Pending", StringComparison.OrdinalIgnoreCase)).ToList();
-                }
-                else if (role == "ADMIN")
-                {
-                    list = list.Where(x => string.Equals(x.Status, "HOD_APPROVED", StringComparison.OrdinalIgnoreCase) || 
-                                          string.Equals(x.Status, "Admin Approval Pending", StringComparison.OrdinalIgnoreCase)).ToList();
-                }
-                else if (role == "SUPERADMIN")
-                {
-                    // SuperAdmin sees everything pending
-                    list = list.Where(x => x.Status != null && (
-                        x.Status.Contains("Pending", StringComparison.OrdinalIgnoreCase) || 
-                        x.Status.Equals("SUBMITTED", StringComparison.OrdinalIgnoreCase) ||
-                        x.Status.Equals("PREPARED", StringComparison.OrdinalIgnoreCase) ||
-                        x.Status.Equals("DRAFT", StringComparison.OrdinalIgnoreCase)
-                    )).ToList();
-                }
+                // Show everything EXCEPT "Approved" or "FINAL_APPROVED"
+                // This includes: Draft, Submitted, HOD Approval Pending, Admin Approval Pending
+                list = list.Where(x => 
+                    !string.Equals(x.Status, "Approved", StringComparison.OrdinalIgnoreCase) && 
+                    !string.Equals(x.Status, "FINAL_APPROVED", StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+            }
+            else
+            {
+                // "All Data" (or default)
+                // Show ONLY fully approved records
+                list = list.Where(x => 
+                    string.Equals(x.Status, "Approved", StringComparison.OrdinalIgnoreCase) || 
+                    string.Equals(x.Status, "FINAL_APPROVED", StringComparison.OrdinalIgnoreCase)
+                ).ToList();
             }
 
             // 🔥 FALLBACK: If SP missed SrData, fetch it now (only for visible records)

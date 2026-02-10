@@ -1,4 +1,4 @@
-﻿@using FITR_DC_FORM.Models
+@using FITR_DC_FORM.Models
 
 @{
     ViewData["Title"] = "FITR - DC List";
@@ -325,29 +325,25 @@
                                                             }
                                                         </td> *@
                                                         <td class="col-status text-center">
-                                                            @if (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED")
+                                                            @if (dc.Status == "Draft" || dc.Status == "DRAFT")
                                                             {
-                                                                <span class="badge bg-warning">HOD Approval Pending</span>
+                                                                <span class="badge bg-secondary">Draft</span>
+                                                            }
+                                                            else if (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED")
+                                                            {
+                                                                <span class="badge bg-warning text-dark">HOD Approval Pending</span>
                                                             }
                                                             else if (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED")
                                                             {
-                                                                <span class="badge bg-info">Admin Approval Pending</span>
-                                                            }
-                                                            else if (dc.Status == "Approval Pending")
-                                                            {
-                                                                <span class="badge bg-primary">Approval Pending</span>
+                                                                <span class="badge bg-info text-white">Admin Approval Pending</span>
                                                             }
                                                             else if (dc.Status == "Approved" || dc.Status == "FINAL_APPROVED")
                                                             {
                                                                 <span class="badge bg-success">Approved</span>
                                                             }
-                                                            else if (dc.Status == "Draft" || dc.Status == "PREPARED" || dc.Status == "DRAFT")
-                                                            {
-                                                                <span class="badge bg-secondary">Draft</span>
-                                                            }
                                                             else
                                                             {
-                                                                <span class="badge bg-light text-dark">@dc.Status</span>
+                                                                <span class="badge bg-secondary">@dc.Status</span>
                                                             }
                                                         </td>
 
@@ -429,7 +425,7 @@
                                                                 {
                                                                     <form asp-action="Submit" method="post" class="m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-xs btn-primary" title="Submit">Submit</button>
+                                                                        <button class="btn btn-xs btn-primary" title="Submit" data-confirm="Are you sure you want to submit this entry?">Submit</button>
                                                                     </form>
                                                                 }
 
@@ -438,7 +434,7 @@
                                                                 {
                                                                     <form asp-action="ApproveByHod" method="post" class="m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-xs btn-warning" title="Approve">Approve</button>
+                                                                        <button class="btn btn-xs btn-warning" title="Approve" data-confirm="Are you sure you want to approve this entry?">Approve</button>
                                                                     </form>
                                                                 }
 
@@ -447,27 +443,8 @@
                                                                 {
                                                                     <form asp-action="ApproveByAdmin" method="post" class="m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-xs btn-success" title="Final Approve">Final Approve</button>
+                                                                        <button class="btn btn-xs btn-success" title="Final Approve" data-confirm="Are you sure you want to provide Final Approval?">Final Approve</button>
                                                                     </form>
-                                                                }
-
-                                                                <!-- 👑 SUPERADMIN (All actions) -->
-                                                                @if (role == "SUPERADMIN")
-                                                                {
-                                                                    @if (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED")
-                                                                    {
-                                                                        <form asp-action="ApproveByHod" method="post" class="m-0">
-                                                                            <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                            <button class="btn btn-xs btn-warning" title="Approve">Approve</button>
-                                                                        </form>
-                                                                    }
-                                                                    @if (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED")
-                                                                    {
-                                                                        <form asp-action="ApproveByAdmin" method="post" class="m-0">
-                                                                            <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                            <button class="btn btn-xs btn-success" title="Final Approve">Final Approve</button>
-                                                                        </form>
-                                                                    }
                                                                 }
 
                                                                 <!-- 🖨️ PRINT (For Approved only) -->

@@ -210,9 +210,20 @@ namespace FITR_DC_FORM.Repositories.Repository
                     ProductType = rdr["ProductType"]?.ToString(),
                     Model = rdr["Model"]?.ToString(),
                     CreatedAt = rdr["CreatedAt"] as DateTime?,
+                    CreatedByUserId = rdr.GetSchemaTable().Select("ColumnName = 'CreatedByUserId'").Length > 0 
+                                      ? rdr["CreatedByUserId"] as int? 
+                                      : null,
                     POAttachmentPath = rdr["POAttachmentPath"] == DBNull.Value
                                           ? null
                                           : rdr["POAttachmentPath"].ToString(),
+
+                    // 🌍 MAPPING FOR IN-MEMORY FILTERING
+                    CompanyId = rdr.GetSchemaTable().Select("ColumnName = 'CompanyId'").Length > 0 
+                                ? rdr["CompanyId"] as int? 
+                                : null,
+                    LocationId = rdr.GetSchemaTable().Select("ColumnName = 'LocationId'").Length > 0 
+                                 ? rdr["LocationId"] as int? 
+                                 : null,
 
                     DCAttachmentPath = rdr["DCAttachmentPath"] == DBNull.Value
                                           ? null
@@ -677,6 +688,17 @@ namespace FITR_DC_FORM.Repositories.Repository
                     ProductType = rdr["ProductType"]?.ToString(),
                     Model = rdr["Model"]?.ToString(),
                     CreatedAt = rdr["CreatedAt"] as DateTime?,
+                    CreatedByUserId = rdr.GetSchemaTable().Select("ColumnName = 'CreatedByUserId'").Length > 0 
+                                      ? rdr["CreatedByUserId"] as int? 
+                                      : null,
+
+                    // 🌍 MAPPING FOR IN-MEMORY FILTERING
+                    CompanyId = rdr.GetSchemaTable().Select("ColumnName = 'CompanyId'").Length > 0 
+                                ? rdr["CompanyId"] as int? 
+                                : null,
+                    LocationId = rdr.GetSchemaTable().Select("ColumnName = 'LocationId'").Length > 0 
+                                 ? rdr["LocationId"] as int? 
+                                 : null,
                     
                     // Restore Missing Attachments 👇
                     POAttachmentPath = rdr["POAttachmentPath"]?.ToString(),
