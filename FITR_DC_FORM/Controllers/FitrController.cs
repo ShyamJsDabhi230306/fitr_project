@@ -334,7 +334,7 @@ namespace FITR_DC_FORM.Controllers
         }
 
         // ================= START NEW =================
-        [RoleAuthorize("USER")]
+        [RoleAuthorize("USER", "SUPERADMIN")]
         public IActionResult New()
         {
             HttpContext.Session.RemoveObject(FITR_SESSION_KEY);

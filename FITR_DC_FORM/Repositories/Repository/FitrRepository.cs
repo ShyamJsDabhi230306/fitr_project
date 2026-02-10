@@ -632,6 +632,23 @@ namespace FITR_DC_FORM.Repositories.Repository
                 });
             }
 
+            /* ======================
+    4️⃣ VISUAL DATA
+    ====================== */
+            rdr.NextResult();
+            while (rdr.Read())
+            {
+                vm.Master.Visuals.Add(new FitrVisual
+                {
+                    VisualId = (int)rdr["VisualId"],
+                    FitrId = (int)rdr["FitrId"],
+                    VisualMasterId = (int)rdr["VisualMasterId"],
+                    VisualItemName = rdr["VisualItemName"]?.ToString(),
+                    ProductValue = rdr["ProductValue"]?.ToString()
+                });
+            }
+
+
             return vm;
         }
 

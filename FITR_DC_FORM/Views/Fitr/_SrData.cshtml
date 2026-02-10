@@ -153,7 +153,7 @@
     </div>
 }
 
-<form asp-action="SaveSrData" method="post">
+<form asp-action="SaveSrData" method="post" class="needs-validation" novalidate>
 
     <input type="hidden" asp-for="Master.FitrId" />
     <input type="hidden" id="baseQty" value="@Model.Master.Quantity" />
@@ -181,15 +181,15 @@
                     <td>
                         <input asp-for="SrData[@i].SrNo"
                                class="form-control firstMirror"
-                               placeholder="e.g. 250930149" />
+                               placeholder="e.g. 250930149" required />
                     </td>
 
-                    <td><input asp-for="SrData[@i].ShaftDia" class="form-control firstMirror" /></td>
-                    <td><input asp-for="SrData[@i].OutputDrive" class="form-control firstMirror" /></td>
-                    <td><input asp-for="SrData[@i].ActuatorPCD" class="form-control firstMirror" /></td>
-                    <td><input asp-for="SrData[@i].ValvePCD" class="form-control firstMirror" /></td>
-                    <td><input asp-for="SrData[@i].SquareDia" class="form-control firstMirror" /></td>
-                    <td><input asp-for="SrData[@i].SquarePosition" class="form-control firstMirror" /></td>
+                    <td><input asp-for="SrData[@i].ShaftDia" class="form-control firstMirror" required /></td>
+                    <td><input asp-for="SrData[@i].OutputDrive" class="form-control firstMirror" required /></td>
+                    <td><input asp-for="SrData[@i].ActuatorPCD" class="form-control firstMirror" required /></td>
+                    <td><input asp-for="SrData[@i].ValvePCD" class="form-control firstMirror" required /></td>
+                    <td><input asp-for="SrData[@i].SquareDia" class="form-control firstMirror" required /></td>
+                    <td><input asp-for="SrData[@i].SquarePosition" class="form-control firstMirror" required /></td>
 
                     <td class="text-center">
                         <button type="button" class="btn btn-danger btn-sm"
@@ -311,13 +311,13 @@
         var row = tbody.insertRow(index);
         row.innerHTML = `
             <td class="text-center">${index + 1}</td>
-            <td><input name="SrData[${index}].SrNo" class="form-control mirror" /></td>
-            <td><input name="SrData[${index}].ShaftDia" class="form-control mirror" /></td>
-            <td><input name="SrData[${index}].OutputDrive" class="form-control mirror" /></td>
-            <td><input name="SrData[${index}].ActuatorPCD" class="form-control mirror" /></td>
-            <td><input name="SrData[${index}].ValvePCD" class="form-control mirror" /></td>
-            <td><input name="SrData[${index}].SquareDia" class="form-control mirror" /></td>
-            <td><input name="SrData[${index}].SquarePosition" class="form-control mirror" /></td>
+            <td><input name="SrData[${index}].SrNo" class="form-control mirror" required /></td>
+            <td><input name="SrData[${index}].ShaftDia" class="form-control mirror" required /></td>
+            <td><input name="SrData[${index}].OutputDrive" class="form-control mirror" required /></td>
+            <td><input name="SrData[${index}].ActuatorPCD" class="form-control mirror" required /></td>
+            <td><input name="SrData[${index}].ValvePCD" class="form-control mirror" required /></td>
+            <td><input name="SrData[${index}].SquareDia" class="form-control mirror" required /></td>
+            <td><input name="SrData[${index}].SquarePosition" class="form-control mirror" required /></td>
             <td class="text-center">
                 <button type="button" class="btn btn-danger btn-sm"
                         onclick="removeRow(this)">X</button>

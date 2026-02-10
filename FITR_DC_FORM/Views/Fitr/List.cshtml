@@ -125,8 +125,10 @@
     }
 
     /* Header Centering */
+    /* Header Centering - REMOVED global center to allow specific alignment */
     #roles-permission th {
-        text-align: center !important;
+        /* text-align: center !important;  <-- REMOVED */
+        vertical-align: middle;
         background-color: #fafafa; /* Keep header distinct */
         font-weight: 600;
     }
@@ -250,16 +252,16 @@
                                     <table class="table table-hover align-middle" id="roles-permission">
                                         <thead>
                                             <tr>
-                                                <th class="col-plus">#</th>
+                                                <th class="col-plus text-center">#</th>
                                                 <th class="col-check text-center">
                                                     <input type="checkbox" id="selectAll" />
                                                 </th>
-                                                <th class="col-tc">TC No</th>
-                                                <th class="col-customer">Customer Name</th>
-                                                <th class="col-dc">DC No</th>
-                                                <th class="col-product">Product Type</th>
-                                                <th class="col-po">Party PO No</th>
-                                                <th class="col-model">Model</th>
+                                                <th class="col-tc text-center">TC No</th>
+                                                <th class="col-customer text-start">Customer Name</th>
+                                                <th class="col-dc text-center">DC No</th>
+                                                <th class="col-product text-start">Product Type</th>
+                                                <th class="col-po text-start">Party PO No</th>
+                                                <th class="col-model text-start">Model</th>
                                                 <th class="col-status text-center">Status</th>
                                                 <th class="col-attach text-center">PO</th>
                                                 <th class="col-attach text-center">DC</th>
@@ -290,9 +292,9 @@
 
                                                         <td class="col-tc text-center">@dc.TCNo</td>
 
-                                                        <td class="col-customer">@dc.CompanyName</td>
+                                                        <td class="col-customer text-start">@dc.CompanyName</td>
 
-                                                        <td class="col-dc">
+                                                        <td class="col-dc text-center">
                                                             <a asp-controller="Fitr"
                                                                asp-action="Index"
                                                                asp-route-id="@dc.FitrId">
@@ -300,11 +302,11 @@
                                                             </a>
                                                         </td>
 
-                                                        <td class="col-product">@dc.ProductType</td>
+                                                        <td class="col-product text-start">@dc.ProductType</td>
 
-                                                        <td class="col-po">@dc.PONo</td>
+                                                        <td class="col-po text-start">@dc.PONo</td>
 
-                                                        <td class="col-model">@dc.Model</td>
+                                                        <td class="col-model text-start">@dc.Model</td>
 
                                                       @*   <td class="col-status text-center">
                                                             @if (dc.Status == "DRAFT")

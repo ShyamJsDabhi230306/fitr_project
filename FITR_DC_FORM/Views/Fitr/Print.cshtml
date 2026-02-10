@@ -875,17 +875,17 @@ h1, h2, h3, p {
                     <!-- VISUAL -->
                     <div class="section-title">VISUAL INSPECTION</div>
 
-                    @if (Model.Visuals != null && Model.Visuals.Any())
+                    @if (Model.Master.Visuals != null && Model.Master.Visuals.Any())
                     {
                         <table class="no-break" style="width:100%; border-collapse:collapse;">
                             <thead>
                                 <tr>
-                                    <th class="bold" style="width:60%">Inspection Item</th>
-                                    <th class="bold">Product Value</th>
+                                    <th style="width:60%">Inspection Item</th>
+                                    <th>Product Value</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var v in Model.Visuals)
+                                @foreach (var v in Model.Master.Visuals)
                                 {
                                     <tr>
                                         <td>@v.VisualItemName</td>
@@ -897,12 +897,9 @@ h1, h2, h3, p {
                     }
                     else
                     {
-                        <table class="no-break">
-                            <tr>
-                                <td>No visual inspection data available</td>
-                            </tr>
-                        </table>
+                        <p>No visual inspection data available</p>
                     }
+
 
 
 

@@ -8,39 +8,44 @@
 }
 
 
-<form asp-action="SaveProduct" method="post">
+<form asp-action="SaveProduct" method="post" class="needs-validation" novalidate>
 
     <input type="hidden" asp-for="Master.FitrId" />
 
-    <div class="row">
+    <div class="row g-3">
         <div class="col-md-4">
-            <label>Type</label>
-            <input asp-for="Master.ProductType" class="form-control" />
+            <label class="form-label">Type</label>
+            <input asp-for="Master.ProductType" class="form-control" required />
+             <div class="invalid-feedback">Please enter product type</div>
         </div>
 
         <div class="col-md-4">
-            <label>Torque</label>
-            <input asp-for="Master.Torque" class="form-control" />
+            <label class="form-label">Torque</label>
+            <input asp-for="Master.Torque" class="form-control" required />
+            <div class="invalid-feedback">Please enter torque</div>
         </div>
 
         <div class="col-md-4">
-            <label>Ratio</label>
-            <input asp-for="Master.Ratio" class="form-control" />
+            <label class="form-label">Ratio</label>
+            <input asp-for="Master.Ratio" class="form-control" required />
+             <div class="invalid-feedback">Please enter ratio</div>
         </div>
 
         <div class="col-md-6">
-            <label>Model</label>
-            <input asp-for="Master.Model" class="form-control" />
+            <label class="form-label">Model</label>
+            <input asp-for="Master.Model" class="form-control" required />
+             <div class="invalid-feedback">Please enter model</div>
         </div>
 
         <div class="col-md-6">
-            <label>Handwheel Dia</label>
-            <input asp-for="Master.HandwheelDia" class="form-control" />
+            <label class="form-label">Handwheel Dia</label>
+            <input asp-for="Master.HandwheelDia" class="form-control" required />
+             <div class="invalid-feedback">Please enter handwheel dia</div>
         </div>
     </div>
 
-    <div class="col-12 text-end mt-2">
-        <button type="submit" class="btn  btn-primary ">
+    <div class="col-12 text-end mt-4">
+        <button type="submit" class="btn btn-primary">
             Next
         </button>
     </div>
