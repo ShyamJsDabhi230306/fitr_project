@@ -294,13 +294,18 @@
 
                                                         <td class="col-customer text-start">@dc.CompanyName</td>
 
-                                                        <td class="col-dc text-center">
+                                                        @* <td class="col-dc text-center">
                                                             <a asp-controller="Fitr"
                                                                asp-action="Index"
                                                                asp-route-id="@dc.FitrId">
                                                                 @dc.DCNo
                                                             </a>
-                                                        </td>
+                                                        </td> *@
+                                                        <td class="col-dc text-center">
+                                                            
+                                                                @dc.DCNo
+                                                            
+                                                        </td> 
 
                                                         <td class="col-product text-start">@dc.ProductType</td>
 
