@@ -1,61 +1,6 @@
-﻿@* @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
-
-<form asp-action="SaveBasic" method="post">
-
-    <input type="hidden" asp-for="Master.FitrId" />
-
-    <div class="row">
-        <div class="col-md-6">
-            <label>Company / Party Name</label>
-            <input asp-for="Master.CompanyName" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>DC No</label>
-            <input asp-for="Master.DCNo" class="form-control" />
-        </div>
-
-        <div class="col-md-3">
-            <label>DC Date</label>
-            <input asp-for="Master.DCDate" type="date" class="form-control" />
-        </div>
-    </div>
-
-    <div class="row mt-2">
-        <div class="col-md-4">
-            <label>Party PO No</label>
-            <input asp-for="Master.PONo" class="form-control" />
-        </div>
-
-        <div class="col-md-4">
-            <label>Party PO Date</label>
-            <input asp-for="Master.PODate" type="date" class="form-control" />
-        </div>
-
-        <div class="col-md-2">
-            <label>Quantity</label>
-            <input asp-for="Master.Quantity" type="number" class="form-control" />
-        </div>
-
-        <div class="col-md-2">
-            <label>Status</label>
-            <select asp-for="Master.Status" class="form-select">
-                <option value="Draft">Draft</option>
-                <option value="Approved">Approved</option>
-                <option value="Hold">Hold</option>
-                <option value="Rejected">Rejected</option>
-            </select>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">
-        Save Basic
-    </button>
-</form> *@
-
-
-@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
+﻿@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
 @if (TempData["ErrorMessage"] != null)
+
 {
     <div class="alert alert-danger alert-dismissible fade show">
         @TempData["ErrorMessage"]
@@ -142,7 +87,11 @@
         <!-- Prepared By (User Selection) -->
         <div class="col-md-2">
             <label class="form-label">Prepared By</label>
-            <select asp-for="Master.CreatedByUserId" class="form-select" required>
+            <!-- Hidden input to submit the value -->
+            <input type="hidden" asp-for="Master.CreatedByUserId" />
+            
+            <!-- Disabled Select for Display -->
+            <select asp-for="Master.CreatedByUserId" class="form-select" disabled>
                 <option value="">-- Select User --</option>
                 @if (ViewBag.UserList != null)
                 {
@@ -152,7 +101,6 @@
                     }
                 }
             </select>
-            <div class="invalid-feedback">Please select "Prepared By"</div>
         </div>
 
         @* <!-- Status -->

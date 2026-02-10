@@ -26,11 +26,11 @@
                 <tr>
                     <td>
                         <input asp-for="Materials[@i].Component"
-                               class="form-control" />
+                               class="form-control" required />
                     </td>
                     <td>
                         <input asp-for="Materials[@i].Material"
-                               class="form-control" />
+                               class="form-control" required />
                     </td>
                     <td class="text-center">
                         <button type="button"
@@ -69,11 +69,11 @@
         row.innerHTML = `
             <td>
                 <input name="Materials[${index}].Component"
-                       class="form-control" />
+                       class="form-control" required />
             </td>
             <td>
                 <input name="Materials[${index}].Material"
-                       class="form-control" />
+                       class="form-control" required />
             </td>
             <td class="text-center">
                 <button type="button"

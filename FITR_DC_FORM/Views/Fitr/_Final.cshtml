@@ -62,7 +62,8 @@
         <input type="file"
                name="DCAttachment"
                class="form-control"
-               accept=".pdf,.jpg,.png" />
+               accept=".pdf,.jpg,.png" 
+               @(string.IsNullOrEmpty(Model.Master.DCAttachmentPath) ? "required" : "") />
     </div>
 
     <!-- PO Attachment -->
@@ -83,7 +84,8 @@
         <input type="file"
                name="POAttachment"
                class="form-control"
-               accept=".pdf,.jpg,.png" />
+               accept=".pdf,.jpg,.png"
+               @(string.IsNullOrEmpty(Model.Master.POAttachmentPath) ? "required" : "") />
     </div>
 
     <!-- Drawing Attachment -->

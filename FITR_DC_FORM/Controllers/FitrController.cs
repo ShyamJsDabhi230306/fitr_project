@@ -433,6 +433,17 @@ namespace FITR_DC_FORM.Controllers
                 model.Master.PreviewTCYear = preview.tcYear;
             }
 
+            // 5️⃣ CALCULATE PROGRESS STEP
+            // 1: Basic, 2: Product, 3: Material, 4: SrData, 5: Visual, 6: Final
+            int maxStep = 1;
+            if (model.Master.FitrId > 0) maxStep = 2; // Basic Saved
+            if (!string.IsNullOrEmpty(model.Master.ProductType)) maxStep = 3; // Product Saved
+            if (model.Materials != null && model.Materials.Any()) maxStep = 4; // Material Saved
+            if (model.SrData != null && model.SrData.Any()) maxStep = 5; // SrData Saved
+            if (model.Visuals != null && model.Visuals.Any()) maxStep = 6; // Visual Saved
+
+            ViewBag.MaxAllowedStep = maxStep;
+
             HttpContext.Session.SetObject(FITR_SESSION_KEY, model);
             return View(model);
         }
@@ -470,6 +481,19 @@ namespace FITR_DC_FORM.Controllers
             var drawingPath = SaveFile(DrawingAttachment, "drawing");
             if (!string.IsNullOrEmpty(drawingPath))
                 sessionModel.Master.DrawingAttachmentPath = drawingPath;
+
+            // 🔴 DUPLICATE DC NO CHECK (Server-Side)
+            if (_service.IsDcNoExists(sessionModel.Master.DCNo, sessionModel.Master.FitrId))
+            {
+                TempData["ErrorMessage"] = $"DC No '{sessionModel.Master.DCNo}' already exists.";
+                // Restore model state for view
+                ViewBag.ActiveTab = "basic";
+                ViewBag.IsCreate = sessionModel.Master.FitrId == 0;
+                ViewBag.UserList = _userService.GetAll(model.Master.CompanyId ?? 0, model.Master.LocationId ?? 0);
+                ViewBag.VisualMaster = _service.GetAllVisualMaster();
+                
+                return RedirectToAction("Index", new { tab = "basic" });
+            }
 
             HttpContext.Session.SetObject(FITR_SESSION_KEY, sessionModel);
             return RedirectToAction("Index", new { tab = "product" });
@@ -857,5 +881,18 @@ namespace FITR_DC_FORM.Controllers
             return RedirectToAction("List");
         }
 
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult CheckDuplicateDc(string dcNo, int fitrId)
+        {
+            if (string.IsNullOrEmpty(dcNo))
+                return Json(true);
+
+            bool exists = _service.IsDcNoExists(dcNo, fitrId);
+
+            if (exists)
+                return Json($"DC No '{dcNo}' already exists");
+
+            return Json(true);
+        }
     }
 }
