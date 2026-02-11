@@ -1,4 +1,5 @@
-﻿using FITR_DC_FORM.Infrastructure;
+﻿using FITR_DC_FORM.Filters;
+using FITR_DC_FORM.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,13 @@ builder.Services.AddControllers()
         opt.JsonSerializerOptions.PropertyNamingPolicy =
             System.Text.Json.JsonNamingPolicy.CamelCase;
     });
-builder.Services.AddControllersWithViews();
+//builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<PermissionFilter>();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<PermissionFilter>();
+});
 // ? Call your DependencyInjection class
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSession();
