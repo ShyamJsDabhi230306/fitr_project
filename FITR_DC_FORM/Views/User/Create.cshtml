@@ -1,110 +1,178 @@
 ﻿@model FITR_DC_FORM.Models.UserMaster
 
 @{
-    ViewData["Title"] = "User Master";
+    ViewData["Title"] = (Model.UserId == 0 ? "Create User" : "Edit User");
 }
 
-<div class="card">
-    <div class="card-header">
-        <h5>@(Model.UserId == 0 ? "Create User" : "Edit User")</h5>
-    </div>
+<style>
+    .user-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .user-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+    .user-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .form-control, .form-select {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #7366ff;
+        box-shadow: 0 0 0 3px rgba(115, 102, 255, 0.1);
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #7366ff 0%, #a178ff 100%);
+        border: none;
+        padding: 10px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(115, 102, 255, 0.2);
+        color: #fff;
+    }
+    .btn-save:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(115, 102, 255, 0.3);
+    }
+    .signature-preview-box {
+        border: 2px dashed #e0e0e0;
+        border-radius: 10px;
+        padding: 15px;
+        background: #fdfdfd;
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
 
-    <div class="card-body">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="UserId" />
+<div class="container-fluid py-4">
+    <div class="card user-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="card-title">
+                <i class="fa-solid @(Model.UserId == 0 ? "fa-user-plus" : "fa-user-pen") me-2 text-primary"></i>
+                @(Model.UserId == 0 ? "Create New User" : $"Edit User: {Model.FullName}")
+            </h4>
+        </div>
 
-            <div class="row">
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
 
-                <!-- Company -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Company</label>
-                    <select asp-for="CompanyId"
-                            class="form-select"
-                            id="CompanyId">
-                        <option value="">-- Select Company --</option>
-                        @foreach (var c in ViewBag.CompanyList)
-                        {
-                            <option value="@c.CompanyId">@c.CompanyName</option>
-                        }
-                    </select>
-                    <span asp-validation-for="CompanyId" class="text-danger"></span>
-                </div>
-
-                <!-- Location -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Location</label>
-                    <select asp-for="LocationId"
-                            class="form-select"
-                            id="LocationId"
-                            disabled>
-                        <option value="">-- Select Location --</option>
-                    </select>
-                    <span asp-validation-for="LocationId" class="text-danger"></span>
-                </div>
-
-                <!-- Role -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">User Role</label>
-                    <select asp-for="UserRole" class="form-select">
-                        <option value="USER">USER</option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="HOD">HOD</option>
-                        <option value="subadmin">SUPERADMIN</option>
-                    </select>
-                </div>
-
-                <!-- Full Name -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Full Name</label>
-                    <input asp-for="FullName" class="form-control" />
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                </div>
-
-                <!-- User Name -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">User Name</label>
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
-
-                <!-- Password -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Password</label>
-                    <input asp-for="Password" type="password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <!-- Signature Upload -->
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Signature</label>
-                    <input asp-for="SignatureFile"
-                           type="file"
-                           class="form-control"
-                           accept="image/*" />
-                </div>
-
-                @if (!string.IsNullOrEmpty(Model.SignaturePath))
-                {
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label d-block">Current Signature</label>
-                        <img src="@Model.SignaturePath"
-                             style="height:80px;border:1px solid #ccc;padding:5px" />
-                        <div class="text-muted small">
-                            Signed On:
-                            @Model.SignedOn?.ToString("dd-MMM-yyyy hh:mm tt")
-                        </div>
+                <div class="row g-4">
+                    <!-- Company -->
+                    <div class="col-md-4">
+                        <label class="form-label" for="CompanyId">Company</label>
+                        <select asp-for="CompanyId" class="form-select" id="CompanyId">
+                            <option value="">-- Select Company --</option>
+                            @foreach (var c in ViewBag.CompanyList)
+                            {
+                                <option value="@c.CompanyId">@c.CompanyName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CompanyId" class="text-danger small"></span>
                     </div>
-                }
 
-            </div>
+                    <!-- Location -->
+                    <div class="col-md-4">
+                        <label class="form-label" for="LocationId">Location</label>
+                        <select asp-for="LocationId" class="form-select" id="LocationId" disabled>
+                            <option value="">-- Select Location --</option>
+                        </select>
+                        <span asp-validation-for="LocationId" class="text-danger small"></span>
+                    </div>
 
-            <div class="mt-3">
-                <button type="submit" class="btn btn-primary">
-                    @(Model.UserId == 0 ? "Save" : "Update")
-                </button>
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-            </div>
-        </form>
+                    <!-- Role -->
+                    <div class="col-md-4">
+                        <label class="form-label">User Role</label>
+                        <select asp-for="UserRole" class="form-select">
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="HOD">HOD</option>
+                            <option value="SUPERADMIN">SUPERADMIN</option>
+                        </select>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="col-md-4">
+                        <label class="form-label">Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-id-card text-muted"></i></span>
+                            <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- User Name -->
+                    <div class="col-md-4">
+                        <label class="form-label">User Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-user text-muted"></i></span>
+                            <input asp-for="UserName" class="form-control" placeholder="Create username" />
+                        </div>
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-md-4">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-lock text-muted"></i></span>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" value="@(Model.UserId > 0 ? Model.Password : "")" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Signature Upload -->
+                    <div class="col-md-6">
+                        <label class="form-label">Signature Image</label>
+                        <input asp-for="SignatureFile" type="file" class="form-control" accept="image/*" />
+                        <p class="text-muted small mt-2"><i class="fa fa-circle-info me-1"></i> Upload a clear transparent PNG signature if possible.</p>
+                    </div>
+
+                    <!-- Signature Preview -->
+                    <div class="col-md-6">
+                        @if (!string.IsNullOrEmpty(Model.SignaturePath))
+                        {
+                            <label class="form-label">Active Signature</label>
+                            <div class="signature-preview-box">
+                                <img src="@Model.SignaturePath" style="height:70px; object-fit: contain;" />
+                                <div class="mt-2 text-muted x-small">
+                                    <i class="fa fa-clock me-1"></i> Last updated: @Model.SignedOn?.ToString("dd MMM yyyy")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-3 border-top d-flex gap-3">
+                    <button type="submit" class="btn btn-save px-5">
+                        <i class="fa fa-check-circle me-2"></i>
+                        @(Model.UserId == 0 ? "Save User" : "Update Changes")
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="fa fa-arrow-left me-2"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -145,7 +213,6 @@
             loadLocations(this.value);
         });
 
-        // 🔥 EDIT MODE FIX (auto-load locations)
         document.addEventListener("DOMContentLoaded", function () {
             const companyId = "@Model.CompanyId";
             const locationId = "@Model.LocationId";

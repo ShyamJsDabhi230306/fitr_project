@@ -1,4 +1,9 @@
 ﻿<!DOCTYPE html>
+@inject FITR_DC_FORM.Services.Interfaces.IPermissionService PermissionService
+
+@{
+    int? userId = Context.Session.GetInt32("UserId");
+}
 
 <html lang="en">
 <head>
@@ -614,40 +619,86 @@
                 <nav class="sidebar-main">
                     <div id="sidebar-menu">
                         <ul class="sidebar-links" id="simple-bar">
-                            
-                            <!-- FITR Pages accessible to User, HOD, Admin, SuperAdmin -->
-                            <li class="sidebar-list">
-                                <a class="sidebar-link sidebar-title" href="/Fitr/list">
-                                    <i data-feather="list"></i>
-                                    <span>FITR List</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-list">
-                                <a class="sidebar-link sidebar-title" href="/Fitr/list">
-                                    <i data-feather="list"></i>
-                                    <span> FITR</span>
-                                </a>
-                            </li>
 
-                            @if (Context.Session.GetString("UserRole") == "SUPERADMIN")
+                            @if (userId != null)
                             {
-                                <li class="sidebar-main-title">
-                                    <div><h6>Master Setup</h6></div>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <i data-feather="settings"></i>
-                                        <span>Masters</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="/Company/Index">Company Master</a></li>
-                                        <li><a href="/Location/Index">Location Master</a></li>
-                                        <li><a href="/User/Index">User Master</a></li>
-                                        <li><a href="/VisualMaster/Index">Visual Master</a></li>
-                                        <li><a href="/PrintCompany/Index">PrintCompany Master</a></li>
-                                    </ul>
-                                </li>
+                                /* ================= FITR SECTION ================= */
+
+                                if (PermissionService.CanView(userId.Value, "Fitr"))
+                                {
+                                    <li class="sidebar-list">
+                                        <a class="sidebar-link sidebar-title" href="/Fitr/List">
+                                            <i data-feather="list"></i>
+                                            <span>FITR List</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="sidebar-list">
+                                        <a class="sidebar-link sidebar-title" href="/Fitr/List">
+                                            <i data-feather="list"></i>
+                                            <span>FITR</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                /* ================= MASTER SETUP ================= */
+
+                                bool showCompany = PermissionService.CanView(userId.Value, "CompanyMaster");
+                                bool showLocation = PermissionService.CanView(userId.Value, "LocationMaster");
+                                bool showUser = PermissionService.CanView(userId.Value, "UserMaster");
+                                bool showVisual = PermissionService.CanView(userId.Value, "VisualMaster");
+                                bool showPrintCompany = PermissionService.CanView(userId.Value, "PrintCompany");
+                                bool showUserRights = PermissionService.CanView(userId.Value, "UserRights");
+
+                                if (showCompany || showLocation || showUser || showVisual || showPrintCompany || showUserRights)
+                                {
+                                    <li class="sidebar-main-title">
+                                        <div><h6>Master Setup</h6></div>
+                                    </li>
+
+                                    <li class="sidebar-list">
+                                        <a class="sidebar-link sidebar-title" href="#">
+                                            <i data-feather="settings"></i>
+                                            <span>Masters</span>
+                                        </a>
+
+                                        <ul class="sidebar-submenu">
+
+                                            @if (showCompany)
+                                            {
+                                                <li><a href="/Company/Index">Company Master</a></li>
+                                            }
+
+                                            @if (showLocation)
+                                            {
+                                                <li><a href="/Location/Index">Location Master</a></li>
+                                            }
+
+                                            @if (showUser)
+                                            {
+                                                <li><a href="/User/Index">User Master</a></li>
+                                            }
+
+                                            @if (showVisual)
+                                            {
+                                                <li><a href="/VisualMaster/Index">Visual Master</a></li>
+                                            }
+
+                                            @if (showPrintCompany)
+                                            {
+                                                <li><a href="/PrintCompany/Index">PrintCompany Master</a></li>
+                                            }
+
+                                            @if (showUserRights)
+                                            {
+                                                <li><a href="/UserRights/Index">User Rights</a></li>
+                                            }
+
+                                        </ul>
+                                    </li>
+                                }
                             }
+
                         </ul>
                     </div>
                 </nav>

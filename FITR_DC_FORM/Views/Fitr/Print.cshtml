@@ -1,386 +1,4 @@
-﻿@* 
-
-
-
-
-@model FITR_DC_FORM.Models.ViewModels.FitrViewModel
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>GearBox Test Certificate</title>
-
-
-<style>
-        /* 🔥 FORCE A4 SIZE */
-@@page {
-    size: A4;
-    margin: 15mm;
-}
-
-/* ===== SCREEN PREVIEW (CENTER PAGE) ===== */
-body {
-    display: flex;
-    justify-content: center;
-    background: #f5f5f5; /* light gray preview background */
-    margin: 0;
-    padding: 0;
-}
-
-/* ===== PRINT MODE (NORMAL FLOW) ===== */
-        @@body {
-            display: flex;
-            justify-content: center;
-        }
-
-        /* ===== PRINT MODE ===== */
-        @@media print {
-            body
-
-        {
-            display: block;
-            background: none;
-        }
-
-        }
-
-/* ===== A4 BASE SETUP ===== */
-        /* ===== SCREEN PREVIEW ===== */
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 11px;
-            background: #f5f5f5;
-        }
-
-
-/* ===== PAGE WRAPPER ===== */
-.page {
-    width: 230mm;
-    min-height: 273mm;
-    background: #fff;
-    border: 1px solid #000;
-    padding: 8mm;
-    box-sizing: border-box;
-}
-/* ===== TABLES ===== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-td, th {
-    border: 1px solid #000;
-    padding: 3px 5px;
-    vertical-align: middle;
-}
-
-.no-border td {
-    border: none !important;
-}
-
-/* ===== TEXT HELPERS ===== */
-.bold { font-weight: bold; }
-.center { text-align: center; }
-
-.title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.section-title {
-    font-weight: bold;
-    background: #eaeaea;
-    padding: 4px;
-    border: 1px solid #000;
-    margin-top: 6px;
-}
-
-/* ===== HR LINE ===== */
-hr {
-    border: none;
-    border-top: 1px solid #000;
-    margin: 12px 0;
-    width: 100%;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-    margin-top: auto;
-}
-
-.footer-logo {
-    max-width: 120px;
-    height: auto;
-}
-
-
-
-
-
-
-  /* Allow table rows to break across pages */
-  table {
-      page-break-inside: auto;
-  }
-
-  tr {
-      page-break-inside: avoid;
-      page-break-after: auto;
-  }
-
-  thead {
-      display: table-header-group; /* repeat header on each page */
-  }
-
-  tfoot {
-      display: table-footer-group;
-  }
-
-        .section td {
-            padding-top: 8px;
-            padding-bottom: 6px;
-            font-size: 14px;
-        }
-
-        table td {
-            padding: 2px 6px;
-            vertical-align: top;
-        }
-
-        .fw-bold {
-            font-weight: 600;
-        }
-
-
-</style>
-
-</head>
-
-<body>
-    <div class="page">
-
-        <!-- HEADER -->
-        <table class="no-border">
-            <tr>
-                <td class="title">
-                    GearBox Test Certificate
-                   
-                </td>
-                
-                  
-
-                <td style="width:30%;">
-                    <table>
-                        <tr>
-                            <td class="bold">TC.NO <span>:</span> </td>
-                            <td>GB/@Model.Master.TCYear/@Model.Master.TCNo</td>
-                        </tr>
-                        <tr>
-                            <td class="bold">TC.DATE <span>:</span></td>
-                            <td>@Model.Master.TCDate?.ToString("dd-MM-yyyy")</td>
-                        </tr>
-                        <tr>
-                            <td class="bold">SHEET <span>:</span></td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <!-- BASIC DETAILS -->
-        <table>
-            <tr>
-                <td class="bold">CUSTOMER<span>:</span></td>
-                <td colspan="3">@Model.Master.CompanyName</td>
-            </tr>
-            <tr>
-                <td class="bold">DC NO<span>:</span></td>
-                <td>@Model.Master.DCNo</td>
-                <td class="bold">DC DATE<span>:</span></td>
-                <td>@Model.Master.DCDate?.ToString("dd-MM-yyyy")</td>
-            </tr>
-            <tr>
-                <td class="bold">PO NO<span>:</span></td>
-                <td>@Model.Master.PONo</td>
-                <td class="bold">PO DATE<span>:</span></td>
-                <td>@Model.Master.PODate?.ToString("dd-MM-yyyy")</td>
-            </tr>
-            <tr>
-                <td class="bold">QUANTITY<span>:</span></td>
-                <td colspan="3">@Model.Master.Quantity</td>
-            </tr>
-        </table>
-
-        <!-- PRODUCT -->
-        <table>
-            <tr>
-                <td class="bold">TYPE<span>:</span></td>
-                <td>@Model.Master.ProductType</td>
-                <td class="bold">TORQUE<span>:</span></td>
-                <td>@Model.Master.Torque</td>
-                <td class="bold">RATIO<span>:</span></td>
-                <td>@Model.Master.Ratio</td>
-            </tr>
-            <tr>
-                <td class="bold">MODEL<span>:</span></td>
-                <td>@Model.Master.Model</td>
-                <td class="bold">HANDWHEEL DIA<span>:</span></td>
-                <td colspan="3">@Model.Master.HandwheelDia</td>
-            </tr>
-        </table>
-
-        <!-- MATERIAL -->
-        @{
-            string[] printOrder =
-            {
-                "BODY",
-                "WORM",
-                "COVER",
-                "SHAFT",
-                "GEAR",
-                "INDICATOR",
-                "HANDWHEEL"
-                };
-
-            var ordered = printOrder
-            .Select(p =>
-            Model.Materials.FirstOrDefault(m =>
-            !string.IsNullOrWhiteSpace(m.Component) &&
-            m.Component.Trim().ToUpper() == p
-            )
-            )
-            .Where(m => m != null)
-            .ToList();
-
-            var pairs = new List<(FitrMaterial Left, FitrMaterial Right)>();
-
-            for (int i = 0; i < ordered.Count; i += 2)
-            {
-                pairs.Add((
-                ordered[i],
-                i + 1 < ordered.Count ? ordered[i + 1] : null
-                ));
-            }
-        }
-
-        <table style="width:100%; border-collapse:collapse; font-size:13px;">
-            <tr>
-                <td colspan="6" style="font-weight:700; padding-bottom:6px;">
-                    MATERIAL SPECIFICATION
-                </td>
-            </tr>
-
-            @foreach (var p in pairs)
-            {
-                <tr>
-                    <td style="width:14%; font-weight:600;">@p.Left.Component</td>
-                    <td style="width:2%;">:</td>
-                    <td style="width:34%;">@p.Left.Material</td>
-
-                    @if (p.Right != null)
-                    {
-                        <td style="width:14%; font-weight:600;">@p.Right.Component</td>
-                        <td style="width:2%;">:</td>
-                        <td style="width:34%;">@p.Right.Material</td>
-                    }
-                    else
-                    {
-                        <td colspan="3"></td>
-                    }
-                </tr>
-            }
-        </table>
-
-
-        <!-- DIMENSION TABLE -->
-        <table>
-            <tr class="section center">
-                <td>Sr No</td>
-                <td>Shaft Dia</td>
-                <td>Output Drive Type & Key Way</td>
-                <td>Actuator Mounting PCD</td>
-                <td>Valve Mounting PCD</td>
-                <td>Square Dia</td>
-                <td>Square Position</td>
-            </tr>
-            @foreach (var s in Model.SrData)
-            {
-                <tr class="center">
-                    <td>@s.SrNo</td>
-                    <td>@s.ShaftDia</td>
-                    <td>@s.OutputDrive</td>
-                    <td>@s.ActuatorPCD</td>
-                    <td>@s.ValvePCD</td>
-                    <td>@s.SquareDia</td>
-                    <td>@s.SquarePosition</td>
-                </tr>
-            }
-        </table>
-
-        <!-- VISUAL -->
-        <table>
-            <tr class="section">
-                <td colspan="2">VISUAL INSPECTION</td>
-            </tr>
-            <tr><td class="bold">TAPPING ON PCD & DEPTH</td><td>@Model.Master.Tapping</td></tr>
-            <tr><td class="bold">HARDWARE</td><td>@Model.Master.Hardware</td></tr>
-            <tr><td class="bold">PAINTING</td><td>@Model.Master.Painting</td></tr>
-            <tr><td class="bold">SHAFT MOVEMENT</td><td>@Model.Master.ShaftMovement</td></tr>
-        </table>
-
-        <!-- REMARKS -->
-        <table>
-            <tr class="section">
-                <td>REMARKS</td>
-            </tr>
-            <tr>
-                <td>@Model.Master.FinalRemarks</td>
-            </tr>
-        </table>
-
-        <!-- SIGNATURE -->
-        <table class="signature no-border center" style="margin-top:70px;">
-            <tr>
-                <td>Quality Person</td>
-                <td>Quality Control</td>
-                <td>Quality Management</td>
-            </tr>
-        </table>
-        <hr/>
-        <!-- FOOTER -->
-        <table class="no-border small">
-            <tr>
-                <td>
-                    <b>AIRA EURO AUTOMATION PVT. LTD.</b><br />
-                    Shed No.2, Cair Estate Nr. Kashiram Textile Mill,<br />
-                    Narol, Ahmedabad, Gujarat
-                </td>
-                <td>
-                    <img src="~/assets/images/logo/airaindia-logo.webp" alt="Aira_Euro_Logo " class="footer-logo" />
-                </td>
-            </tr>
-        </table>
-
-    </div>
-
-    <script>
-        window.onload = () => window.print();
-    </script>
-
-</body>
-</html>
- *@
-
-
-
-
-
-@using FITR_DC_FORM.Models
+﻿@using FITR_DC_FORM.Models
 @model FITR_DC_FORM.Models.ViewModels.FitrViewModel
 @{
     Layout = null;
@@ -393,299 +11,160 @@ hr {
     <meta charset="utf-8" />
     <title>GearBox Test Certificate</title>
 
-    @* <style>
+
+    <style>
+        /* ================= PRINT PAGE ================= */
         @@page {
             size: A4;
-            margin: 15mm;
+            margin: 12mm;
         }
 
+        /* ================= BASE ================= */
         html, body {
             margin: 0;
             padding: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 11px;
             background: #fff;
         }
 
-        /* PAGE BORDER */
-        @@media print {
-            body:: before {
-                content: "";
-                position: fixed;
-                top: 15mm;
-                left: 15mm;
-                right: 15mm;
-                bottom: 15mm;
-                border: 1.5px solid #000;
-                pointer-events: none;
-            }
-        }
-
-        /* ===== HEADER STYLE ===== */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            background: #1f6fb2;
-            padding: 14px;
-            color: #fff;
-        }
-
-            .header img {
-                height: 75px;
-                position: relative;
-                bottom: 16px;
-                right: 50px;
-            }
-
-            .header h1 {
-                margin: 4px 0 0;
-                font-size: 16px;
-            }
-
-            .header h2 {
-                margin: 2px 0;
-                font-size: 13px;
-                font-weight: 600;
-            }
-
-            .header small {
-                font-size: 10px;
-                opacity: 0.9;
-            }
-
-        .header-info table {
-            border-collapse: collapse;
-        }
-
-        .header-info td {
-            border: none;
-            padding: 2px 6px;
-            font-size: 11px;
-            color: #fff;
-            position: relative;
-            bottom: 7px;
-        }
-
-        /* ===== CONTENT ===== */
-        .section-title {
-            background: #e9f1fb;
-            color: #1f6fb2;
-            font-weight: 600;
-            padding: 6px;
-            margin-top: 10px;
-        }
-
+        /* ================= MAIN TABLE ================= */
         table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        th, td {
-            border: 1px solid #cfd8e3;
-            padding: 5px;
-            font-size: 16px;
+        /* ================= HEADER ================= */
+        .header {
+            width: 100%;
+            display: table;
         }
 
-        th {
-            background: #f4f7fb;
-            font-weight: 600;
+            .header > div,
+            .header img {
+                display: table-cell;
+                vertical-align: top;
+            }
+
+            .header img {
+                max-height: 90px;
+            }
+
+        /* ================= HEADER INFO TABLE ================= */
+        .header-info table {
+            width: auto;
+        }
+
+        .header-info td {
+            border: none;
+            padding: 2px 4px;
+            font-size: 11px;
+        }
+
+        /* ================= TABLE CELLS ================= */
+        td, th {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: middle;
+        }
+
+        /* remove border helper */
+        .no-border td {
+            border: none !important;
+        }
+
+        /* ================= SECTION TITLES ================= */
+        .section-title {
+            font-weight: bold;
+            padding: 4px 6px;
+            margin-top: 6px;
+            /* border: 1px solid #000; */
+            background: #f2f2f2;
+        }
+
+        /* ================= TEXT HELPERS ================= */
+        .bold {
+            font-weight: bold;
         }
 
         .center {
             text-align: center;
         }
 
-        .bold {
-            font-weight: 600;
-        }
-
-        /* ===== PRINT MAGIC ===== */
+        /* ================= PAGE BREAK RULES ================= */
+        /* Repeat header row on each page */
         thead {
-            display: table-header-group; /* REPEATS HEADER */
+            display: table-header-group;
         }
 
+        /* Prevent row splitting */
         tr {
             page-break-inside: avoid;
         }
 
-        .header td {
-            color: black;
-            height: 15px
+        /* Avoid breaking important blocks */
+        .no-break {
+            page-break-inside: avoid;
         }
 
-        .footer {
-            border-top: 1px solid #ccc;
-            margin-top: 20px;
-            padding-top: 10px;
+        /* ================= SIGNATURE AREA ================= */
+        img.company-logo {
+            max-height: 80px;
         }
 
-        .nameofCompany {
-            color: black;
-            position: relative;
-            bottom: 14px;
-            right: 4px;
-            /* font-size:18px; */
-        }
-
-        .page {
+        /* ================= SIGNATURE AREA ================= */
+        .signature-table {
+            margin-top: 50px;
             width: 100%;
-            background: #fff;
-            padding: 8mm;
-            box-sizing: border-box;
+            border-collapse: collapse;
         }
 
+            .signature-table td {
+                border: none !important;
+                text-align: center;
+                vertical-align: bottom;
+                padding: 10px;
+                width: 33.33%;
+            }
+
+        .signature-img {
+            height: 60px;
+            max-width: 150px;
+            display: block;
+            margin: 0 auto 5px auto;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            font-size: 13px;
+            display: block;
+        }
+
+        .signature-date {
+            font-size: 10px;
+            color: #555;
+            display: block;
+        }
+
+        .signature-label {
+            font-size: 11px;
+            margin-top: 5px;
+            display: block;
+            border-top: 1px solid #000;
+            width: 80%;
+            margin-left: 10%;
+            padding-top: 3px;
+        }
+
+        /* ================= REMOVE EXTRA SPACE ================= */
+        h1, h2, h3, p {
+            margin: 2px 0;
+        }
+
+    </style>
 
 
-    </style> *@
-<style>
-/* ================= PRINT PAGE ================= */
-@@page {
-    size: A4;
-    margin: 12mm;
-}
 
-/* ================= BASE ================= */
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    background: #fff;
-}
-
-/* ================= MAIN TABLE ================= */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-/* ================= HEADER ================= */
-.header {
-    width: 100%;
-    display: table;
-}
-
-.header > div,
-.header img {
-    display: table-cell;
-    vertical-align: top;
-}
-
-.header img {
-    max-height: 90px;
-}
-
-/* ================= HEADER INFO TABLE ================= */
-.header-info table {
-    width: auto;
-}
-
-.header-info td {
-    border: none;
-    padding: 2px 4px;
-    font-size: 11px;
-}
-
-/* ================= TABLE CELLS ================= */
-td, th {
-    border: 1px solid #000;
-    padding: 4px 6px;
-    vertical-align: middle;
-}
-
-/* remove border helper */
-.no-border td {
-    border: none !important;
-}
-
-/* ================= SECTION TITLES ================= */
-.section-title {
-    font-weight: bold;
-    padding: 4px 6px;
-    margin-top: 6px;
-    /* border: 1px solid #000; */
-    background: #f2f2f2;
-}
-
-/* ================= TEXT HELPERS ================= */
-.bold { font-weight: bold; }
-.center { text-align: center; }
-
-/* ================= PAGE BREAK RULES ================= */
-/* Repeat header row on each page */
-thead {
-    display: table-header-group;
-}
-
-/* Prevent row splitting */
-tr {
-    page-break-inside: avoid;
-}
-
-/* Avoid breaking important blocks */
-.no-break {
-    page-break-inside: avoid;
-}
-
-/* ================= SIGNATURE AREA ================= */
-img.company-logo {
-    max-height: 80px;
-}
-
-/* ================= SIGNATURE AREA ================= */
-.signature-table {
-    margin-top: 50px;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.signature-table td {
-    border: none !important;
-    text-align: center;
-    vertical-align: bottom;
-    padding: 10px;
-    width: 33.33%;
-}
-
-.signature-img {
-    height: 60px;
-    max-width: 150px;
-    display: block;
-    margin: 0 auto 5px auto;
-}
-
-.signature-name {
-    font-weight: bold;
-    font-size: 13px;
-    display: block;
-}
-
-.signature-date {
-    font-size: 10px;
-    color: #555;
-    display: block;
-}
-
-.signature-label {
-    font-size: 11px;
-    margin-top: 5px;
-    display: block;
-    border-top: 1px solid #000;
-    width: 80%;
-    margin-left: 10%;
-    padding-top: 3px;
-}
-
-/* ================= REMOVE EXTRA SPACE ================= */
-h1, h2, h3, p {
-    margin: 2px 0;
-}
-
-</style>
-
-
-  
 </head>
 
 <body>
@@ -899,7 +378,6 @@ h1, h2, h3, p {
                     {
                         <p>No visual inspection data available</p>
                     }
-
 
 
 

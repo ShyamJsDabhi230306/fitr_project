@@ -1,92 +1,187 @@
 ﻿@model List<FITR_DC_FORM.Models.UserMaster>
 
 @{
-    ViewData["Title"] = "User List";
+    ViewData["Title"] = "User Management";
 }
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">User List</h5>
-        <a asp-action="Create" class="btn btn-success btn-sm">+ Add User</a>
-    </div>
+<style>
+    .user-list-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
 
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Company</th>
-                        <th>Location</th>
-                        <th>Full Name</th>
-                        <th>User Name</th>
-                        <th>Role</th>
-                        <th>Signature</th>
-                        <th>Signed On</th>
-                        <th style="width:120px" class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var u in Model)
+    .user-list-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    #user-table th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    #user-table td {
+        vertical-align: middle;
+        font-size: 0.9rem;
+        color: #2c3e50;
+    }
+
+    .badge-role {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="card user-list-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold"><i class="fa fa-users me-2 text-primary"></i> User Management</h4>
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2">
+                <i class="fa fa-plus-circle"></i> Add New User
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="user-table">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Entity & Location</th>
+                            <th>Full Name</th>
+                            <th>Credentials</th>
+                            <th>System Role</th>
+                            <th class="text-center">Signature</th>
+                            <th>Signed On</th>
+                            <th class="text-center pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var u in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold">@u.CompanyName</div>
+                                        <div class="text-muted small">@u.LocationName</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">@u.FullName</div>
+                                    </td>
+                                    <td>
+                                        <div><i class="fa fa-user-tag me-1 text-muted small"></i> @u.UserName</div>
+                                        <div class="text-muted small"><i class="fa fa-key me-1"></i> **********</div>
+                                    </td>
+                                    <td>
+                                        @{
+                                            string roleClass = "bg-light text-dark";
+                                            string icon = "fa-circle-user";
+
+                                            switch ((u.UserRole ?? "").ToUpper())
+                                            {
+                                                case "SUPERADMIN":
+                                                    roleClass = "bg-primary text-white";
+                                                    icon = "fa-shield-halved";
+                                                    break;
+                                                case "ADMIN":
+                                                    roleClass = "bg-danger text-white";
+                                                    icon = "fa-user-tie";
+                                                    break;
+                                                case "HOD":
+                                                    roleClass = "bg-warning text-dark";
+                                                    icon = "fa-user-check";
+                                                    break;
+                                                case "USER":
+                                                    roleClass = "bg-success text-white";
+                                                    icon = "fa-user";
+                                                    break;
+                                            }
+                                        }
+
+                                        <span class="badge badge-role @roleClass">
+                                            <i class="fa @icon me-1"></i> @u.UserRole
+                                        </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(u.SignaturePath))
+                                        {
+                                            <div class="p-1 border bg-white rounded d-inline-block shadow-sm">
+                                                <img src="@u.SignaturePath" style="height:30px; max-width: 80px; object-fit: contain;" title="Signature uploaded" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-danger border"><i class="fa fa-times-circle me-1"></i> Missing</span>
+                                        }
+                                    </td>
+
+                                    <td class="small text-muted">
+                                        @if (u.SignedOn.HasValue)
+                                        {
+                                            <div class="fw-bold">@u.SignedOn.Value.ToString("dd MMM yyyy")</div>
+                                            <div>@u.SignedOn.Value.ToString("hh:mm tt")</div>
+                                        }
+                                        else
+                                        {
+                                            <span>Not Signed</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center pe-4">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Create" asp-route-id="@u.UserId"
+                                               class="btn btn-sm btn-info text-white action-btn" title="Edit User">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <form asp-action="Delete" method="post" onsubmit="return confirm('Archive this user?');">
+                                                <input type="hidden" name="id" value="@u.UserId" />
+                                                <button type="submit" class="btn btn-sm btn-danger action-btn" title="Delete User">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@u.CompanyName</td>
-                                <td>@u.LocationName</td>
-                                <td>@u.FullName</td>
-                                <td>@u.UserName</td>
-                                <td>
-                                    <span class="badge bg-info text-white">
-                                        @u.UserRole
-                                    </span>
-                                </td>
-
-                                <!-- Signature Status -->
-                                <td class="text-center">
-                                    @if (!string.IsNullOrEmpty(u.SignaturePath))
-                                    {
-                                        <img src="@u.SignaturePath"
-                                             title="Signature uploaded"
-                                             style="height:35px" />
-                                    }
-                                    else
-                                    {
-                                        <span class="text-danger">Not Added</span>
-                                    }
-                                </td>
-
-                                <!-- Signed On -->
-                                <td>
-                                    @if (u.SignedOn.HasValue)
-                                    {
-                                        @u.SignedOn.Value.ToString("dd-MMM-yyyy hh:mm tt")
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">—</span>
-                                    }
-                                </td>
-
-                                <td class="text-center">
-                                    <a asp-action="Create"
-                                       asp-route-id="@u.UserId"
-                                       class="btn btn-sm btn-primary">
-                                        Edit
-                                    </a>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="fa fa-user-slash fa-3x mb-3 d-block"></i>
+                                    No user accounts discovered.
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">
-                                No users found
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

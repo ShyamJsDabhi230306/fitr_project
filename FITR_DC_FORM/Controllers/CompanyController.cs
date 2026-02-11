@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FITR_DC_FORM.Controllers
 {
-    [RoleAuthorize("SUPERADMIN")]
+    //[RoleAuthorize("SUPERADMIN")]
     public class CompanyController : Controller
     {
         private readonly ICompanyService _companyService;

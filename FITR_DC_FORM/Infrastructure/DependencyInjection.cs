@@ -1,4 +1,5 @@
-﻿using FITR_DC_FORM.Repositories.Interfaces;
+﻿using FITR_DC_FORM.Filters;
+using FITR_DC_FORM.Repositories.Interfaces;
 using FITR_DC_FORM.Repositories.Repository;
 using FITR_DC_FORM.Services.Interfaces;
 using FITR_DC_FORM.Services.Repo_Services;
@@ -24,7 +25,9 @@ namespace FITR_DC_FORM.Infrastructure
             services.AddScoped<IFitrVisualMasterRepository, FitrVisualMasterRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IPrintCompanyRepository, PrintCompanyRepository>();
-
+            services.AddScoped<IUserPageRightRepository, UserPageRightRepository>();
+            services.AddScoped<IPermissionRepository, PermissionRepository>();
+            
             //services layer
 
             services.AddScoped<IFitrService, FitrService>();
@@ -34,6 +37,9 @@ namespace FITR_DC_FORM.Infrastructure
             services.AddScoped<IFitrVisualMasterService, FitrVisualMasterService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPrintCompanyService, PrintCompanyService>();
+            services.AddScoped<IUserPageRightService, UserPageRightService>();
+            services.AddScoped<IPermissionService, PermissionService>();
+           
 
 
 

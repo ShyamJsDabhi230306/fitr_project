@@ -1,0 +1,372 @@
+﻿@model List<FITR_DC_FORM.Models.UserPageRight>
+
+@{
+    ViewData["Title"] = "User Rights Master";
+
+    var users = ViewBag.Users as List<FITR_DC_FORM.Models.UserMaster>;
+    int selectedUser = ViewBag.SelectedUser != null ? (int)ViewBag.SelectedUser : 0;
+}
+
+<style>
+    /* PROFESSIONAL UI ENHANCEMENTS */
+    .rights-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .rights-header {
+        background: #fff;
+        padding: 30px;
+        border-bottom: 1px solid #edf2f7;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .rights-title-section {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .rights-title {
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        font-size: 1.4rem;
+        letter-spacing: -0.02em;
+    }
+
+    .rights-subtitle {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* PREMIUM BADGE */
+    .badge-editing {
+        background: #f0f4ff;
+        color: #4f46e5;
+        border: 1px solid #e0e7ff;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-editing::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: #4f46e5;
+        border-radius: 50%;
+        display: block;
+    }
+
+    /* MODERN TABLE STYLES */
+    .table-rights {
+        margin: 0;
+    }
+
+    .table-rights thead th {
+        background: #fcfdfe;
+        color: #475569;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        padding: 20px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .table-rights tbody td {
+        padding: 16px 20px;
+        vertical-align: middle;
+        color: #334155;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+    .page-name-col {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* CUSTOM TOGGLE SWITCH */
+    .form-switch .form-check-input {
+        width: 3.2em;
+        height: 1.6em;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: #6366f1;
+        border-color: #6366f1;
+    }
+
+    /* SEARCH BOX - FIXED ALIGNMENT */
+    .search-group {
+        position: relative;
+        max-width: 280px;
+        width: 100%;
+    }
+
+    .search-group svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        width: 16px;
+        height: 16px;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .search-group input {
+        padding-left: 40px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        height: 44px;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        background-color: #f8fafc;
+    }
+
+    .search-group input:focus {
+        background-color: #fff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    /* USER SELECTOR DROPDOWN */
+    .select-user-wrapper {
+        min-width: 280px;
+    }
+
+    .user-select-premium {
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding-left: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #334155;
+        background-color: #fff;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .user-select-premium:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    /* ACTION BUTTONS */
+    .btn-save-all {
+        background: linear-gradient(135deg, #7366ff, #a098ff);
+        border: none;
+        padding: 12px 25px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(115, 102, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-save-all:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(115, 102, 255, 0.4);
+    }
+
+    /* COLUMN HEADER TOGGLES */
+    .header-chk-label {
+        font-size: 10px;
+        display: block;
+        margin-top: 4px;
+        color: #94a3b8;
+        cursor: pointer;
+    }
+</style>
+
+<div class="rights-card">
+    <div class="rights-header">
+        <div class="rights-title-section">
+            <h5 class="rights-title">User Access Management</h5>
+            <div class="d-flex align-items-center gap-2">
+                <p class="rights-subtitle">Manage system-wide page permissions</p>
+                @if (selectedUser != 0)
+                {
+                    <span class="badge-editing">
+                        Editing: @users?.FirstOrDefault(u => u.UserId == selectedUser)?.FullName
+                    </span>
+                }
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center">
+            <!-- SEARCH PAGE -->
+            <div class="search-group d-none d-md-block">
+                <i data-feather="search"></i>
+                <input type="text" id="pageSearch" class="form-control" placeholder="Search pages..." />
+            </div>
+
+            <!-- USER SELECTOR -->
+            <div class="select-user-wrapper">
+                <form id="userForm" method="get">
+                    <select name="userId" class="form-select user-select-premium" onchange="this.form.submit()">
+                        <option value="0">Select User...</option>
+                        @if (users != null)
+                        {
+                            foreach (var u in users)
+                            {
+                                <option value="@u.UserId" selected="@(u.UserId == selectedUser)">
+                                    @u.FullName (@u.UserRole)
+                                </option>
+                            }
+                        }
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <form asp-action="Update" method="post" id="rightsForm">
+            <input type="hidden" name="userId" value="@selectedUser" />
+
+            <div class="table-responsive">
+                <table class="table table-rights" id="rightsTable">
+                    <thead>
+                        <tr>
+                            <th>Module / Page Name</th>
+                            <th class="text-center">
+                                VIEW
+                                <label class="header-chk-label"><input type="checkbox" onclick="toggleColumn('view', this.checked)"> Select All</label>
+                            </th>
+                            <th class="text-center">
+                                CREATE
+                                <label class="header-chk-label"><input type="checkbox" onclick="toggleColumn('create', this.checked)"> Select All</label>
+                            </th>
+                            <th class="text-center">
+                                EDIT
+                                <label class="header-chk-label"><input type="checkbox" onclick="toggleColumn('edit', this.checked)"> Select All</label>
+                            </th>
+                            <th class="text-center">
+                                DELETE
+                                <label class="header-chk-label"><input type="checkbox" onclick="toggleColumn('delete', this.checked)"> Select All</label>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <tr class="page-row">
+                                <td class="page-name-col">
+                                    <i data-feather="file-text" class="text-muted me-2" style="width:14px;"></i>
+                                    @Model[i].PageName
+                                    <input type="hidden" name="rights[@i].RightId" value="@Model[i].RightId" />
+                                    <input type="hidden" name="rights[@i].UserId" value="@selectedUser" />
+                                    <input type="hidden" name="rights[@i].PageName" value="@Model[i].PageName" />
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input chk-view" type="checkbox" 
+                                               name="rights[@i].CanView" value="true" @(Model[i].CanView ? "checked" : "")>
+                                        <input type="hidden" name="rights[@i].CanView" value="false" />
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input chk-create" type="checkbox" 
+                                               name="rights[@i].CanCreate" value="true" @(Model[i].CanCreate ? "checked" : "")>
+                                        <input type="hidden" name="rights[@i].CanCreate" value="false" />
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input chk-edit" type="checkbox" 
+                                               name="rights[@i].CanEdit" value="true" @(Model[i].CanEdit ? "checked" : "")>
+                                        <input type="hidden" name="rights[@i].CanEdit" value="false" />
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input chk-delete" type="checkbox" 
+                                               name="rights[@i].CanDelete" value="true" @(Model[i].CanDelete ? "checked" : "")>
+                                        <input type="hidden" name="rights[@i].CanDelete" value="false" />
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer bg-white p-4 border-top-0 d-flex justify-content-between align-items-center">
+                <span class="text-muted small">
+                    <i data-feather="info" class="me-1" style="width:14px;"></i> 
+                    Changes will only take effect after clicking Save All.
+                </span>
+                <button type="submit" class="btn btn-primary btn-save-all">
+                    <i data-feather="save" class="me-2"></i> Save All Changes
+                </button>
+            </div>
+        </form>
+    }
+    else if (selectedUser != 0)
+    {
+        <div class="p-5 text-center">
+            <div class="mb-3">
+                <i data-feather="shield-off" class="text-warning" style="width:48px; height:48px;"></i>
+            </div>
+            <h6 class="text-muted">No rights configured for this user.</h6>
+            <p class="small text-secondary">Please check the database setup for UserPageRights.</p>
+        </div>
+    }
+    else
+    {
+        <div class="p-5 text-center">
+            <div class="mb-3">
+                <i data-feather="users" class="text-primary opacity-25" style="width:64px; height:64px;"></i>
+            </div>
+            <h6 class="text-muted">Please select a user to manage their system permissions.</h6>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // ✅ Real-time Page Filtering
+        document.getElementById('pageSearch').addEventListener('keyup', function () {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('.page-row');
+            
+            rows.forEach(row => {
+                let name = row.querySelector('.page-name-col').textContent.toLowerCase();
+                row.style.display = name.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // ✅ Toggle Column (Select All)
+        function toggleColumn(type, isChecked) {
+            document.querySelectorAll('.chk-' + type).forEach(chk => {
+                chk.checked = isChecked;
+            });
+        }
+
+        // Initialize Feather Icons (if not already handled by layout)
+        if (typeof feather !== 'undefined') feather.replace();
+    </script>
+}

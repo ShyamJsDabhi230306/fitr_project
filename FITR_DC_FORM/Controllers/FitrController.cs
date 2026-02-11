@@ -294,7 +294,7 @@ using System.Linq;
 
 namespace FITR_DC_FORM.Controllers
 {
-    [RoleAuthorize("SUPERADMIN", "ADMIN", "HOD", "USER")]
+    //[RoleAuthorize("SUPERADMIN", "ADMIN", "HOD", "USER")]
     public class FitrController : Controller
     {
         private readonly IFitrService _service;
@@ -334,7 +334,7 @@ namespace FITR_DC_FORM.Controllers
         }
 
         // ================= START NEW =================
-        [RoleAuthorize("USER", "SUPERADMIN")]
+        //[RoleAuthorize("USER", "SUPERADMIN")]
         public IActionResult New()
         {
             HttpContext.Session.RemoveObject(FITR_SESSION_KEY);
@@ -700,7 +700,7 @@ namespace FITR_DC_FORM.Controllers
 
 
         // ================= LIST =================
-        [RoleAuthorize("SUPERADMIN", "ADMIN", "HOD", "USER")]
+        //[RoleAuthorize("SUPERADMIN", "ADMIN", "HOD", "USER")]
         public IActionResult List(string filter = "pending")
         {
             string role = (HttpContext.Session.GetString("UserRole") ?? "").ToUpper();
@@ -848,7 +848,7 @@ namespace FITR_DC_FORM.Controllers
 
 
         [HttpPost]
-        [RoleAuthorize("USER")]
+        //[RoleAuthorize("USER")]
         public IActionResult Submit(int id)
         {
             int userId = HttpContext.Session.GetInt32("UserId").Value;

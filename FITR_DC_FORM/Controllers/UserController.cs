@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FITR_DC_FORM.Controllers
 {
-    [RoleAuthorize("SUPERADMIN")]
+    //[RoleAuthorize("SUPERADMIN")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -32,11 +32,20 @@ namespace FITR_DC_FORM.Controllers
             return View(list);
         }
 
-        // ================= CREATE (GET) =================
-        public IActionResult Create()
+        // ================= CREATE / EDIT (GET) =================
+        public IActionResult Create(int? id)
         {
-            ViewBag.CompanyList = _companyService.GetAll();
-            ViewBag.LocationList = _locationService.GetAll();
+            ViewBag.CompanyList = _companyService.GetAll() ?? new List<CompanyMaster>();
+            ViewBag.LocationList = _locationService.GetAll() ?? new List<LocationMaster>();
+
+            if (id.HasValue && id.Value > 0)
+            {
+                var user = _userService.GetById(id.Value);
+                if (user != null)
+                {
+                    return View(user);
+                }
+            }
 
             return View(new UserMaster());
         }
@@ -53,16 +62,11 @@ namespace FITR_DC_FORM.Controllers
                 return View(model);
             }
 
-            // 🔥 SIGNATURE UPLOAD
+            // 🔥 Handle Signature Upload
             if (model.SignatureFile != null && model.SignatureFile.Length > 0)
             {
-                string folderPath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot/uploads/signatures"
-                );
-
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/signatures");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
                 string fileName = $"sign_{Guid.NewGuid()}{Path.GetExtension(model.SignatureFile.FileName)}";
                 string fullPath = Path.Combine(folderPath, fileName);
@@ -73,7 +77,17 @@ namespace FITR_DC_FORM.Controllers
                 }
 
                 model.SignaturePath = "/uploads/signatures/" + fileName;
-                model.SignedOn = DateTime.Now; // 🔥 VERY IMPORTANT
+                model.SignedOn = DateTime.Now;
+            }
+            else if (model.UserId > 0)
+            {
+                // Preserve existing signature if not changing
+                var existing = _userService.GetById(model.UserId);
+                if (existing != null)
+                {
+                    model.SignaturePath = existing.SignaturePath;
+                    model.SignedOn = existing.SignedOn;
+                }
             }
 
             _userService.Save(model);

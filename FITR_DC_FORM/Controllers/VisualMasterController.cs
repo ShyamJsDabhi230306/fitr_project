@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FITR_DC_FORM.Controllers
 {
-    [RoleAuthorize("SUPERADMIN")]
+    //[RoleAuthorize("SUPERADMIN")]
     public class VisualMasterController : Controller
     {
         private readonly IFitrVisualMasterService _service;

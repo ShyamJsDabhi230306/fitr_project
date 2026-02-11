@@ -3,7 +3,7 @@ using FITR_DC_FORM.Models;
 using FITR_DC_FORM.Services.Interfaces;
 using FITR_DC_FORM.Services.Repo_Services;
 using Microsoft.AspNetCore.Mvc;
-[RoleAuthorize("SUPERADMIN")]
+//[RoleAuthorize("SUPERADMIN")]
 public class LocationController : Controller
 {
     private readonly ILocationService _src;
