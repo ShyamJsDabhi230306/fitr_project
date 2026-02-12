@@ -72,7 +72,7 @@
         </div>
 
         <div class="card-body p-4">
-            <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <form asp-action="Create" method="post" enctype="multipart/form-data" autocomplete="off">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="UserId" />
 
@@ -125,7 +125,7 @@
                         <label class="form-label">User Name</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fa fa-user text-muted"></i></span>
-                            <input asp-for="UserName" class="form-control" placeholder="Create username" />
+                            <input asp-for="UserName" class="form-control" placeholder="Create username" autocomplete="none" />
                         </div>
                         <span asp-validation-for="UserName" class="text-danger small"></span>
                     </div>
@@ -135,7 +135,8 @@
                         <label class="form-label">Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fa fa-lock text-muted"></i></span>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" value="@(Model.UserId > 0 ? Model.Password : "")" />
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" 
+                                   value="@(Model.UserId > 0 ? Model.Password : "")" autocomplete="new-password" />
                         </div>
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>

@@ -1,51 +1,137 @@
 ﻿@model FITR_DC_FORM.Models.CompanyMaster
 
 @{
-    ViewData["Title"] = "Company Master";
+    ViewData["Title"] = (Model.CompanyId == 0 ? "Create Company" : "Edit Company");
 }
 
-<h4>@(Model.CompanyId == 0 ? "Create Company" : "Edit Company")</h4>
-<hr />
+<style>
+    .master-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .master-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+    .master-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .form-control, .form-select {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #7366ff;
+        box-shadow: 0 0 0 3px rgba(115, 102, 255, 0.1);
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #7366ff 0%, #a178ff 100%);
+        border: none;
+        padding: 10px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(115, 102, 255, 0.2);
+        color: #fff;
+    }
+    .btn-save:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(115, 102, 255, 0.3);
+    }
+</style>
 
-<form asp-action="Create" method="post">
-    <input type="hidden" asp-for="CompanyId" />
-
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Company Name</label>
-            <input asp-for="CompanyName" class="form-control" />
-            <span asp-validation-for="CompanyName" class="text-danger"></span>
+<div class="container-fluid py-4">
+    <div class="card master-card">
+        <div class="card-header">
+            <h4 class="card-title">
+                <i class="fa fa-building-circle-check me-2 text-primary"></i>
+                @(Model.CompanyId == 0 ? "Register New Company" : $"Edit Company: {Model.CompanyName}")
+            </h4>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Contact No</label>
-            <input asp-for="ContactNo" class="form-control" />
-        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="CompanyId" />
 
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Email</label>
-            <input asp-for="Email" class="form-control" />
-        </div>
+                <div class="row g-4">
+                    <!-- Company Name -->
+                    <div class="col-md-12">
+                        <label class="form-label">Full Company Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-building text-muted"></i></span>
+                            <input asp-for="CompanyName" class="form-control" placeholder="Enter full registered company name" />
+                        </div>
+                        <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                    </div>
 
-        <div class="col-md-6 mb-3">
-            <label class="form-label">PAN No</label>
-            <input asp-for="PanNo" class="form-control" />
-        </div>
+                    <!-- Contact No -->
+                    <div class="col-md-6">
+                        <label class="form-label">Contact Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-phone text-muted"></i></span>
+                            <input asp-for="ContactNo" class="form-control" placeholder="Enter contact number" />
+                        </div>
+                    </div>
 
-        <div class="col-md-6 mb-3">
-            <label class="form-label">GST No</label>
-            <input asp-for="GSTNo" class="form-control" />
-        </div>
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label">Official Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-envelope text-muted"></i></span>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="example@company.com" />
+                        </div>
+                    </div>
 
-        <div class="col-md-12 mb-3">
-            <label class="form-label">Address</label>
-            <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                    <!-- PAN No -->
+                    <div class="col-md-6">
+                        <label class="form-label"> <span class="text-danger">*</span> PAN Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-id-card text-muted"></i></span>
+                            <input asp-for="PanNo" class="form-control" placeholder="Enter PAN number" required />
+                        </div>
+                    </div>
+
+                    <!-- GST No -->
+                    <div class="col-md-6">
+                        <label class="form-label"><span class="text-danger">*</span>GSTIN Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa fa-receipt text-muted"></i></span>
+                            <input asp-for="GSTNo" class="form-control" placeholder="Enter GSTIN" required />
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-md-12">
+                        <label class="form-label">Registered Address</label>
+                        <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter complete office address"></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-3 border-top d-flex gap-3">
+                    <button type="submit" class="btn btn-save px-5">
+                        <i class="fa fa-check-circle me-2"></i>
+                        @(Model.CompanyId == 0 ? "Save Company" : "Update Company Info")
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="fa fa-arrow-left me-2"></i> Back to List
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-
-    <button type="submit" class="btn btn-primary" ">
-        @(Model.CompanyId == 0 ? "Save" : "Update")
-    </button>
-
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>

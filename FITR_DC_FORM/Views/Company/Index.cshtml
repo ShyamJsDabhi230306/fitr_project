@@ -1,56 +1,135 @@
 ﻿@model List<FITR_DC_FORM.Models.CompanyMaster>
 
 @{
-    ViewData["Title"] = "Company List";
+    ViewData["Title"] = "Company Management";
 }
 
-<div class="d-flex justify-content-between mb-3">
-    <h4>Company List</h4>
-    <a asp-action="Create" class="btn btn-success" style="margin:20px;">+ Add Company</a>
+<style>
+    .master-list-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .master-list-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    #master-table th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    #master-table td {
+        vertical-align: middle;
+        font-size: 0.9rem;
+        color: #2c3e50;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .info-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background: #f0f2f5;
+        color: #495057;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="card master-list-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold text-primary"><i class="fa fa-building me-2"></i> Company Management</h4>
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2">
+                <i class="fa fa-plus-circle"></i> Add New Company
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="master-table">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Company Details</th>
+                            <th>Contact Info</th>
+                            <th>PAN & GST</th>
+                            <th class="text-center pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold fs-6">@item.CompanyName</div>
+                                        <div class="text-muted small">Registered Entity</div>
+                                    </td>
+                                    <td>
+                                        <div><i class="fa fa-phone me-2 text-muted small"></i> @item.ContactNo</div>
+                                        <div><i class="fa fa-envelope me-2 text-muted small"></i> @item.Email</div>
+                                    </td>
+                                    <td>
+                                        <div class="mb-1">
+                                            <span class="info-badge"><i class="fa fa-id-card me-1"></i> PAN: @item.PanNo</span>
+                                        </div>
+                                        <div>
+                                            <span class="info-badge"><i class="fa fa-receipt me-1"></i> GST: @item.GSTNo</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Create" asp-route-id="@item.CompanyId"
+                                               class="btn btn-sm btn-info text-white action-btn" title="Edit Company">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            @* <form asp-action="Delete" method="post" onsubmit="return confirm('Archive this company?');">
+                                                <input type="hidden" name="id" value="@item.CompanyId" />
+                                                <button type="submit" class="btn btn-sm btn-danger action-btn" title="Delete Company">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form> *@
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="fa fa-building-circle-exclamation fa-3x mb-3 d-block"></i>
+                                    No companies found in the database.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Company Name</th>
-            <th>Contact No</th>
-            <th>Email</th>
-            <th>PAN</th>
-            <th>GST</th>
-            <th style="width:150px">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Count > 0)
-        {
-            foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.CompanyName</td>
-                    <td>@item.ContactNo</td>
-                    <td>@item.Email</td>
-                    <td>@item.PanNo</td>
-                    <td>@item.GSTNo</td>
-                    <td>
-                        <a asp-action="Create" asp-route-id="@item.CompanyId"
-                           class="btn btn-sm btn-primary">Edit</a>
-
-                        @* <form asp-action="Delete" asp-route-id="@item.CompanyId"
-                              method="post" style="display:inline"
-                              onsubmit="return confirm('Are you sure?');">
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                Delete
-                            </button>
-                        </form> *@
-                    </td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="6" class="text-center">No records found</td>
-            </tr>
-        }
-    </tbody>
-</table>

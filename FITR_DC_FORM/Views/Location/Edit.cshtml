@@ -4,60 +4,112 @@
     ViewData["Title"] = "Edit Location";
 }
 
-<div class="row">
-    <div class="col-xl-6 col-lg-8 col-md-10 mx-auto">
+<style>
+    .master-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .master-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+    .master-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .form-control, .form-select {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #7366ff;
+        box-shadow: 0 0 0 3px rgba(115, 102, 255, 0.1);
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #7366ff 0%, #a178ff 100%);
+        border: none;
+        padding: 10px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(115, 102, 255, 0.2);
+        color: #fff;
+    }
+    .btn-save:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(115, 102, 255, 0.3);
+    }
+</style>
 
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Edit Location</h5>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card master-card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-map-location-dot me-2 text-primary"></i>
+                        Edit Location: @Model.LocationName
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="LocationId" />
+
+                        <div class="row g-4">
+                            <!-- Company Selection -->
+                            <div class="col-md-12">
+                                <label class="form-label">Parent Company</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-building text-muted"></i></span>
+                                    <select asp-for="CompanyId"
+                                            class="form-select"
+                                            asp-items="@(ViewBag.CompanyList != null
+                                                        ? new SelectList(ViewBag.CompanyList, "CompanyId", "CompanyName", Model.CompanyId)
+                                                        : Enumerable.Empty<SelectListItem>())">
+                                        <option value="">-- Select Company --</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="CompanyId" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Location Name -->
+                            <div class="col-md-12">
+                                <label class="form-label">Location Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-map-pin text-muted"></i></span>
+                                    <input asp-for="LocationName" class="form-control" />
+                                </div>
+                                <span asp-validation-for="LocationName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex gap-3">
+                            <button type="submit" class="btn btn-save px-5">
+                                <i class="fa fa-check-circle me-2"></i> Update Location
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fa fa-arrow-left me-2"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <form asp-action="Edit" method="post">
-                @Html.AntiForgeryToken()
-
-                <!-- Hidden Id -->
-                <input type="hidden" asp-for="LocationId" />
-
-                <div class="card-body">
-
-                    <!-- Company -->
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Company <span class="text-danger">*</span>
-                        </label>
-
-                        <select asp-for="CompanyId"
-                                class="form-select"
-                                asp-items="@(ViewBag.CompanyList != null
-                                                                    ? new SelectList(ViewBag.CompanyList, "CompanyId", "CompanyName", Model.CompanyId)
-                                                                    : Enumerable.Empty<SelectListItem>())">
-                            <option value="">-- Select Company --</option>
-                        </select>
-
-                        <span asp-validation-for="CompanyId" class="text-danger"></span>
-                    </div>
-
-                    <!-- Location Name -->
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Location Name <span class="text-danger">*</span>
-                        </label>
-
-                        <input asp-for="LocationName"
-                               class="form-control" />
-
-                        <span asp-validation-for="LocationName" class="text-danger"></span>
-                    </div>
-
-                </div>
-
-                <div class="card-footer text-end">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                    <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
-                </div>
-            </form>
         </div>
-
     </div>
 </div>
 

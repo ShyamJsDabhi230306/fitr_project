@@ -1,47 +1,143 @@
 ﻿@model List<PrintCompanyModel>
 
 @{
-    ViewData["Title"] = "Print Company List";
+    ViewData["Title"] = "Print Entities Management";
 }
 
-<h2>Print Company List</h2>
+<style>
+    .master-list-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
 
-<a asp-action="Create" class="btn btn-success mb-3 text-end ">Add New Company</a>
+    .master-list-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Company Name</th>
-            <th>Address</th>
-            <th>Logo</th>
-            <th>Status</th>
-            <th width="180px">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.CompanyName</td>
-                <td>@item.CompanyAddress</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.CompanyLogo))
-                    {
-                        <img src="~/uploads/@item.CompanyLogo" width="60" />
-                    }
-                </td>
-                <td>
-                    @(item.IsActive ? "Active" : "Inactive")
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.PrintCompanyId"
-                       class="btn btn-sm btn-warning">Edit</a>
+    #master-table th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
 
-                  @*   <a asp-action="Delete" asp-route-id="@item.PrintCompanyId"
-                       class="btn btn-sm btn-danger"
-                       onclick="return confirm('Are you sure?')">Delete</a> *@
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    #master-table td {
+        vertical-align: middle;
+        font-size: 0.9rem;
+        color: #2c3e50;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .entity-logo {
+        height: 40px;
+        width: 40px;
+        object-fit: contain;
+        padding: 4px;
+        border: 1px solid #f0f0f0;
+        border-radius: 6px;
+        background: #fff;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="card master-list-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold text-primary"><i class="fa fa-print me-2"></i> Print Entities</h4>
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2">
+                <i class="fa fa-plus-circle"></i> Add New Entity
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="master-table">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Entity Identity</th>
+                            <th>Print Address</th>
+                            <th class="text-center">Branding</th>
+                            <th>Status</th>
+                            <th class="text-center pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold fs-6">@item.CompanyName</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-muted small" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@item.CompanyAddress">
+                                            @item.CompanyAddress
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.CompanyLogo))
+                                        {
+                                            <img src="~/uploads/@item.CompanyLogo" class="entity-logo shadow-sm" alt="Logo" />
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-muted border x-small">No Logo</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="badge bg-success-light text-success border-success" style="background-color: rgba(25, 135, 84, 0.1); border: 1px solid rgba(25, 135, 84, 0.2);">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-muted border">Inactive</span>
+                                        }
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Edit" asp-route-id="@item.PrintCompanyId"
+                                               class="btn btn-sm btn-info text-white action-btn" title="Edit Entity">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa fa-print-slash fa-3x mb-3 d-block"></i>
+                                    No print entities configured.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

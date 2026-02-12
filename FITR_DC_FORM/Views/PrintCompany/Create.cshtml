@@ -1,49 +1,143 @@
 ﻿@model PrintCompanyModel
 
 @{
-    ViewData["Title"] = "Print Company";
+    ViewData["Title"] = (Model.PrintCompanyId == 0 ? "Add Print Entity" : "Edit Print Entity");
 }
 
-<h2 >@(Model.PrintCompanyId == 0 ? "Add Print Company" : "Edit Print Company")</h2>
+<style>
+    .master-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .master-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+    .master-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .form-control, .form-select {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #7366ff;
+        box-shadow: 0 0 0 3px rgba(115, 102, 255, 0.1);
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #7366ff 0%, #a178ff 100%);
+        border: none;
+        padding: 10px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(115, 102, 255, 0.2);
+        color: #fff;
+    }
+    .btn-save:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(115, 102, 255, 0.3);
+    }
+    .logo-preview-box {
+        border: 2px dashed #e0e0e0;
+        border-radius: 10px;
+        padding: 15px;
+        background: #fdfdfd;
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card master-card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fa fa-print me-2 text-primary"></i>
+                        @(Model.PrintCompanyId == 0 ? "Add New Print Entity" : $"Edit Print Entity: {Model.CompanyName}")
+                    </h4>
+                </div>
 
-    <input type="hidden" asp-for="PrintCompanyId" />
-    <input type="hidden" asp-for="CompanyLogo" />
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="PrintCompanyId" />
+                        <input type="hidden" asp-for="CompanyLogo" />
 
-    <div class="form-group mb-2">
-        <label>Company Name</label>
-        <input asp-for="CompanyName" class="form-control" />
-        <span asp-validation-for="CompanyName" class="text-danger"></span>
-    </div>
+                        <div class="row g-4">
+                            <!-- Company Name -->
+                            <div class="col-md-12">
+                                <label class="form-label">Print Entity Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-building text-muted"></i></span>
+                                    <input asp-for="CompanyName" class="form-control" placeholder="Enter company name for display" />
+                                </div>
+                                <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                            </div>
 
-    <div class="form-group mb-2">
-        <label>Company Address</label>
-        <textarea asp-for="CompanyAddress" class="form-control"></textarea>
-    </div>
+                            <!-- Company Address -->
+                            <div class="col-md-12">
+                                <label class="form-label">Full Display Address</label>
+                                <textarea asp-for="CompanyAddress" class="form-control" rows="3" placeholder="Enter address to be shown on certificates"></textarea>
+                            </div>
 
-    <div class="form-group mb-2">
-        <label>Company Logo</label>
-        <input asp-for="CompanyLogoFile" type="file" class="form-control" />
+                            <!-- Logo Upload -->
+                            <div class="col-md-6">
+                                <label class="form-label">Company Logo</label>
+                                <input asp-for="CompanyLogoFile" type="file" class="form-control" accept="image/*" />
+                                <p class="text-muted small mt-2"><i class="fa fa-info-circle me-1"></i> Best results with transparent PNG logos.</p>
+                            </div>
 
-        @if (!string.IsNullOrEmpty(Model.CompanyLogo))
-        {
-            <div class="mt-2">
-                <img src="~/uploads/@Model.CompanyLogo" width="100" />
+                            <!-- Logo Preview -->
+                            <div class="col-md-6">
+                                @if (!string.IsNullOrEmpty(Model.CompanyLogo))
+                                {
+                                    <label class="form-label">Current Branding</label>
+                                    <div class="logo-preview-box">
+                                        <img src="~/uploads/@Model.CompanyLogo" style="height:80px; object-fit: contain;" />
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Status -->
+                            <div class="col-md-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsActive" id="IsActiveSwitch">
+                                    <label class="form-check-label fw-bold" for="IsActiveSwitch">Enable this entity for printing</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex gap-3">
+                            <button type="submit" class="btn btn-save px-5">
+                                <i class="fa fa-check-circle me-2"></i>
+                                @(Model.PrintCompanyId == 0 ? "Register Entity" : "Update Changes")
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fa fa-arrow-left me-2"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        }
+        </div>
     </div>
-
-    <div class="form-group mb-3">
-        <label>
-            <input asp-for="IsActive" /> Is Active
-        </label>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
