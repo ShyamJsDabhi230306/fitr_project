@@ -8,7 +8,9 @@ namespace FITR_DC_FORM.Models
         public int UserId { get; set; }
 
         // 🔥 Make nullable
-        public string? PageName { get; set; }
+
+        public int PageId { get; set; }
+        public string? PageName { get; set; }   // From JOIN
 
         public bool CanView { get; set; }
         public bool CanCreate { get; set; }

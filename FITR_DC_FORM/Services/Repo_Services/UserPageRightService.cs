@@ -13,29 +13,17 @@ namespace FITR_DC_FORM.Services.Repo_Services
             _repository = repository;
         }
 
-        public List<UserPageRight> GetAllRights()
-        {
-            return _repository.GetAll();
-        }
-
         public List<UserPageRight> GetRightsByUser(int userId)
-        {
-            return _repository.GetByUser(userId);
-        }
+            => _repository.GetByUser(userId);
 
         public UserPageRight GetRight(int userId, string pageName)
-        {
-            return _repository.GetByUserAndPage(userId, pageName);
-        }
-
-        public void UpdateRights(UserPageRight model)
-        {
-            _repository.Update(model);
-        }
+            => _repository.GetByUserAndPage(userId, pageName);
 
         public void BulkUpdateRights(List<UserPageRight> rights)
-        {
-            _repository.BulkUpdate(rights);
-        }
+            => _repository.BulkUpdate(rights);
+
+        public void AssignDefaultRights(int userId)
+            => _repository.AssignDefaultRights(userId);
     }
+
 }

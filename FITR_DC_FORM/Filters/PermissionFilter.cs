@@ -14,13 +14,13 @@ namespace FITR_DC_FORM.Filters
         }
 
         public async Task OnActionExecutionAsync(
-     ActionExecutingContext context,
-     ActionExecutionDelegate next)
+            ActionExecutingContext context,
+            ActionExecutionDelegate next)
         {
             var controller = context.RouteData.Values["controller"]?.ToString();
             var action = context.RouteData.Values["action"]?.ToString();
 
-            // 🔥 VERY IMPORTANT — SKIP ACCOUNT CONTROLLER
+            // 🔥 Skip Account controller
             if (controller == "Account")
             {
                 await next();
@@ -30,38 +30,24 @@ namespace FITR_DC_FORM.Filters
             var userId = context.HttpContext.Session.GetInt32("UserId");
             var role = context.HttpContext.Session.GetString("UserRole");
 
-            // 🔥 If not logged in → redirect to Login
+            // 🔥 Not logged in
             if (userId == null)
             {
                 context.Result = new RedirectToActionResult("Login", "Account", null);
                 return;
             }
 
-            // 🔥 SUPERADMIN FULL ACCESS
+            // 🔥 SuperAdmin full access
             if (role == "SUPERADMIN")
             {
                 await next();
                 return;
             }
 
-            string pageName = controller switch
-            {
-                "Company" => "CompanyMaster",
-                "Location" => "LocationMaster",
-                "Fitr" => "Fitr",
-                "VisualMaster" => "VisualMaster",
-                "User" => "UserMaster",
-                "UserRights" => "UserRights",
-                "PrintCompany" => "PrintCompany",
-                _ => null
-            };
+            // 🔥 PageName = Controller Name (must match PageMaster)
+            string pageName = controller;
 
-            if (pageName == null)
-            {
-                await next();
-                return;
-            }
-
+            // 🔥 Determine permission based on action
             bool allowed = action switch
             {
                 "Index" => _permissionService.CanView(userId.Value, pageName),
@@ -80,6 +66,5 @@ namespace FITR_DC_FORM.Filters
 
             await next();
         }
-
     }
 }

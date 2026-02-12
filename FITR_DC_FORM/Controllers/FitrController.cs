@@ -299,16 +299,18 @@ namespace FITR_DC_FORM.Controllers
     {
         private readonly IFitrService _service;
         private readonly IPrintCompanyService _companyService;
+        private readonly ICompanyService _mainCompanyService;
         private readonly IUserService _userService;
         private readonly IWebHostEnvironment _env;
         private const string FITR_SESSION_KEY = "FITR_WIZARD";
 
-        public FitrController(IFitrService service, IPrintCompanyService companyService, IUserService userService, IWebHostEnvironment env)
+        public FitrController(IFitrService service, IPrintCompanyService companyService, IUserService userService, IWebHostEnvironment env, ICompanyService mainCompanyService)
         {
             _service = service;
             _companyService = companyService;
             _userService = userService;
             _env = env;
+            _mainCompanyService = mainCompanyService;
         }
 
         // ================= FILE SAVE HELPER =================
@@ -793,9 +795,23 @@ namespace FITR_DC_FORM.Controllers
             _service.GenerateTCIfNotExists(id);
             var model = _service.GetFitr(id);
 
-            if (printCompanyId.HasValue)
+            if (printCompanyId.HasValue && printCompanyId.Value > 0)
             {
                 ViewBag.PrintCompany = _companyService.GetById(printCompanyId.Value);
+            }
+            else
+            {
+                // Fallback to Main Company from Company Master
+                var mainCompany = _mainCompanyService.GetAll().FirstOrDefault();
+                if (mainCompany != null)
+                {
+                    ViewBag.PrintCompany = new PrintCompanyModel
+                    {
+                        CompanyName = mainCompany.CompanyName,
+                        CompanyAddress = mainCompany.Address,
+                        CompanyLogo = null // Main company logo is handled separately or not present in CompanyMaster
+                    };
+                }
             }
 
             return View("Print", model);
@@ -807,9 +823,23 @@ namespace FITR_DC_FORM.Controllers
             if (string.IsNullOrEmpty(ids))
                 return BadRequest("No records selected");
 
-            if (printCompanyId.HasValue)
+            if (printCompanyId.HasValue && printCompanyId.Value > 0)
             {
                 ViewBag.PrintCompany = _companyService.GetById(printCompanyId.Value);
+            }
+            else
+            {
+                // Fallback to Main Company from Company Master
+                var mainCompany = _mainCompanyService.GetAll().FirstOrDefault();
+                if (mainCompany != null)
+                {
+                    ViewBag.PrintCompany = new PrintCompanyModel
+                    {
+                        CompanyName = mainCompany.CompanyName,
+                        CompanyAddress = mainCompany.Address,
+                        CompanyLogo = null
+                    };
+                }
             }
 
             var idList = ids
@@ -844,6 +874,22 @@ namespace FITR_DC_FORM.Controllers
                 })
                 .ToList();
             return Json(companies);
+        }
+
+        [HttpGet]
+        public IActionResult GetMainCompany()
+        {
+            var mainCompany = _mainCompanyService.GetAll().FirstOrDefault();
+            if (mainCompany != null)
+            {
+                return Json(new
+                {
+                    CompanyName = mainCompany.CompanyName,
+                    CompanyAddress = mainCompany.Address,
+                    CompanyLogo = "" // Main company logo fallback
+                });
+            }
+            return Json(null);
         }
 
 

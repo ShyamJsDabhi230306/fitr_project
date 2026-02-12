@@ -709,8 +709,8 @@
                             <i class="fa fa-building" style="font-size: 20px;"></i>
                         </div>
                         <div>
-                            <p class="mb-0 fw-bold text-dark">Aira Euro Pvt Ltd</p>
-                            <p class="mb-0 small text-muted">Aira India - Default Selection</p>
+                            <p class="mb-0 fw-bold text-dark" id="mainCompanyName">Aira Euro Pvt Ltd</p>
+                            <p class="mb-0 small text-muted" id="mainCompanySubtitle">Aira India - Default Selection</p>
                         </div>
                     </div>
                 </div>
@@ -855,6 +855,7 @@
                 // ✅ PRINT LOGIC
                 let selectedIds = [];
                 let printCompanies = [];
+                let mainCompany = null;
 
                 // Handle Selection Cards
                 $('.selection-card').on('click', function () {
@@ -893,7 +894,16 @@
                     // Reset to "Same Company" by default
                     $('#cardSameCompany').click();
 
-                    // Load companies dynamically
+                    // Load Main Company
+                    $.get('/Fitr/GetMainCompany', function (mc) {
+                        mainCompany = mc;
+                        if (mc) {
+                            $('#mainCompanyName').text(mc.companyName);
+                            $('#mainCompanySubtitle').text('Default Selection');
+                        }
+                    });
+
+                    // Load Print companies dynamically
                     $.get('/Fitr/GetPrintCompanies', function (data) {
                         printCompanies = data;
                         const $select = $('#selectPrintCompany');
@@ -939,16 +949,9 @@
                     const selectionType = $('input[name="companySelectionType"]:checked').val();
 
                     if (selectionType === 'same') {
-                        // Find "Aira Euro Pvt Ltd"
-                        const defaultComp = printCompanies.find(c => c.companyName.toLowerCase().indexOf('aira euro') > -1);
-                        if (defaultComp) {
-                            companyId = defaultComp.printCompanyId;
-                            companyName = defaultComp.companyName;
-                        } else {
-                            // Fallback if not found
-                            Swal.fire('Error', 'Default company "Aira Euro Pvt Ltd" not found in system.', 'error');
-                            return;
-                        }
+                        // Use Main Company from Company Master
+                        companyId = 0; // 0 indicates Main Company fallback in Controller
+                        companyName = mainCompany ? mainCompany.companyName : 'Main Company';
                     } else {
                         companyId = $('#selectPrintCompany').val();
                         companyName = $('#selectPrintCompany option:selected').text();
@@ -1013,6 +1016,15 @@
                     // Reset to "Same Company" by default
                     $('#cardSameCompany').click();
 
+                    // Load Main Company
+                    $.get('/Fitr/GetMainCompany', function (mc) {
+                        mainCompany = mc;
+                        if (mc) {
+                            $('#mainCompanyName').text(mc.companyName);
+                            $('#mainCompanySubtitle').text('Default Selection');
+                        }
+                    });
+
                     // Trigger same logic as btnPrint
                     $.get('/Fitr/GetPrintCompanies', function (data) {
                         printCompanies = data;
@@ -1026,6 +1038,11 @@
                         });
                         $('#companyModal').modal('show');
                     });
+                });
+                
+                // Load Main Company on page load to have it ready
+                $.get('/Fitr/GetMainCompany', function (mc) {
+                    mainCompany = mc;
                 });
 
                 // ✅ SOFT DELETE

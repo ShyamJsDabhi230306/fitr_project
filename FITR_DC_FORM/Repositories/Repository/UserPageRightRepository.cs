@@ -14,30 +14,29 @@ namespace FITR_DC_FORM.Repositories.Repository
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public List<UserPageRight> GetAll()
+        // ✅ Assign all PageMaster pages to new user
+        public void AssignDefaultRights(int userId)
         {
-            List<UserPageRight> list = new();
-
             using SqlConnection con = new(_connectionString);
-            SqlCommand cmd = new("SELECT * FROM UserPageRights", con);
+
+            SqlCommand cmd = new("sp_AssignDefaultRightsToUser", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@UserId", userId);
 
             con.Open();
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                list.Add(MapRights(reader));
-            }
-
-            return list;
+            cmd.ExecuteNonQuery();
         }
 
+        // ✅ Get all rights for selected user
         public List<UserPageRight> GetByUser(int userId)
         {
             List<UserPageRight> list = new();
 
             using SqlConnection con = new(_connectionString);
-            SqlCommand cmd = new("SELECT * FROM UserPageRights WHERE UserId=@UserId", con);
+
+            SqlCommand cmd = new("sp_GetRightsByUser", con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@UserId", userId);
 
@@ -46,12 +45,23 @@ namespace FITR_DC_FORM.Repositories.Repository
 
             while (reader.Read())
             {
-                list.Add(MapRights(reader));
+                list.Add(new UserPageRight
+                {
+                    RightId = Convert.ToInt32(reader["RightId"]),
+                    UserId = Convert.ToInt32(reader["UserId"]),
+                    PageId = Convert.ToInt32(reader["PageId"]),
+                    PageName = reader["PageName"].ToString(),
+                    CanView = Convert.ToBoolean(reader["CanView"]),
+                    CanCreate = Convert.ToBoolean(reader["CanCreate"]),
+                    CanEdit = Convert.ToBoolean(reader["CanEdit"]),
+                    CanDelete = Convert.ToBoolean(reader["CanDelete"])
+                });
             }
 
             return list;
         }
 
+        // ✅ Get permission for specific page (Used in PermissionService)
         public UserPageRight GetByUserAndPage(int userId, string pageName)
         {
             using SqlConnection con = new(_connectionString);
@@ -81,56 +91,33 @@ namespace FITR_DC_FORM.Repositories.Repository
             return null;
         }
 
-        public void Update(UserPageRight model)
-        {
-            using SqlConnection con = new(_connectionString);
-
-            string query = @"UPDATE UserPageRights
-                             SET CanView=@CanView,
-                                 CanCreate=@CanCreate,
-                                 CanEdit=@CanEdit,
-                                 CanDelete=@CanDelete
-                             WHERE RightId=@RightId";
-
-            SqlCommand cmd = new(query, con);
-
-            cmd.Parameters.AddWithValue("@RightId", model.RightId);
-            cmd.Parameters.AddWithValue("@CanView", model.CanView);
-            cmd.Parameters.AddWithValue("@CanCreate", model.CanCreate);
-            cmd.Parameters.AddWithValue("@CanEdit", model.CanEdit);
-            cmd.Parameters.AddWithValue("@CanDelete", model.CanDelete);
-
-            con.Open();
-            cmd.ExecuteNonQuery();
-        }
-
+        // ✅ Bulk update rights (Transaction safe)
         public void BulkUpdate(List<UserPageRight> rights)
         {
-            if (rights == null || !rights.Any()) return;
+            if (rights == null || !rights.Any())
+                return;
 
             using SqlConnection con = new(_connectionString);
             con.Open();
-            using SqlTransaction transaction = con.BeginTransaction();
 
-            string query = @"UPDATE UserPageRights
-                             SET CanView=@CanView,
-                                 CanCreate=@CanCreate,
-                                 CanEdit=@CanEdit,
-                                 CanDelete=@CanDelete
-                             WHERE RightId=@RightId";
+            using SqlTransaction transaction = con.BeginTransaction();
 
             try
             {
                 foreach (var model in rights)
                 {
-                    using SqlCommand cmd = new(query, con, transaction);
+                    SqlCommand cmd = new("sp_UpdateUserPageRights", con, transaction);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@RightId", model.RightId);
                     cmd.Parameters.AddWithValue("@CanView", model.CanView);
                     cmd.Parameters.AddWithValue("@CanCreate", model.CanCreate);
                     cmd.Parameters.AddWithValue("@CanEdit", model.CanEdit);
                     cmd.Parameters.AddWithValue("@CanDelete", model.CanDelete);
+
                     cmd.ExecuteNonQuery();
                 }
+
                 transaction.Commit();
             }
             catch
@@ -138,20 +125,6 @@ namespace FITR_DC_FORM.Repositories.Repository
                 transaction.Rollback();
                 throw;
             }
-        }
-
-        private UserPageRight MapRights(SqlDataReader reader)
-        {
-            return new UserPageRight
-            {
-                RightId = Convert.ToInt32(reader["RightId"]),
-                UserId = Convert.ToInt32(reader["UserId"]),
-                PageName = reader["PageName"].ToString(),
-                CanView = Convert.ToBoolean(reader["CanView"]),
-                CanCreate = Convert.ToBoolean(reader["CanCreate"]),
-                CanEdit = Convert.ToBoolean(reader["CanEdit"]),
-                CanDelete = Convert.ToBoolean(reader["CanDelete"])
-            };
         }
     }
 }
