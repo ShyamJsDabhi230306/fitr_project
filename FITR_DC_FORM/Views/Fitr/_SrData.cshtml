@@ -292,4 +292,69 @@
             });
         });
     }
+
+
+
+
+
+
+
+
+
+    // 🔥 Generate serial sequence based on first row
+    function generateSrSequence() {
+        var tbody = document.querySelector("#srTable tbody");
+        if (!tbody || tbody.rows.length === 0) return;
+
+        var firstInput = tbody.rows[0].querySelector("input[name*='SrNo']");
+        if (!firstInput) return;
+
+        var baseValue = firstInput.value.trim();
+        if (baseValue === "") return;
+
+        var baseNumber = parseInt(baseValue);
+
+        // If not a number, stop
+        if (isNaN(baseNumber)) return;
+
+        [...tbody.rows].forEach((row, index) => {
+            var input = row.querySelector("input[name*='SrNo']");
+            if (!input) return;
+
+            input.value = baseNumber + index;
+        });
+    }
+
+    // 🔥 When first row SrNo changes → regenerate sequence
+    document.addEventListener("input", function (e) {
+        var tbody = document.querySelector("#srTable tbody");
+        if (!tbody) return;
+
+        var firstSrInput = tbody.rows[0]?.querySelector("input[name*='SrNo']");
+        if (e.target === firstSrInput) {
+            generateSrSequence();
+        }
+    });
+
+    // 🔥 After adding row → regenerate sequence
+    const originalAddSrRow = addSrRow;
+    addSrRow = function () {
+        originalAddSrRow();
+        generateSrSequence();
+    };
+
+    // 🔥 After removing row → regenerate sequence
+    const originalRemoveRow = removeRow;
+    removeRow = function (btn) {
+        originalRemoveRow(btn);
+        generateSrSequence();
+    };
+
+
+
+
+
+
+
+
 </script>

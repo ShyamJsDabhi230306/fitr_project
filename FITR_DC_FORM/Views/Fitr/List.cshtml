@@ -667,17 +667,23 @@
             <div class="modal-body">
                 <!-- Choice Cards for Selection Type -->
                 <div class="company-type-selector">
-                    <div class="selection-card active" id="cardSameCompany" data-value="same">
+                    <div class="selection-card" id="cardSameCompany" data-value="same">
                         <div class="check-icon"><i class="fa fa-check"></i></div>
                         <i class="fa fa-building"></i>
                         <span class="card-label">Same Company</span>
-                        <input type="radio" name="companySelectionType" value="same" class="d-none" checked>
+                        <input type="radio" name="companySelectionType" value="same" class="d-none">
                     </div>
                     <div class="selection-card" id="cardOtherCompany" data-value="other">
                         <div class="check-icon"><i class="fa fa-check"></i></div>
                         <i class="fa fa-building-columns"></i>
                         <span class="card-label">Other Company</span>
                         <input type="radio" name="companySelectionType" value="other" class="d-none">
+                    </div>
+                    <div class="selection-card" id="cardNoCompany" data-value="none">
+                        <div class="check-icon"><i class="fa fa-check"></i></div>
+                        <i class="fa fa-eye-slash"></i>
+                        <span class="card-label">Without Company</span>
+                        <input type="radio" name="companySelectionType" value="none" class="d-none">
                     </div>
                 </div>
 
@@ -703,7 +709,7 @@
                     </div>
                 </div>
 
-                <div id="sameCompanyInfo" class="company-info-area">
+                <div id="sameCompanyInfo" class="company-info-area d-none">
                     <div class="d-flex align-items-center gap-3">
                         <div class="p-3 bg-light rounded-circle text-primary" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
                             <i class="fa fa-building" style="font-size: 20px;"></i>
@@ -711,6 +717,18 @@
                         <div>
                             <p class="mb-0 fw-bold text-dark" id="mainCompanyName">Aira Euro Pvt Ltd</p>
                             <p class="mb-0 small text-muted" id="mainCompanySubtitle">Aira India - Default Selection</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="noCompanyInfo" class="company-info-area d-none">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-3 bg-light rounded-circle text-danger" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa fa-eye-slash" style="font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-bold text-dark">No Branding</p>
+                            <p class="mb-0 small text-muted">Print without Name & Logo</p>
                         </div>
                     </div>
                 </div>
@@ -867,9 +885,15 @@
                     if (val === 'other') {
                         $('#otherCompanyContainer').removeClass('d-none');
                         $('#sameCompanyInfo').addClass('d-none');
-                    } else {
+                        $('#noCompanyInfo').addClass('d-none');
+                    } else if (val === 'same') {
                         $('#otherCompanyContainer').addClass('d-none');
                         $('#sameCompanyInfo').removeClass('d-none');
+                        $('#noCompanyInfo').addClass('d-none');
+                    } else if (val === 'none') {
+                        $('#otherCompanyContainer').addClass('d-none');
+                        $('#sameCompanyInfo').addClass('d-none');
+                        $('#noCompanyInfo').removeClass('d-none');
                     }
                 });
 
@@ -891,8 +915,12 @@
                         return;
                     }
 
-                    // Reset to "Same Company" by default
-                    $('#cardSameCompany').click();
+                    // NO DEFAULT SELECTION - Explicit choice required
+                    $('.selection-card').removeClass('active');
+                    $('input[name="companySelectionType"]').prop('checked', false);
+                    $('#otherCompanyContainer, #sameCompanyInfo, #noCompanyInfo').addClass('d-none');
+                    $('#companyPreview').addClass('d-none');
+                    $('#selectPrintCompany').val('');
 
                     // Load Main Company
                     $.get('/Fitr/GetMainCompany', function (mc) {
@@ -948,10 +976,23 @@
                     let companyName = '';
                     const selectionType = $('input[name="companySelectionType"]:checked').val();
 
+                    if (!selectionType) {
+                        Swal.fire({
+                            title: 'Selection Required',
+                            text: 'Please explicitly choose a printing option.',
+                            icon: 'warning',
+                            confirmButtonColor: '#7366ff'
+                        });
+                        return;
+                    }
+
                     if (selectionType === 'same') {
                         // Use Main Company from Company Master
                         companyId = 0; // 0 indicates Main Company fallback in Controller
                         companyName = mainCompany ? mainCompany.companyName : 'Main Company';
+                    } else if (selectionType === 'none') {
+                        companyId = -1; // -1 indicates No Branding in Controller
+                        companyName = 'No Company Branding';
                     } else {
                         companyId = $('#selectPrintCompany').val();
                         companyName = $('#selectPrintCompany option:selected').text();
@@ -1013,8 +1054,12 @@
                     const id = $(this).data('id');
                     selectedIds = [id]; // Set global selectedIds
                     
-                    // Reset to "Same Company" by default
-                    $('#cardSameCompany').click();
+                    // Reset modal to fresh state
+                    $('.selection-card').removeClass('active');
+                    $('input[name="companySelectionType"]').prop('checked', false);
+                    $('#otherCompanyContainer, #sameCompanyInfo, #noCompanyInfo').addClass('d-none');
+                    $('#companyPreview').addClass('d-none');
+                    $('#selectPrintCompany').val('');
 
                     // Load Main Company
                     $.get('/Fitr/GetMainCompany', function (mc) {

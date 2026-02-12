@@ -795,11 +795,15 @@ namespace FITR_DC_FORM.Controllers
             _service.GenerateTCIfNotExists(id);
             var model = _service.GetFitr(id);
 
-            if (printCompanyId.HasValue && printCompanyId.Value > 0)
+            if (printCompanyId == -1)
+            {
+                ViewBag.HideBranding = true;
+            }
+            else if (printCompanyId.HasValue && printCompanyId.Value > 0)
             {
                 ViewBag.PrintCompany = _companyService.GetById(printCompanyId.Value);
             }
-            else
+            else // Fallback for null or 0 (Main Company)
             {
                 // Fallback to Main Company from Company Master
                 var mainCompany = _mainCompanyService.GetAll().FirstOrDefault();
@@ -823,7 +827,11 @@ namespace FITR_DC_FORM.Controllers
             if (string.IsNullOrEmpty(ids))
                 return BadRequest("No records selected");
 
-            if (printCompanyId.HasValue && printCompanyId.Value > 0)
+            if (printCompanyId == -1)
+            {
+                ViewBag.HideBranding = true;
+            }
+            else if (printCompanyId.HasValue && printCompanyId.Value > 0)
             {
                 ViewBag.PrintCompany = _companyService.GetById(printCompanyId.Value);
             }
