@@ -83,6 +83,12 @@ namespace FITR_DC_FORM.Models
         public string? AdminApprovedByName { get; set; }
         public string AdminSignature { get; set; }
         public DateTime? AdminApprovedOn { get; set; }
+
+
+
+        public bool IsDeleted { get; set; }
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public List<FitrMaterial> Materials { get; set; } = new();
         public List<FitrSrData> SrData { get; set; } = new();
         public List<FitrVisual> Visuals { get; set; } = new();

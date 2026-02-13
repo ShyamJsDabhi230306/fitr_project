@@ -1,4 +1,4 @@
-﻿
+
 
 
 using FITR_DC_FORM.Models;
@@ -36,7 +36,7 @@ namespace FITR_DC_FORM.Repositories.Repository
            SAVE METHODS (UNCHANGED / SAFE)
            ===================================================== */
 
-        public int SaveBasic(FitrMaster m)
+    public int SaveBasic(FitrMaster m)
 {
     using var con = GetConnection();
     using var cmd = new SqlCommand("dbo.sp_FITR_SaveBasic", con);
@@ -237,7 +237,12 @@ namespace FITR_DC_FORM.Repositories.Repository
                                           ? null
                                           : rdr["TCAttachmentPath"].ToString(),
 
-
+                    // 🔥 SOFT DELETE FIELDS
+                    // IMPORTANT: The stored procedure 'sp_FITR_GetDcList_ByRole' MUST include IsDeleted column in its SELECT statement
+                    // If IsDeleted column is missing, deleted records will appear as active (defaults to false)
+                    IsDeleted = rdr.GetSchemaTable().Select("ColumnName = 'IsDeleted'").Length > 0
+                                ? (rdr["IsDeleted"] != DBNull.Value && Convert.ToBoolean(rdr["IsDeleted"]))
+                                : false,
 
                     SrData = new List<FitrSrData>(),
                     Materials = new List<FitrMaterial>()
@@ -590,6 +595,17 @@ namespace FITR_DC_FORM.Repositories.Repository
                     : rdr["AdminSignature"].ToString();
 
                 vm.Master.AdminApprovedOn = rdr["AdminApprovedOn"] as DateTime?;
+
+                // 🔥 SOFT DELETE FIELDS
+                vm.Master.IsDeleted = rdr.GetSchemaTable().Select("ColumnName = 'IsDeleted'").Length > 0
+                                    ? (rdr["IsDeleted"] != DBNull.Value && Convert.ToBoolean(rdr["IsDeleted"]))
+                                    : false;
+                vm.Master.DeletedBy = rdr.GetSchemaTable().Select("ColumnName = 'DeletedBy'").Length > 0
+                                    ? rdr["DeletedBy"] as int?
+                                    : null;
+                vm.Master.DeletedAt = rdr.GetSchemaTable().Select("ColumnName = 'DeletedAt'").Length > 0
+                                    ? rdr["DeletedAt"] as DateTime?
+                                    : null;
             }
             else
             {
@@ -669,6 +685,8 @@ namespace FITR_DC_FORM.Repositories.Repository
             return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         }
 
+
+
         public List<FitrMaster> GetListByRoleFilteredV2(
             string userRole,
             int companyId,
@@ -722,6 +740,11 @@ namespace FITR_DC_FORM.Repositories.Repository
                     DCAttachmentPath = rdr["DCAttachmentPath"]?.ToString(),
                     DrawingAttachmentPath = rdr["DrawingAttachmentPath"]?.ToString(),
                     TCAttachmentPath = rdr["TCAttachmentPath"]?.ToString(),
+
+                    // 🔥 SOFT DELETE FIELDS
+                    IsDeleted = rdr.GetSchemaTable().Select("ColumnName = 'IsDeleted'").Length > 0
+                                ? (rdr["IsDeleted"] != DBNull.Value && Convert.ToBoolean(rdr["IsDeleted"]))
+                                : false,
 
                     SrData = new List<FitrSrData>(),
                     Materials = new List<FitrMaterial>()
@@ -784,6 +807,22 @@ namespace FITR_DC_FORM.Repositories.Repository
             }
 
             return list.OrderByDescending(x => x.CreatedAt).ToList();
+        }
+        /* =====================================================
+   SOFT DELETE
+   ===================================================== */
+
+        public void SoftDelete(int fitrId, int deletedBy)
+        {
+            using var con = GetConnection();
+            using var cmd = new SqlCommand("usp_FITR_SoftDelete", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@FitrId", fitrId);
+            cmd.Parameters.AddWithValue("@DeletedBy", deletedBy);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
     }
 

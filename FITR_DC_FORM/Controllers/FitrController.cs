@@ -1,4 +1,4 @@
-﻿//using FITR_DC_FORM.Helpers;
+//using FITR_DC_FORM.Helpers;
 //using FITR_DC_FORM.Models;
 //using FITR_DC_FORM.Models.ViewModels;
 //using FITR_DC_FORM.Services.Interfaces;
@@ -755,23 +755,28 @@ namespace FITR_DC_FORM.Controllers
             // 🔥 UNIFIED WORKFLOW LOGIC (Consistent Across All Roles)
             // Rule 1: "Pending Approval" Tab = ANY record that is NOT fully approved.
             // Rule 2: "All Data" Tab = ONLY records that are fully approved.
+            // 🔥 IMPORTANT: Deleted records (IsDeleted = true) should ALWAYS be visible regardless of status filter
 
             if (filter == "pending")
             {
                 // Show everything EXCEPT "Approved" or "FINAL_APPROVED"
                 // This includes: Draft, Submitted, HOD Approval Pending, Admin Approval Pending
+                // PLUS: All deleted records (they should always be visible)
                 list = list.Where(x => 
-                    !string.Equals(x.Status, "Approved", StringComparison.OrdinalIgnoreCase) && 
-                    !string.Equals(x.Status, "FINAL_APPROVED", StringComparison.OrdinalIgnoreCase)
+                    x.IsDeleted || // Always show deleted records
+                    (!string.Equals(x.Status, "Approved", StringComparison.OrdinalIgnoreCase) && 
+                     !string.Equals(x.Status, "FINAL_APPROVED", StringComparison.OrdinalIgnoreCase))
                 ).ToList();
             }
             else
             {
                 // "All Data" (or default)
                 // Show ONLY fully approved records
+                // PLUS: All deleted records (they should always be visible)
                 list = list.Where(x => 
-                    string.Equals(x.Status, "Approved", StringComparison.OrdinalIgnoreCase) || 
-                    string.Equals(x.Status, "FINAL_APPROVED", StringComparison.OrdinalIgnoreCase)
+                    x.IsDeleted || // Always show deleted records
+                    (string.Equals(x.Status, "Approved", StringComparison.OrdinalIgnoreCase) || 
+                     string.Equals(x.Status, "FINAL_APPROVED", StringComparison.OrdinalIgnoreCase))
                 ).ToList();
             }
 
@@ -948,5 +953,29 @@ namespace FITR_DC_FORM.Controllers
 
             return Json(true);
         }
+
+        [HttpPost]
+        [RoleAuthorize("SUPERADMIN", "ADMIN")]
+        public IActionResult SoftDelete(int id)
+        {
+            try
+            {
+                // Get userId from session for audit trail
+                int? userId = HttpContext.Session.GetInt32("UserId");
+                
+                if (userId == null || userId <= 0)
+                {
+                    return Json(new { success = false, message = "Invalid session. Please login again." });
+                }
+                
+                _service.SoftDelete(id, userId.Value);
+                return Json(new { success = true, message = "Record deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }

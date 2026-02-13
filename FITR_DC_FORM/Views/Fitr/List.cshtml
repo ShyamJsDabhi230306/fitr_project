@@ -8,343 +8,280 @@
 
 
 <style>
-    /* ONE deleted row */
+    /* 🏆 NEW PROFESSIONAL STYLE FOR LIST VIEW */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #7366ff 0%, #a178ff 100%);
+        --success-gradient: linear-gradient(135deg, #51bb25 0%, #75d94c 100%);
+        --warning-gradient: linear-gradient(135deg, #f8d62b 0%, #f9e262 100%);
+        --info-gradient: linear-gradient(135deg, #167dff 0%, #4ea1ff 100%);
+        --danger-gradient: linear-gradient(135deg, #ff3366 0%, #ff6688 100%);
+        --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+    }
+
+    /* 🗑️ DELETED ROW STYLING - REFINED */
     tr.row-deleted {
-        background-color: #fff1f1 !important;
-        opacity: 0.6;
+        background-color: #fff5f5 !important;
+        opacity: 0.9;
     }
 
-        tr.row-deleted a,
-        tr.row-deleted button,
-        tr.row-deleted input {
-            pointer-events: none;
-            cursor: not-allowed;
-        }
-
-    .deleted-badge {
-        display: inline-block;
-        padding: 3px 8px;
-        font-size: 11px;
-        font-weight: 600;
-        color: #fff;
-        background-color: #dc3545;
-        border-radius: 4px;
-        margin-left: 8px;
+    tr.row-deleted td {
+        color: #e74c3c !important;
     }
 
-    /*   .dataTables_filter {
-            float: right !important;
-        } */
-
-    #makeinline {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: nowrap;
-    }
-    /* 🔒 LOCK DATATABLE SEARCH WIDTH – PREVENT OVERLAP */
-    .dt-search {
-        display: flex;
-        align-items: center;
-    }
-
-        .dt-search input {
-            width: 220px !important;
-            min-width: 220px;
-            max-width: 220px;
-        }
-    /* Stop Search and Add from overlapping */
-    .dt-search {
-        margin-right: 120px; /* reserve space for + Add button */
-    }
-
-        /* Optional but recommended: lock search width */
-        .dt-search input {
-            width: 220px;
-        }
-
-        .dt-search > label {
-            margin-top: 5px;
-        }
-    /* Decrease row height */
-    .product-removes.inbox-data td {
-        padding-top: 6px !important;
-        padding-bottom: 6px !important;
-        line-height: 0.5;
-    }
-
-    #grip-click {
-        display: none;
-    }
-
-    #cog-click {
-        display: none;
-    }
-
-    tr.row-deleted a:not(.dt-control),
-    tr.row-deleted button,
-    tr.row-deleted input {
-        pointer-events: none;
-    }
-
-    /* 🔥 PLUS ICON ALWAYS CLICKABLE */
-    td.dt-control,
-    td.dt-control i {
-        pointer-events: auto !important;
-        cursor: pointer;
-    }
-
-
-
-    /* TABLE BASE */
-
-    /* TABLE BASE - NATIVE SCROLLING (FINAL FIX) */
+    /* 📊 TABLE ENHANCEMENTS */
     #roles-permission {
-        width: auto !important;         /* Let content dictate width */
-        min-width: 100% !important;     /* Fill at least the container */
-        margin-bottom: 0px !important;
+        width: 100% !important;
         border-collapse: collapse !important;
-        table-layout: auto !important;  /* CRITICAL: Allow columns to expand */
+        margin-top: 10px !important;
     }
 
-    /* Cell Content */
-    #roles-permission th,
+    #roles-permission thead th {
+        background-color: #f8f9fa;
+        color: #555;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        padding: 12px !important; /* Standardized padding */
+        border-bottom: 2px solid #eee !important;
+    }
+
+    #roles-permission tbody tr {
+        background-color: #fff;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    #roles-permission tbody tr:hover {
+        background-color: #f9f9ff !important;
+    }
+
     #roles-permission td {
-        white-space: nowrap !important; /* Forces expansion */
-        padding: 12px 15px !important;
-        vertical-align: middle;
+        padding: 12px !important;
+        vertical-align: middle !important;
         font-size: 13px;
-        border-bottom: 1px solid #eee;
-        
-        /* PREVENT OVERLAP */
-        width: auto !important;
-        max-width: none !important;
-        overflow: visible !important;
-        box-sizing: border-box !important;
+        color: #333;
+        line-height: 1.4 !important;
     }
 
-    /* Header Centering */
-    /* Header Centering - REMOVED global center to allow specific alignment */
-    #roles-permission th {
-        /* text-align: center !important;  <-- REMOVED */
-        vertical-align: middle;
-        background-color: #fafafa; /* Keep header distinct */
-        font-weight: 600;
-    }
-    
-    /* Ensure Container Handles Scroll */
-    .table-responsive {
-        overflow-x: auto !important;
-        width: 100% !important;
-        border: 1px solid #f0f0f0;
+    /* 🏷️ PREMIUM BADGES */
+    .badge {
+        padding: 6px 12px !important;
+        font-weight: 600 !important;
+        font-size: 10px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border-radius: 30px !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
 
-    /* REMOVED FIXED WIDTH CLASSES to allow natural expansion */
-    .col-plus, .col-check {
-        width: 40px !important;
-        text-align: center;
-    }
+    .bg-primary { background: var(--primary-gradient) !important; color: white !important; }
+    .bg-success { background: var(--success-gradient) !important; color: white !important; }
+    .bg-warning { background: var(--warning-gradient) !important; color: #333 !important; }
+    .bg-info { background: var(--info-gradient) !important; color: white !important; }
+    .bg-danger { background: var(--danger-gradient) !important; color: white !important; }
+    .bg-secondary { background: #e9ecef !important; color: #495057 !important; border: 1px solid #dee2e6; }
 
-    /* Action column should have a minimum width to keep buttons together */
-    .col-action {
-        min-width: 140px !important;
-    }
-    
-    /* Container for horizontal scroll */
-    .table-responsive {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-        width: 100% !important;
-        display: block !important;
-    }
-
-    /* Professional Button Grouping */
+    /* 🛠️ ACTION BUTTONS */
     .action-btn-group {
-        display: flex !important;
-        gap: 4px !important;
-        justify-content: center !important;
-        align-items: center !important;
+        display: flex;
+        gap: 6px;
+        justify-content: center;
     }
 
     .btn-xs {
-        padding: 4px 8px !important;
-        font-size: 11px !important;
-        line-height: 1.2 !important;
-        border-radius: 4px !important;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 !important;
+        border-radius: 6px !important;
+        transition: all 0.2s;
+        border: none;
     }
 
-    /* Icons */
+    .btn-xs:hover {
+        transform: scale(1.1);
+    }
+
+    .btn-xs i { font-size: 12px; }
+    
+    /* 💎 INDUSTRIAL ACTION BUTTONS */
+    .btn-industrial {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 16px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        border: none !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        color: white !important;
+        white-space: nowrap;
+        height: 36px;
+    }
+
+    .btn-industrial:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15) !important;
+        filter: brightness(1.1);
+    }
+
+    .btn-industrial:active {
+        transform: translateY(0);
+    }
+
+    .btn-industrial i {
+        font-size: 14px;
+    }
+
+    .btn-industrial-primary { background: var(--primary-gradient) !important; }
+    .btn-industrial-success { background: var(--success-gradient) !important; }
+    .btn-industrial-warning { background: var(--warning-gradient) !important; color: #333 !important; }
+    .btn-industrial-info { background: var(--info-gradient) !important; }
+
+    /* 📁 ATTACHMENT ICONS */
     .col-attach i {
-        color: #0d6efd;
-        font-size: 15px;
+        color: #acb5bd;
+        font-size: 16px;
+        transition: color 0.2s;
+    }
+
+    .col-attach a:hover i {
+        color: #7366ff;
+    }
+
+    /* ➕ EXPANDER ICON */
+    .dt-control {
         cursor: pointer;
     }
 
     .dt-control i {
-        cursor: pointer;
+        transition: transform 0.2s;
     }
 
-    #roles-permission_paginate{
-        display:flex;
+    tr.shown td.dt-control i {
+        transform: rotate(45deg);
+        color: #ff3366 !important;
     }
 
-    tr.row-deleted {
-        background-color: #fff1f1 !important;
-        opacity: 0.6;
-    }
-
-    /* Disable everything EXCEPT plus icon */
-    tr.row-deleted a:not(.dt-control),
-    tr.row-deleted button:not(.soft-delete-btn),
-    tr.row-deleted input {
-        pointer-events: none;
-        cursor: not-allowed;
-    }
-
-    /* Delete button disabled look */
-    tr.row-deleted .soft-delete-btn {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-
-    /* 🏢 PREMIUM COMPANY SELECTION MODAL STYLES */
-    #companyModal .modal-content {
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        overflow: hidden;
-    }
-
-    #companyModal .modal-header {
+    /* 🔍 SEARCH AND FILTERS BAR */
+    #makeinline {
         background: #fff;
-        border-bottom: 1px solid #f0f0f0;
-        padding: 20px 24px;
+        padding: 5px 0;
+        margin-bottom: 10px;
     }
 
-    #companyModal .modal-title {
-        font-weight: 700;
-        color: #2c3e50;
-        font-size: 1.25rem;
+    .user-list-wrapper .card {
+        border: none;
+        box-shadow: 0 0 20px rgba(89, 102, 122, 0.05);
+        border-radius: 12px;
     }
 
-    #companyModal .modal-body {
-        padding: 24px;
-        background-color: #fbfbfb;
+    .card-header {
+        background-color: transparent !important;
+        border-bottom: none !important;
+        padding: 20px 25px !important;
     }
 
-    /* Selection Type Container */
+    /* 🏢 COMPANY MODAL STYLING - REFINED */
+    #companyModal .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
     .company-type-selector {
         display: flex;
-        gap: 15px;
-        margin-bottom: 24px;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
     }
 
     .selection-card {
-        flex: 1;
-        cursor: pointer;
-        position: relative;
-        padding: 16px;
-        border: 2px solid #eef2f7;
-        border-radius: 12px;
-        background: #fff;
-        transition: all 0.25s ease;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 15px 20px;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 8px;
-        text-align: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
     }
 
     .selection-card:hover {
+        background-color: #f8f9ff;
         border-color: #7366ff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(115, 102, 255, 0.08);
     }
 
     .selection-card.active {
         border-color: #7366ff;
-        background-color: rgba(115, 102, 255, 0.04);
+        background-color: #f0eeff;
+        box-shadow: 0 4px 12px rgba(115,102,255,0.1);
     }
 
-    .selection-card i {
-        font-size: 24px;
-        color: #acb5bd;
-        transition: color 0.25s ease;
+    .selection-card i:not(.check-icon i) {
+        font-size: 20px;
+        color: #666;
+        width: 30px;
+        text-align: center;
     }
 
-    .selection-card.active i {
+    .selection-card.active i:not(.check-icon i) {
         color: #7366ff;
     }
 
     .selection-card .card-label {
         font-weight: 600;
-        font-size: 14px;
-        color: #495057 !important; /* Ensure visibility */
-    }
-
-    .selection-card.active .card-label {
-        color: #7366ff !important;
+        color: #444;
+        flex-grow: 1;
     }
 
     .selection-card .check-icon {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 18px;
-        height: 18px;
-        background: #7366ff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 10px;
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 0.2s ease;
+        color: #7366ff;
+        display: none;
+        font-size: 14px;
     }
 
     .selection-card.active .check-icon {
-        opacity: 1;
-        transform: scale(1);
+        display: block;
     }
 
     .company-info-area {
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #f0f0f0;
-        padding: 20px;
-        animation: fadeIn 0.3s ease-out;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 10px;
+        border: 1px dashed #ddd;
     }
 
-    #companyModal .modal-footer {
-        border-top: 1px solid #f0f0f0;
-        padding: 16px 24px;
-        background: #fff;
+    /* 📜 CUSTOM SCROLLBAR */
+    .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
+    .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+    .table-responsive::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+    .table-responsive::-webkit-scrollbar-thumb:hover { background: #aaa; }
+
+    /* 🔘 CLEAN CHECKBOX STYLING */
+    .form-check-input {
+        cursor: pointer;
+        width: 1.1em;
+        height: 1.1em;
+        border: 2px solid #ddd;
+        transition: all 0.2s;
     }
 
-    #companyModal .btn-primary {
-        background: linear-gradient(135deg, #7366ff 0%, #a178ff 100%);
-        border: none;
-        padding: 10px 24px;
-        font-weight: 600;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(115, 102, 255, 0.25);
-    }
-
-    #companyModal .btn-secondary {
-        background: #f1f3f5;
-        color: #495057;
-        border: none;
-        padding: 10px 24px;
-        font-weight: 600;
-        border-radius: 8px;
-    }
-
-    @@keyframes fadeIn {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
+    .form-check-input:checked {
+        background-color: #7366ff;
+        border-color: #7366ff;
     }
 
 </style>
@@ -379,9 +316,12 @@
                                     <a asp-controller="Fitr" asp-action="New" class="btn btn-primary f-w-500">
                                         <i class="fa-solid fa-plus pe-2"></i>Add
                                     </a>
-                                    <button type="button" class="btn btn-secondary" id="btnPrint">
-                                        <i class="fa fa-print me-1"></i> Print
-                                    </button>
+                                    @if (!(ViewBag.Filter == "pending" && (role == "USER" || role == "HOD")))
+                                    {
+                                        <button type="button" class="btn btn-secondary" id="btnPrint">
+                                            <i class="fa fa-print me-1"></i> Print
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -393,7 +333,7 @@
                                             <tr>
                                                 <th class="col-plus text-center">#</th>
                                                 <th class="col-check text-center">
-                                                    <input type="checkbox" id="selectAll" />
+                                                    <input type="checkbox" id="selectAll" class="form-check-input" />
                                                 </th>
                                                 <th class="col-tc text-center">TC No</th>
                                                 <th class="col-customer text-start">Customer Name</th>
@@ -406,7 +346,7 @@
                                                 <th class="col-attach text-center">DC</th>
                                                 <th class="col-attach text-center">Drawing</th>
                                                 <th class="col-attach text-center">TC</th>
-                                                <th class="col-action text-center">Actions</th>
+                                                <th class="col-action text-center" style="min-width: 140px;">Actions</th>
                                             </tr>
                                         </thead>
 
@@ -415,49 +355,101 @@
                                             {
                                                 foreach (var dc in dcList)
                                                 {
-                                                    <tr class="product-removes inbox-data"
+                                                    @* <tr class="product-removes inbox-data" *@
+                                                    <tr class="product-removes inbox-data @(dc.IsDeleted ? "row-deleted" : "")"
                                                         data-id="@dc.FitrId"
                                                         data-srdata='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(dc.SrData))'>
 
                                                         <!-- EXPANDER -->
-                                                        <td class="dt-control text-center">
-                                                            <i class="fa-solid fa-plus-square text-primary" style="font-size:16px;"></i>
+                                                        <td class="dt-control">
+                                                            <i class="fa-solid fa-plus text-primary"></i>
                                                         </td>
 
-                                                        <!-- CHECKBOX -->
+                                                        <!-- CHECKBOX (no selection for deleted rows) -->
                                                         <td class="col-check text-center">
-                                                            @if ((dc.Status == "Approved" || dc.Status == "FINAL_APPROVED") || (role == "ADMIN" || role == "SUPERADMIN"))
+                                                            @if (dc.IsDeleted)
                                                             {
-                                                                <input type="checkbox" class="row-check" value="@dc.FitrId" />
+                                                                <input type="checkbox" disabled title="This record has been deleted" class="form-check-input" style="cursor: not-allowed; opacity: 0.4;" />
+                                                            }
+                                                            else if (ViewBag.Filter == "pending" && (role == "USER" || role == "HOD"))
+                                                            {
+                                                                <input type="checkbox" disabled title="Printing not allowed from Pending view" class="form-check-input" style="cursor: not-allowed; opacity: 0.4;" />
+                                                            }
+                                                            else if ((dc.Status == "Approved" || dc.Status == "FINAL_APPROVED") || (role == "ADMIN" || role == "SUPERADMIN"))
+                                                            {
+                                                                <input type="checkbox" class="row-check form-check-input" value="@dc.FitrId" />
                                                             }
                                                             else
                                                             {
-                                                                <input type="checkbox" disabled title="Printing allowed only after Final Approval" style="cursor: not-allowed; opacity: 0.5;" />
+                                                                <input type="checkbox" disabled title="Printing allowed only after Final Approval" class="form-check-input" style="cursor: not-allowed; opacity: 0.5;" />
                                                             }
                                                         </td>
 
-                                                        <td class="col-tc text-center">@dc.TCNo</td>
+                                                        <td class="col-tc text-center">
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="text-muted">@dc.TCNo</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                @dc.TCNo
+                                                            }
+                                                        </td>
 
-                                                        <td class="col-customer text-start">@dc.CompanyName</td>
+                                                        <td class="col-customer text-start">
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="text-muted">@dc.CompanyName</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                @dc.CompanyName
+                                                            }
+                                                        </td>
 
-                                                        @* <td class="col-dc text-center">
-                                                            <a asp-controller="Fitr"
-                                                               asp-action="Index"
-                                                               asp-route-id="@dc.FitrId">
-                                                                @dc.DCNo
-                                                            </a>
-                                                        </td> *@
                                                         <td class="col-dc text-center">
-                                                            
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="text-muted">@dc.DCNo</span>
+                                                            }
+                                                            else
+                                                            {
                                                                 @dc.DCNo
-                                                            
+                                                            }
                                                         </td> 
 
-                                                        <td class="col-product text-start">@dc.ProductType</td>
+                                                        <td class="col-product text-start">
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="text-muted">@dc.ProductType</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                @dc.ProductType
+                                                            }
+                                                        </td>
 
-                                                        <td class="col-po text-start">@dc.PONo</td>
+                                                        <td class="col-po text-start">
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="text-muted">@dc.PONo</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                @dc.PONo
+                                                            }
+                                                        </td>
 
-                                                        <td class="col-model text-start">@dc.Model</td>
+                                                        <td class="col-model text-start">
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="text-muted">@dc.Model</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                @dc.Model
+                                                            }
+                                                        </td>
 
                                                       @*   <td class="col-status text-center">
                                                             @if (dc.Status == "DRAFT")
@@ -478,7 +470,13 @@
                                                             }
                                                         </td> *@
                                                         <td class="col-status text-center">
-                                                            @if (dc.Status == "Draft" || dc.Status == "DRAFT")
+                                                            @if (dc.IsDeleted)
+                                                            {
+                                                                <span class="badge bg-danger" style="text-decoration: none !important;">
+                                                                    <i class="fa fa-trash me-1"></i>Deleted
+                                                                </span>
+                                                            }
+                                                            else if (dc.Status == "Draft" || dc.Status == "DRAFT")
                                                             {
                                                                 <span class="badge bg-secondary">Draft</span>
                                                             }
@@ -504,60 +502,100 @@
 
                                                         <!-- PO -->
                                                         <td class="col-attach text-center">
-                                                            @if (!string.IsNullOrEmpty(dc.POAttachmentPath))
+                                                            @if (dc.IsDeleted)
                                                             {
-                                                                <a href="~/@dc.POAttachmentPath" target="_blank">
+                                                                @if (!string.IsNullOrEmpty(dc.POAttachmentPath))
+                                                                {
+                                                                    <i class="fa fa-eye text-muted" style="opacity: 0.5; cursor: not-allowed;" title="View disabled for deleted records"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="text-muted">-</span>
+                                                                }
+                                                            }
+                                                            else if (!string.IsNullOrEmpty(dc.POAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.POAttachmentPath" target="_blank" title="View PO Document">
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
                                                             }
                                                             else
                                                             {
-
                                                                 <span>-</span>
                                                             }
                                                         </td>
 
                                                         <!-- DC -->
                                                         <td class="col-attach text-center">
-                                                            @if (!string.IsNullOrEmpty(dc.DCAttachmentPath))
+                                                            @if (dc.IsDeleted)
                                                             {
-                                                                <a href="~/@dc.DCAttachmentPath" target="_blank">
+                                                                @if (!string.IsNullOrEmpty(dc.DCAttachmentPath))
+                                                                {
+                                                                    <i class="fa fa-eye text-muted" style="opacity: 0.5; cursor: not-allowed;" title="View disabled for deleted records"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="text-muted">-</span>
+                                                                }
+                                                            }
+                                                            else if (!string.IsNullOrEmpty(dc.DCAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.DCAttachmentPath" target="_blank" title="View DC Document">
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
                                                             }
                                                             else
                                                             {
-
                                                                 <span>-</span>
                                                             }
                                                         </td>
 
                                                         <!-- DRAWING -->
                                                         <td class="col-attach text-center">
-                                                            @if (!string.IsNullOrEmpty(dc.DrawingAttachmentPath))
+                                                            @if (dc.IsDeleted)
                                                             {
-                                                                <a href="~/@dc.DrawingAttachmentPath" target="_blank">
+                                                                @if (!string.IsNullOrEmpty(dc.DrawingAttachmentPath))
+                                                                {
+                                                                    <i class="fa fa-eye text-muted" style="opacity: 0.5; cursor: not-allowed;" title="View disabled for deleted records"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="text-muted">-</span>
+                                                                }
+                                                            }
+                                                            else if (!string.IsNullOrEmpty(dc.DrawingAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.DrawingAttachmentPath" target="_blank" title="View Drawing Document">
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
                                                             }
                                                             else
                                                             {
-
                                                                 <span>-</span>
                                                             }
                                                         </td>
 
                                                         <!-- TC -->
                                                         <td class="col-attach text-center">
-                                                            @if (!string.IsNullOrEmpty(dc.TCAttachmentPath))
+                                                            @if (dc.IsDeleted)
                                                             {
-                                                                <a href="~/@dc.TCAttachmentPath" target="_blank">
+                                                                @if (!string.IsNullOrEmpty(dc.TCAttachmentPath))
+                                                                {
+                                                                    <i class="fa fa-eye text-muted" style="opacity: 0.5; cursor: not-allowed;" title="View disabled for deleted records"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="text-muted">-</span>
+                                                                }
+                                                            }
+                                                            else if (!string.IsNullOrEmpty(dc.TCAttachmentPath))
+                                                            {
+                                                                <a href="~/@dc.TCAttachmentPath" target="_blank" title="View TC Document">
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
                                                             }
                                                             else
                                                             {
-
                                                                 <span>-</span>
                                                             }
                                                         </td>
@@ -566,7 +604,7 @@
                                                         <td class="col-action text-center">
                                                             <div class="action-btn-group">
                                                                 <!-- ✏️ EDIT (Only for Drafts - USER or SUPERADMIN) -->
-                                                                @if ((role == "USER" || role == "SUPERADMIN") && (dc.Status == "Draft" || dc.Status == "DRAFT" || dc.Status == "PREPARED"))
+                                                                @if (!dc.IsDeleted && (role == "USER" || role == "SUPERADMIN") && (dc.Status == "Draft" || dc.Status == "DRAFT" || dc.Status == "PREPARED"))
                                                                 {
                                                                     <a asp-action="Index" asp-route-id="@dc.FitrId" class="btn btn-xs btn-info" title="Edit">
                                                                         <i class="fa fa-pencil"></i>
@@ -574,60 +612,66 @@
                                                                 }
 
                                                                 <!-- 📤 SUBMIT (USER) -->
-                                                                @if (role == "USER" && (dc.Status == "Draft" || dc.Status == "DRAFT" || dc.Status == "PREPARED"))
+                                                                @if (!dc.IsDeleted && role == "USER" && (dc.Status == "Draft" || dc.Status == "DRAFT" || dc.Status == "PREPARED"))
                                                                 {
-                                                                    <form asp-action="Submit" method="post" class="m-0">
+                                                                    <form asp-action="Submit" method="post" class="d-inline-block m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-xs btn-primary" title="Submit" data-confirm="Are you sure you want to submit this entry?">Submit</button>
+                                                                        <button class="btn btn-industrial btn-industrial-primary" title="Submit" data-confirm="Are you sure you want to submit this entry?">
+                                                                            <i class="fa fa-paper-plane"></i> Submit
+                                                                        </button>
                                                                     </form>
                                                                 }
-
                                                                 <!-- ✅ APPROVE (HOD) -->
-                                                                @if (role == "HOD" && (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED"))
+                                                                @if (!dc.IsDeleted && role == "HOD" && (dc.Status == "HOD Approval Pending" || dc.Status == "SUBMITTED"))
                                                                 {
-                                                                    <form asp-action="ApproveByHod" method="post" class="m-0">
+                                                                    <form asp-action="ApproveByHod" method="post" class="d-inline-block m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-xs btn-warning" title="Approve" data-confirm="Are you sure you want to approve this entry?">Approve</button>
+                                                                        <button class="btn btn-industrial btn-industrial-warning" title="Approve" data-confirm="Are you sure you want to approve this entry?">
+                                                                            <i class="fa fa-check-double"></i> Approve
+                                                                        </button>
                                                                     </form>
                                                                 }
-
                                                                 <!-- 🏆 FINAL APPROVE (ADMIN) -->
-                                                                @if (role == "ADMIN" && (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED"))
+                                                                @if (!dc.IsDeleted && role == "ADMIN" && (dc.Status == "Admin Approval Pending" || dc.Status == "HOD_APPROVED"))
                                                                 {
-                                                                    <form asp-action="ApproveByAdmin" method="post" class="m-0">
+                                                                    <form asp-action="ApproveByAdmin" method="post" class="d-inline-block m-0">
                                                                         <input type="hidden" name="id" value="@dc.FitrId" />
-                                                                        <button class="btn btn-xs btn-success" title="Final Approve" data-confirm="Are you sure you want to provide Final Approval?">Final Approve</button>
+                                                                        <button class="btn btn-industrial btn-industrial-success" title="Final Approve" data-confirm="Are you sure you want to provide Final Approval?">
+                                                                            <i class="fa fa-award"></i> Final Approve
+                                                                        </button>
                                                                     </form>
                                                                 }
-
                                                                 <!-- 🖨️ PRINT Logic -->
-                                                                @if (dc.Status == "Approved" || dc.Status == "FINAL_APPROVED")
+                                                                @if (!dc.IsDeleted && !(ViewBag.Filter == "pending" && (role == "USER" || role == "HOD")))
                                                                 {
-                                                                    <button type="button" class="btn btn-xs btn-secondary individual-print-btn" data-id="@dc.FitrId" title="Print">
-                                                                        <i class="fa fa-print"></i>
-                                                                    </button>
-                                                                }
-                                                                else if (role == "ADMIN" || role == "SUPERADMIN")
-                                                                {
-                                                                    @* Admins can print even pending entries for checking *@
-                                                                    <button type="button" class="btn btn-xs btn-secondary individual-print-btn" data-id="@dc.FitrId" title="Print (Pending Approval)">
-                                                                        <i class="fa fa-print"></i>
-                                                                    </button>
-                                                                }
-                                                                else
-                                                                {
-                                                                    @* Disabled for USER/HOD if not approved *@
-                                                                    <button type="button" class="btn btn-xs btn-light disabled" title="Final Approval Required" style="opacity: 0.5; cursor: not-allowed;">
-                                                                        <i class="fa fa-print text-muted"></i>
-                                                                    </button>
+                                                                    @if (dc.Status == "Approved" || dc.Status == "FINAL_APPROVED")
+                                                                    {
+                                                                        <button type="button" class="btn btn-xs btn-secondary individual-print-btn" data-id="@dc.FitrId" title="Print">
+                                                                            <i class="fa fa-print"></i>
+                                                                        </button>
+                                                                    }
+                                                                    else if (role == "ADMIN" || role == "SUPERADMIN")
+                                                                    {
+                                                                        <button type="button" class="btn btn-xs btn-secondary individual-print-btn" data-id="@dc.FitrId" title="Print (Pending Approval)">
+                                                                            <i class="fa fa-print"></i>
+                                                                        </button>
+                                                                    }
                                                                 }
 
-                                                                <!-- 🗑️ DELETE (SUPERADMIN or USER/Draft) -->
-                                                                @if (role == "SUPERADMIN" || (role == "USER" && (dc.Status == "Draft" || dc.Status == "DRAFT")))
+                                                                <!-- 🗑️ DELETE (SUPERADMIN, ADMIN or USER/Draft) -->
+                                                                @if (!dc.IsDeleted && (role == "SUPERADMIN" || role == "ADMIN" || (role == "USER" && (dc.Status == "Draft" || dc.Status == "DRAFT"))))
                                                                 {
                                                                     <button type="button" class="btn btn-xs btn-danger soft-delete-btn" title="Delete">
                                                                         <i class="fa fa-trash"></i>
                                                                     </button>
+                                                                }
+
+                                                                @* Show "Deleted" indicator in actions column for deleted records *@
+                                                                @if (dc.IsDeleted)
+                                                                {
+                                                                    <span class="text-muted small" style="text-decoration: none !important; font-style: italic;">
+                                                                        <i class="fa fa-ban me-1"></i>Deleted
+                                                                    </span>
                                                                 }
                                                             </div>
                                                         </td>
@@ -752,44 +796,17 @@
 
     <script>
         (function () {
-
-            const STORAGE_KEY = "FITR_DELETED_IDS";
             let table;
-
-            function getDeletedIds() {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-            }
-
-            function saveDeletedIds(ids) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-            }
-
-            function applyDeletedRows() {
-                const deletedIds = getDeletedIds();
-
-                $("#roles-permission tbody tr").each(function () {
-                    const $row = $(this);
-                    const id = String($row.data("id"));
-
-                    $row.removeClass("row-deleted");
-                    $row.find(".deleted-badge").remove();
-
-                    if (deletedIds.includes(id)) {
-                        $row.addClass("row-deleted");
-                        $row.find(".customer-name")
-                            .after('<span class="deleted-badge ms-2">DELETED</span>');
-                    }
-                });
-            }
 
             function formatSrTable(srData) {
                 if (!srData || srData.length === 0) {
-                    return `<div class="p-2 text-muted">No SR Data</div>`;
+                    return `<div class="p-3 text-center text-muted card shadow-sm m-2">
+                                <i class="fa fa-info-circle me-2"></i>No SR Data available for this record
+                            </div>`;
                 }
-
                 let rows = srData.map(s => `
                     <tr>
-                        <td>${s.SrNo ?? '-'}</td>
+                        <td class="text-center fw-bold">${s.SrNo ?? '-'}</td>
                         <td>${s.ShaftDia ?? '-'}</td>
                         <td>${s.OutputDrive ?? '-'}</td>
                         <td>${s.ActuatorPCD ?? '-'}</td>
@@ -800,334 +817,161 @@
                 `).join('');
 
                 return `
-                    <table class="table table-sm table-bordered mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>SrNo</th>
-                                <th>Shaft</th>
-                                <th>Output</th>
-                                <th>Actuator</th>
-                                <th>Valve</th>
-                                <th>Square</th>
-                                <th>Position</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
+                    <div class="p-3 bg-light rounded shadow-inner m-2">
+                        <h6 class="mb-3 text-primary fw-bold"><i class="fa fa-list-check me-2"></i>SR Data Details</h6>
+                        <table class="table table-sm table-hover bg-white rounded overflow-hidden shadow-sm mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="text-center">Sr. No.</th>
+                                    <th>Shaft Dia</th>
+                                    <th>Output Drive</th>
+                                    <th>Actuator PCD</th>
+                                    <th>Valve PCD</th>
+                                    <th>Square Dia</th>
+                                    <th>Position</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
                 `;
             }
 
             $(document).ready(function () {
-
-                // ✅ SUPPRESS DATATABLE ERRORS GLOBALLY
-                $.fn.dataTable.ext.errMode = 'none'; // Disable error alerts
-
-                // ✅ INIT DATATABLE (ONLY ONCE) - Handle empty tables
+                $.fn.dataTable.ext.errMode = 'none';
                 const $table = $("#roles-permission");
-                const $tbody = $table.find("tbody");
-                const $rows = $tbody.find("tr");
-                
-                // Check if table has actual data rows (not just empty message)
-                const hasData = $rows.length > 0 && !$rows.find("td[colspan]").length;
+                const hasData = $table.find("tbody tr").length > 0 && !$table.find("tbody tr td[colspan]").length;
 
                 try {
-                    if (hasData) {
-                        table = $table.DataTable({
-                            columnDefs: [
-                                { targets: [0, 1], orderable: false } // + icon & checkbox
-                            ],
-                            order: [[2, "desc"]], // TC NO
-                            pageLength: 25,
-                            lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
-                            autoWidth: false,
-                            // scrollX removed to use native container scrolling
-                            language: {
-                                emptyTable: "No DC records found",
-                                zeroRecords: "No matching records found"
-                            }
-                        });
-                    } else {
-                        // For empty tables, initialize with minimal config
-                        table = $table.DataTable({
-                            columnDefs: [
-                                { targets: '_all', orderable: false }
-                            ],
-                            pageLength: 25,
-                            lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
-                            autoWidth: false,
-                            // scrollX removed
-                            searching: false,
-                            paging: false,
-                            info: false,
-                            ordering: false,
-                            language: {
-                                emptyTable: "No DC records found"
-                            }
-                        });
-                    }
+                    table = $table.DataTable({
+                        columnDefs: [{ targets: [0, 1], orderable: false }],
+                        order: [[2, "desc"]],
+                        pageLength: 25,
+                        lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                        autoWidth: false,
+                        language: { emptyTable: "No DC records found", zeroRecords: "No matching records found" }
+                    });
                 } catch (e) {
                     console.warn('DataTable initialization warning:', e);
-                    // Silently fail - table will still be usable without DataTables features
                 }
 
-                // ✅ PRINT LOGIC
                 let selectedIds = [];
                 let printCompanies = [];
                 let mainCompany = null;
 
-                // Handle Selection Cards
                 $('.selection-card').on('click', function () {
                     const val = $(this).data('value');
                     $('.selection-card').removeClass('active');
                     $(this).addClass('active');
                     $(`input[name="companySelectionType"][value="${val}"]`).prop('checked', true);
-
-                    if (val === 'other') {
-                        $('#otherCompanyContainer').removeClass('d-none');
-                        $('#sameCompanyInfo').addClass('d-none');
-                        $('#noCompanyInfo').addClass('d-none');
-                    } else if (val === 'same') {
-                        $('#otherCompanyContainer').addClass('d-none');
-                        $('#sameCompanyInfo').removeClass('d-none');
-                        $('#noCompanyInfo').addClass('d-none');
-                    } else if (val === 'none') {
-                        $('#otherCompanyContainer').addClass('d-none');
-                        $('#sameCompanyInfo').addClass('d-none');
-                        $('#noCompanyInfo').removeClass('d-none');
-                    }
+                    $('#otherCompanyContainer').toggleClass('d-none', val !== 'other');
+                    $('#sameCompanyInfo').toggleClass('d-none', val !== 'same');
+                    $('#noCompanyInfo').toggleClass('d-none', val !== 'none');
                 });
 
                 $('#btnPrint').on('click', function (e) {
                     e.preventDefault();
-                    
-                    selectedIds = [];
-                    $('.row-check:checked').each(function () {
-                        selectedIds.push($(this).val());
-                    });
-
+                    selectedIds = $('.row-check:checked').map(function () { return $(this).val(); }).get();
                     if (selectedIds.length === 0) {
-                        Swal.fire({
-                            title: 'Selection Required',
-                            text: 'Please select at least one record to print.',
-                            icon: 'warning',
-                            confirmButtonColor: '#7366ff'
-                        });
+                        Swal.fire({ title: 'Selection Required', text: 'Please select at least one record.', icon: 'warning', confirmButtonColor: '#7366ff' });
                         return;
                     }
+                    openPrintModal();
+                });
 
-                    // NO DEFAULT SELECTION - Explicit choice required
+                function openPrintModal() {
                     $('.selection-card').removeClass('active');
                     $('input[name="companySelectionType"]').prop('checked', false);
-                    $('#otherCompanyContainer, #sameCompanyInfo, #noCompanyInfo').addClass('d-none');
-                    $('#companyPreview').addClass('d-none');
+                    $('#otherCompanyContainer, #sameCompanyInfo, #noCompanyInfo, #companyPreview').addClass('d-none');
                     $('#selectPrintCompany').val('');
 
-                    // Load Main Company
                     $.get('/Fitr/GetMainCompany', function (mc) {
                         mainCompany = mc;
-                        if (mc) {
-                            $('#mainCompanyName').text(mc.companyName);
-                            $('#mainCompanySubtitle').text('Default Selection');
-                        }
+                        if (mc) { $('#mainCompanyName').text(mc.companyName); }
                     });
 
-                    // Load Print companies dynamically
                     $.get('/Fitr/GetPrintCompanies', function (data) {
                         printCompanies = data;
                         const $select = $('#selectPrintCompany');
                         $select.html('<option value="">-- Select Company --</option>');
                         data.forEach(c => {
-                            $select.append(`<option value="${c.printCompanyId}" 
-                                            data-addr="${c.companyAddress}" 
-                                            data-logo="${c.companyLogo}"
-                                            data-name="${c.companyName}">${c.companyName}</option>`);
+                            $select.append(`<option value="${c.printCompanyId}" data-addr="${c.companyAddress}" data-logo="${c.companyLogo}" data-name="${c.companyName}">${c.companyName}</option>`);
                         });
                         $('#companyModal').modal('show');
                     });
-                });
+                }
 
                 $('#selectPrintCompany').on('change', function () {
                     const $opt = $(this).find(':selected');
-                    const addr = $opt.data('addr');
-                    const logo = $opt.data('logo');
-                    const name = $opt.data('name');
-
                     const $preview = $('#companyPreview');
-
                     if ($opt.val()) {
-                        $('#previewName').text(name);
-                        $('#previewAddress').html(addr ? addr.replace(/\n/g, '<br/>') : 'No address provided');
-
-                        if (logo) {
-                            $('#previewLogo').attr('src', '/uploads/' + logo);
-                            $('#previewLogoContainer').show();
-                        } else {
-                            $('#previewLogo').attr('src', '/assets/images/logo/airaindia-logo.webp');
-                        }
-
+                        $('#previewName').text($opt.data('name'));
+                        $('#previewAddress').html($opt.data('addr') ? $opt.data('addr').replace(/\n/g, '<br/>') : 'No address');
+                        $('#previewLogo').attr('src', $opt.data('logo') ? '/uploads/' + $opt.data('logo') : '/assets/images/logo/airaindia-logo.webp');
                         $preview.removeClass('d-none');
-                    } else {
-                        $preview.addClass('d-none');
-                    }
+                    } else { $preview.addClass('d-none'); }
                 });
 
                 $('#btnConfirmPrint').on('click', function () {
-                    let companyId = '';
-                    let companyName = '';
-                    const selectionType = $('input[name="companySelectionType"]:checked').val();
+                    const type = $('input[name="companySelectionType"]:checked').val();
+                    if (!type) { Swal.fire({ title: 'Required', text: 'Please choose an option.', icon: 'warning' }); return; }
+                    
+                    let companyId = type === 'same' ? 0 : (type === 'none' ? -1 : $('#selectPrintCompany').val());
+                    if (type === 'other' && (!companyId || companyId === "")) { Swal.fire({ title: 'Required', text: 'Select a company.', icon: 'warning' }); return; }
 
-                    if (!selectionType) {
-                        Swal.fire({
-                            title: 'Selection Required',
-                            text: 'Please explicitly choose a printing option.',
-                            icon: 'warning',
-                            confirmButtonColor: '#7366ff'
-                        });
-                        return;
-                    }
-
-                    if (selectionType === 'same') {
-                        // Use Main Company from Company Master
-                        companyId = 0; // 0 indicates Main Company fallback in Controller
-                        companyName = mainCompany ? mainCompany.companyName : 'Main Company';
-                    } else if (selectionType === 'none') {
-                        companyId = -1; // -1 indicates No Branding in Controller
-                        companyName = 'No Company Branding';
-                    } else {
-                        companyId = $('#selectPrintCompany').val();
-                        companyName = $('#selectPrintCompany option:selected').text();
-                        
-                        if (!companyId || companyId === "") {
-                            Swal.fire({
-                                title: 'Required',
-                                text: 'Please select a company for printing.',
-                                icon: 'warning',
-                                confirmButtonColor: '#7366ff'
-                            });
-                            return;
-                        }
-                    }
-
-                    // Professional Confirmation using SweetAlert2
-                    Swal.fire({
-                        title: 'Confirm Printing',
-                        text: 'Proceed with generating Test Certificate(s) for ' + companyName + '?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#7366ff',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, Print it!',
-                        cancelButtonText: 'No, Wait',
-                        focusCancel: true,
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-lg btn-primary me-2',
-                            cancelButton: 'btn btn-lg btn-danger',
-                            popup: 'animated fadeInDown faster'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#companyModal').modal('hide');
-                            
-                            if (selectedIds.length === 1) {
-                                window.open('/Fitr/Print/' + selectedIds[0] + '?printCompanyId=' + companyId, '_blank');
-                            } else {
-                                window.open('/Fitr/PrintMultiple?ids=' + selectedIds.join(',') + '&printCompanyId=' + companyId, '_blank');
-                            }
-                        }
-                    });
+                    $('#companyModal').modal('hide');
+                    const url = selectedIds.length === 1 ? '/Fitr/Print/' + selectedIds[0] : '/Fitr/PrintMultiple?ids=' + selectedIds.join(',');
+                    window.open(url + (url.includes('?') ? '&' : '?') + 'printCompanyId=' + companyId, '_blank');
                 });
 
-                // ✅ SELECT ALL
-                $('#selectAll').on('change', function () {
-                    $('.row-check').prop('checked', this.checked);
-                });
+                $('#selectAll').on('change', function () { $('.row-check').prop('checked', this.checked); });
 
-                // ✅ APPLY DELETED STATE AFTER DRAW
-                table.on("draw", function () {
-                    applyDeletedRows();
-                });
-
-                // ✅ INDIVIDUAL PRINT
                 $('#roles-permission tbody').on('click', '.individual-print-btn', function (e) {
                     e.preventDefault();
-                    const id = $(this).data('id');
-                    selectedIds = [id]; // Set global selectedIds
-                    
-                    // Reset modal to fresh state
-                    $('.selection-card').removeClass('active');
-                    $('input[name="companySelectionType"]').prop('checked', false);
-                    $('#otherCompanyContainer, #sameCompanyInfo, #noCompanyInfo').addClass('d-none');
-                    $('#companyPreview').addClass('d-none');
-                    $('#selectPrintCompany').val('');
-
-                    // Load Main Company
-                    $.get('/Fitr/GetMainCompany', function (mc) {
-                        mainCompany = mc;
-                        if (mc) {
-                            $('#mainCompanyName').text(mc.companyName);
-                            $('#mainCompanySubtitle').text('Default Selection');
-                        }
-                    });
-
-                    // Trigger same logic as btnPrint
-                    $.get('/Fitr/GetPrintCompanies', function (data) {
-                        printCompanies = data;
-                        const $select = $('#selectPrintCompany');
-                        $select.html('<option value="">-- Select Company --</option>');
-                        data.forEach(c => {
-                            $select.append(`<option value="${c.printCompanyId}" 
-                                            data-addr="${c.companyAddress}" 
-                                            data-logo="${c.companyLogo}"
-                                            data-name="${c.companyName}">${c.companyName}</option>`);
-                        });
-                        $('#companyModal').modal('show');
-                    });
-                });
-                
-                // Load Main Company on page load to have it ready
-                $.get('/Fitr/GetMainCompany', function (mc) {
-                    mainCompany = mc;
+                    selectedIds = [$(this).data('id')];
+                    openPrintModal();
                 });
 
-                // ✅ SOFT DELETE
                 $('#roles-permission tbody').on("click", ".soft-delete-btn", function (e) {
                     e.preventDefault();
                     e.stopPropagation();
+                    const $tr = $(this).closest("tr");
+                    const id = $tr.data("id");
+                    const name = $tr.find(".col-customer").text().trim();
 
-                    if (!confirm("Are you sure you want to mark this record as deleted?")) return;
-
-                    const id = String($(this).closest("tr").data("id"));
-                    const ids = getDeletedIds();
-
-                    if (!ids.includes(id)) {
-                        ids.push(id);
-                        saveDeletedIds(ids);
-                    }
-
-                    applyDeletedRows();
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: `Delete "${name}"?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.post('/Fitr/SoftDelete', { id: id }, function (res) {
+                                if (res.success) {
+                                    Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false })
+                                        .then(() => window.location.reload());
+                                } else { Swal.fire('Error', res.message, 'error'); }
+                            });
+                        }
+                    });
                 });
 
-                // ✅ SR (+) TOGGLE RESTORED
                 $('#roles-permission tbody').on('click', 'td.dt-control', function (e) {
                     e.stopPropagation();
-                    let tr = $(this).closest('tr');
-                    let row = table.row(tr);
-
+                    let tr = $(this).closest('tr'), row = table.row(tr);
                     if (row.child.isShown()) {
                         row.child.hide();
                         tr.removeClass('shown');
-                        $(this).find('i').removeClass('fa-minus-square').addClass('fa-plus-square');
                     } else {
-                        let srData = tr.data('srdata');
-                        row.child(formatSrTable(srData)).show();
+                        row.child(formatSrTable(tr.data('srdata'))).show();
                         tr.addClass('shown');
-                        $(this).find('i').removeClass('fa-plus-square').addClass('fa-minus-square');
                     }
                 });
 
+                $.get('/Fitr/GetMainCompany', function (mc) { mainCompany = mc; });
             });
-
         })();
     </script>
 }

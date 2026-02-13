@@ -42,9 +42,10 @@ namespace FITR_DC_FORM.Services.Interfaces
 
         bool IsDcNoExists(string dcNo, int? fitrId);
 
+        // ================= DELETE =================
+        void SoftDelete(int fitrId, int deletedBy);
 
-      
-       List<FitrMaster> GetListByRoleFilteredV2(
+        List<FitrMaster> GetListByRoleFilteredV2(
                 string userRole,
                 int companyId,
                 int locationId,

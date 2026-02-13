@@ -111,6 +111,10 @@ namespace FITR_DC_FORM.Services.Repo_Services
             return _repo.IsDcNoExists(dcNo, fitrId);
         }
 
+        // ================= DELETE =================
+        public void SoftDelete(int fitrId, int deletedBy)
+            => _repo.SoftDelete(fitrId, deletedBy);
+
 
         public List<FitrMaster> GetListByRoleFilteredV2(
         string userRole,
